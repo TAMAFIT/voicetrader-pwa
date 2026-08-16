@@ -89,6 +89,19 @@ export class DecisionEventLogger {
       req.onerror = () => reject(req.error || new Error('DecisionEvent count failed'));
     });
   }
+
+  async listAll() {
+    const db = await this.db();
+    return new Promise((resolve, reject) => {
+      const req = db.transaction(STORE, 'readonly').objectStore(STORE).getAll();
+      req.onsuccess = () => {
+        const events = Array.isArray(req.result) ? req.result : [];
+        events.sort((a, b) => Number(a.candleTime || 0) - Number(b.candleTime || 0) || Number(a.recordedAt || 0) - Number(b.recordedAt || 0));
+        resolve(events);
+      };
+      req.onerror = () => reject(req.error || new Error('DecisionEvent read failed'));
+    });
+  }
 }
 
 export function buildDecisionEvent({
