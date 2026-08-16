@@ -1,0 +1,185 @@
+/* VoiceTrader v0.8 chronological holdout / walk-forward diagnostics. */
+
+.walk-forward-section{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid #e8edf4;
+}
+
+.walk-forward-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:10px;
+}
+
+.walk-forward-head h3{
+  margin:2px 0 0;
+  color:#172c46;
+  font-size:16px;
+  line-height:1.3;
+}
+
+.walk-forward-meta{
+  margin:4px 0 0;
+  color:#748197;
+  font-size:10px;
+  line-height:1.45;
+}
+
+.walk-forward-status{
+  min-height:30px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 10px;
+  border:1px solid #e2e8f0;
+  border-radius:999px;
+  background:#f5f7fa;
+  color:#6f7d90;
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.walk-forward-status.diagnostic{
+  border-color:#dbe8ff;
+  background:#f2f7ff;
+  color:#3472d4;
+}
+
+.walk-forward-status.unavailable{
+  color:#8290a2;
+}
+
+.walk-forward-table{
+  overflow:hidden;
+  border:1px solid #e8edf4;
+  border-radius:12px;
+  background:#fff;
+}
+
+.walk-forward-row{
+  display:grid;
+  grid-template-columns:minmax(135px,1.2fr) repeat(6,minmax(72px,.72fr));
+  align-items:center;
+  min-height:42px;
+  padding:0 12px;
+  gap:8px;
+  border-top:1px solid #eef2f7;
+  color:#344961;
+  font-size:10px;
+}
+
+.walk-forward-row:first-child{border-top:0}
+
+.walk-forward-header{
+  min-height:32px;
+  background:#f7f9fc;
+  color:#8390a2;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.03em;
+}
+
+.walk-forward-row.champion{
+  background:linear-gradient(90deg,#f5f9ff 0%,#fff 72%);
+  box-shadow:inset 3px 0 0 #3478f6;
+}
+
+.walk-forward-name{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  color:#172c46;
+  font-weight:850;
+}
+
+.walk-forward-name small{
+  padding:3px 6px;
+  border-radius:999px;
+  background:#eef3fa;
+  color:#708098;
+  font-size:8px;
+  font-weight:900;
+}
+
+.walk-forward-return,.walk-forward-delta{font-weight:900}
+.walk-forward-return.positive,.walk-forward-delta.positive{color:#149259}
+.walk-forward-return.negative,.walk-forward-delta.negative{color:#d84a4a}
+
+.walk-forward-empty{
+  padding:22px 14px;
+  color:#7f8b9d;
+  font-size:11px;
+  text-align:center;
+}
+
+.walk-forward-folds{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px;
+  margin-top:8px;
+}
+
+.walk-forward-fold{
+  padding:8px 10px;
+  border:1px solid #e8edf4;
+  border-radius:10px;
+  background:#fafbfd;
+}
+
+.walk-forward-fold span{
+  color:#7d8a9c;
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.walk-forward-fold b{
+  display:block;
+  margin-top:2px;
+  color:#263d58;
+  font-size:11px;
+}
+
+.walk-forward-fold small{
+  display:block;
+  margin-top:2px;
+  color:#8794a6;
+  font-size:8px;
+  line-height:1.35;
+}
+
+.walk-forward-note{
+  margin-top:8px;
+  padding:9px 11px;
+  border-radius:10px;
+  background:#f7f9fc;
+  color:#778397;
+  font-size:9px;
+  line-height:1.55;
+}
+
+.walk-forward-note strong{color:#52647b}
+
+@media (max-width:980px){
+  .walk-forward-head{min-width:760px}
+  .walk-forward-table{min-width:780px}
+  .walk-forward-folds{min-width:760px}
+}
+
+@media (max-width:760px){
+  .walk-forward-head{
+    min-width:0;
+    display:grid;
+    gap:10px;
+  }
+  .walk-forward-table{min-width:760px}
+  .walk-forward-folds{
+    min-width:0;
+    grid-template-columns:1fr;
+  }
+}
