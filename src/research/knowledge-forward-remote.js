@@ -138,9 +138,16 @@ export function normalizeKnowledgeForwardRemoteDocument(value) {
   };
 }
 
+function stableValue(value) {
+  if (Array.isArray(value)) return value.map(stableValue);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.keys(value).sort().map(key => [key,stableValue(value[key])]));
+  }
+  return value;
+}
+
 function canonicalRecord(record) {
-  const copy = clone(record);
-  return JSON.stringify(copy,Object.keys(copy).sort());
+  return JSON.stringify(stableValue(record));
 }
 
 export function mergeKnowledgeForwardEvidenceArchives(remoteArchive, localArchive) {
