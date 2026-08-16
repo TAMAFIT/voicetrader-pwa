@@ -1,0 +1,42 @@
+import { getLoadedBTCUSD4H } from '../data/market-data-provider.js';
+import { ExecutionEngine } from '../engine/execution-engine.js';
+import { KNOWLEDGE_CANDIDATE_REGISTRY, getKnowledgeCandidateRegistrySnapshot } from './knowledge-candidate-registry.js';
+import { runKnowledgeCandidateTournament } from './knowledge-candidate-tournament.js';
+import { setLatestKnowledgeCandidateTournament } from './knowledge-candidate-state.js';
+
+let initialized = false;
+const escapeHtml = value => String(value ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+function fmt(value,suffix='',signed=false){const n=Number(value);if(!Number.isFinite(n))return '—';return `${signed&&n>0?'+':''}${n.toFixed(Math.abs(n)>=100?0:2)}${suffix}`;}
+
+function ensureStylesheet(){if(document.querySelector('link[data-candidate-tournament-style]'))return;const link=document.createElement('link');link.rel='stylesheet';link.href='./candidate-tournament.css';link.dataset.candidateTournamentStyle='true';document.head.appendChild(link);}
+
+function template(){return `
+<div id="knowledgeCandidateTournamentSection" class="candidate-tournament-section" aria-labelledby="knowledgeCandidateTournamentTitle">
+  <div class="candidate-tournament-head">
+    <div><div class="section-kicker">Knowledge Candidate Tournament — Wave 1 × Wave 2</div><h4 id="knowledgeCandidateTournamentTitle">次世代Shadow候補を「固定4候補」だけで比較</h4><p id="knowledgeCandidateTournamentMeta" class="candidate-tournament-meta">BTC/USD 4H実市場データを待っています。</p></div>
+    <span id="knowledgeCandidateTournamentStatus" class="candidate-tournament-status">RESEARCH ONLY</span>
+  </div>
+  <div id="candidateBenchmarkStrip" class="candidate-benchmark-strip"></div>
+  <div class="candidate-table">
+    <div class="candidate-row header"><span>Candidate</span><span>Return</span><span>Avg net</span><span>Trades</span><span>Δvs Champ</span><span>Lag Null95</span><span>Holdout +</span><span>診断</span></div>
+    <div id="candidateTournamentRows"></div>
+  </div>
+  <div class="candidate-protocol"><h5>Promotion Readiness Protocol</h5><div id="candidateProtocolGrid" class="candidate-protocol-grid"></div></div>
+  <div class="research-evaluation-note candidate-tournament-note">順位は同一履歴上の表示順位であり「勝者」ではありません。候補はWave 1単独、Wave 2単独、両者Consensus、Playbook＋Wave 1強反対Vetoの4つに固定しています。各候補を同じBTC/USD 4H・同じ3バーExit・同じコストで比較し、過去Signal Lag Negative Controlと3-fold時系列Holdoutも実行します。しかし過去系列はすでに観測済みなので、ここからChampion-002へ自動昇格はできません。Prospective Future Epoch・Negative Controlレビュー・Execution Costレビュー・人間承認が必要です。</div>
+</div>`;}
+
+function insertSection(){if(document.getElementById('knowledgeCandidateTournamentSection'))return true;const host=document.getElementById('humanPlaybookSection');if(!host)return false;const wrap=document.createElement('div');wrap.innerHTML=template().trim();const note=host.querySelector('.human-playbook-note');if(note)host.insertBefore(wrap.firstElementChild,note);else host.appendChild(wrap.firstElementChild);return true;}
+
+function renderUnavailable(message){setLatestKnowledgeCandidateTournament(null);const status=document.getElementById('knowledgeCandidateTournamentStatus');const meta=document.getElementById('knowledgeCandidateTournamentMeta');if(status){status.className='candidate-tournament-status unavailable';status.textContent='UNAVAILABLE';}if(meta)meta.textContent=message;}
+
+function diag(item){const d=item.diagnostic;const parts=[];if(d.beatsBenchmarkSameSeries)parts.push('vsChamp+');if(d.aboveLagNull95)parts.push('Null95+');if(d.majorityPositiveHoldoutFolds)parts.push('Holdout+');return parts.length?parts.join(' / '):'screen弱';}
+
+function render(snapshot,result,costBps){const status=document.getElementById('knowledgeCandidateTournamentStatus');const meta=document.getElementById('knowledgeCandidateTournamentMeta');const benchmark=document.getElementById('candidateBenchmarkStrip');const rows=document.getElementById('candidateTournamentRows');const protocol=document.getElementById('candidateProtocolGrid');if(!status||!meta||!benchmark||!rows||!protocol)return;status.className='candidate-tournament-status';status.textContent='DIAGNOSTIC';meta.textContent=`${snapshot.meta.label} / fixed ${result.results.length} candidates / cost ${fmt(costBps,'bp')} / ${snapshot.meta.signature}`;
+const b=result.benchmark.summary;benchmark.innerHTML=`<span><small>Benchmark</small><b>champion-001 frozen</b></span><span><small>Champion Return</small><b>${fmt(b.returnPct,'%',true)}</b></span><span><small>Champion Avg</small><b>${fmt(b.avgNetBps,'bp',true)}</b></span><span><small>Champion PF</small><b>${fmt(b.profitFactor)}</b></span><span><small>Champion trades</small><b>${b.trades}</b></span><span><small>Candidate set</small><b>${result.results.length} fixed</b></span>`;
+const rankById=new Map(result.displayRanking.map(x=>[x.id,x.rank]));rows.innerHTML=result.results.map(item=>{const delta=Number(item.deltaVsChampion.avgNetBps||0);const cls=delta>0?'candidate-positive':delta<0?'candidate-negative':'candidate-neutral';const screen=item.diagnostic.preliminaryScreenCount;return `<div class="candidate-row"><span><b>${rankById.get(item.id)}. ${escapeHtml(item.label)}</b><small>${escapeHtml(item.id)}</small></span><span>${fmt(item.summary.returnPct,'%',true)}</span><span>${fmt(item.summary.avgNetBps,'bp',true)}</span><span>${item.summary.trades}</span><span class="${cls}">${fmt(delta,'bp',true)}</span><span>${fmt(item.nullControl.p95AvgNetBps,'bp',true)}</span><span>${item.holdout.positiveFolds}/${KNOWLEDGE_CANDIDATE_REGISTRY.folds}</span><span class="${screen>=2?'candidate-positive':screen===0?'candidate-negative':''}">${escapeHtml(diag(item))}</span></div>`;}).join('');
+const p=result.promotionProtocol;protocol.innerHTML=`<span class="ok"><small>Candidate set</small><b>FROZEN 4</b></span><span class="ok"><small>Negative Control</small><b>DONE</b></span><span class="ok"><small>Chronological</small><b>DONE</b></span><span class="required"><small>Prospective Epoch</small><b>REQUIRED</b></span><span class="required"><small>Human review</small><b>REQUIRED</b></span><span class="required"><small>Promotion</small><b>${p.currentlyPromotionEligible?'ELIGIBLE':'NOT ELIGIBLE'}</b></span>`;
+setLatestKnowledgeCandidateTournament({ registry:getKnowledgeCandidateRegistrySnapshot(),evaluation:result,dataMeta:snapshot.meta,estimatedRoundTripCostBps:costBps });}
+
+async function waitAndEvaluate(){for(let attempt=0;attempt<60;attempt++){const snapshot=getLoadedBTCUSD4H();if(snapshot?.series&&snapshot?.meta){if(!snapshot.meta.researchEligible){renderUnavailable('SyntheticデータはCandidate Tournament対象外です。');return;}const status=document.getElementById('knowledgeCandidateTournamentStatus');if(status){status.className='candidate-tournament-status running';status.textContent='計算中';}await new Promise(r=>setTimeout(r,0));const execution=new ExecutionEngine({random:()=>.5,analyze:()=>({})});const costBps=execution.estimateRoundTripCostBps('BTCUSD');const result=runKnowledgeCandidateTournament({series:snapshot.series,endIndex:snapshot.series.length-1,estimatedRoundTripCostBps:costBps,dataSignature:snapshot.meta.signature});if(result.status!=='complete'){renderUnavailable(`Tournament停止: ${result.reason||result.status}`);return;}render(snapshot,result,costBps);return;}await new Promise(r=>setTimeout(r,250));}renderUnavailable('BTC/USD 4H市場データの準備がタイムアウトしました。');}
+
+export function setupKnowledgeCandidateTournamentUI(){if(initialized)return;initialized=true;ensureStylesheet();if(!insertSection()){setTimeout(()=>{if(insertSection())waitAndEvaluate();},0);return;}waitAndEvaluate();}

@@ -2,9 +2,11 @@ import { getLatestWalkForwardEvaluation } from './walk-forward-state.js';
 import { getLatestForwardDemoEvaluation } from './forward-demo-state.js';
 import { getLatestKnowledgeEvaluation } from './knowledge-state.js';
 import { getLatestPlaybookEvaluation } from './playbook-state.js';
+import { getLatestKnowledgeCandidateTournament } from './knowledge-candidate-state.js';
 
-export const RESEARCH_EXPORT_VERSION = 'research-export-0.8';
-export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.7';
+export const RESEARCH_EXPORT_VERSION = 'research-export-0.9';
+export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.8';
+export const LEGACY_RESEARCH_EXPORT_VERSION_V07 = 'research-export-0.7';
 export const LEGACY_RESEARCH_EXPORT_VERSION = 'research-export-0.6';
 export const LEGACY_RESEARCH_EXPORT_VERSION_V05 = 'research-export-0.5';
 
@@ -39,48 +41,9 @@ export function flattenDecisionEvent(event) {
   const cf3 = counterfactualOutcome(event, 3);
   const cf6 = counterfactualOutcome(event, 6);
   return {
-    eventId: event?.eventId || '',
-    recordedAt: event?.recordedAt || '',
-    strategyVersion: event?.strategyVersion || '',
-    instrument: event?.instrument || '',
-    timeframeHours: event?.timeframeHours || '',
-    candleTime: event?.candleTime || '',
-    barIndex: event?.barIndex ?? '',
-    dataSourceId: event?.dataSourceId || '',
-    dataSourceType: event?.dataSourceType || '',
-    dataSignature: event?.dataSignature || '',
-    researchEligible: event?.researchEligible ?? '',
-    engineVersion: event?.engineVersion || '',
-    expertSetVersion: event?.expertSetVersion || '',
-    regime: event?.regime || '',
-    marketPrice: round(event?.market?.price),
-    fastMA: round(event?.market?.fastMA),
-    slowMA: round(event?.market?.slowMA),
-    rsi: round(event?.market?.rsi),
-    atrPct: round(event?.market?.atrPct),
-    rawAlphaScore: round(event?.scores?.rawAlphaScore),
-    decisionScore: round(event?.scores?.decisionScore),
-    confidenceScore: round(event?.scores?.confidenceScore),
-    timingScore: round(event?.scores?.timingScore),
-    riskScore: round(event?.scores?.riskScore),
-    estimatedRoundTripCostBps: round(event?.costs?.estimatedRoundTripCostBps),
-    entryDecision: event?.entryDecision || '',
-    policyDecision: event?.policyDecision || '',
-    legacyAction: event?.legacyAction || '',
-    trendExpertScore: round(expertScore(event, 'trend')),
-    momentumExpertScore: round(expertScore(event, 'momentum')),
-    breakoutExpertScore: round(expertScore(event, 'breakout')),
-    cfLong1NetBps: round(cf1?.long?.netReturnBps),
-    cfShort1NetBps: round(cf1?.short?.netReturnBps),
-    cfLong3NetBps: round(cf3?.long?.netReturnBps),
-    cfShort3NetBps: round(cf3?.short?.netReturnBps),
-    cfLong6NetBps: round(cf6?.long?.netReturnBps),
-    cfShort6NetBps: round(cf6?.short?.netReturnBps),
-    cfLong3MfeBps: round(cf3?.longMfeBps),
-    cfLong3MaeBps: round(cf3?.longMaeBps),
-    cfShort3MfeBps: round(cf3?.shortMfeBps),
-    cfShort3MaeBps: round(cf3?.shortMaeBps),
-    counterfactualStatus: event?.counterfactual?.status || '',
+    eventId:event?.eventId || '', recordedAt:event?.recordedAt || '', strategyVersion:event?.strategyVersion || '', instrument:event?.instrument || '', timeframeHours:event?.timeframeHours || '', candleTime:event?.candleTime || '', barIndex:event?.barIndex ?? '', dataSourceId:event?.dataSourceId || '', dataSourceType:event?.dataSourceType || '', dataSignature:event?.dataSignature || '', researchEligible:event?.researchEligible ?? '', engineVersion:event?.engineVersion || '', expertSetVersion:event?.expertSetVersion || '', regime:event?.regime || '',
+    marketPrice:round(event?.market?.price), fastMA:round(event?.market?.fastMA), slowMA:round(event?.market?.slowMA), rsi:round(event?.market?.rsi), atrPct:round(event?.market?.atrPct), rawAlphaScore:round(event?.scores?.rawAlphaScore), decisionScore:round(event?.scores?.decisionScore), confidenceScore:round(event?.scores?.confidenceScore), timingScore:round(event?.scores?.timingScore), riskScore:round(event?.scores?.riskScore), estimatedRoundTripCostBps:round(event?.costs?.estimatedRoundTripCostBps), entryDecision:event?.entryDecision || '', policyDecision:event?.policyDecision || '', legacyAction:event?.legacyAction || '', trendExpertScore:round(expertScore(event,'trend')), momentumExpertScore:round(expertScore(event,'momentum')), breakoutExpertScore:round(expertScore(event,'breakout')),
+    cfLong1NetBps:round(cf1?.long?.netReturnBps), cfShort1NetBps:round(cf1?.short?.netReturnBps), cfLong3NetBps:round(cf3?.long?.netReturnBps), cfShort3NetBps:round(cf3?.short?.netReturnBps), cfLong6NetBps:round(cf6?.long?.netReturnBps), cfShort6NetBps:round(cf6?.short?.netReturnBps), cfLong3MfeBps:round(cf3?.longMfeBps), cfLong3MaeBps:round(cf3?.longMaeBps), cfShort3MfeBps:round(cf3?.shortMfeBps), cfShort3MaeBps:round(cf3?.shortMaeBps), counterfactualStatus:event?.counterfactual?.status || '',
   };
 }
 
@@ -93,26 +56,20 @@ export function researchEventsToCsv(events = []) {
 }
 
 export function buildResearchJson({
-  events = [],
-  baselineEvaluation = null,
-  strategyRegistry = null,
-  challengerEvaluation = null,
-  walkForwardEvaluation = undefined,
-  forwardDemoEvaluation = undefined,
-  knowledgeEvaluation = undefined,
-  playbookEvaluation = undefined,
-  nullMarketEvaluation = null,
-  dataMeta = null,
+  events=[], baselineEvaluation=null, strategyRegistry=null, challengerEvaluation=null,
+  walkForwardEvaluation=undefined, forwardDemoEvaluation=undefined, knowledgeEvaluation=undefined,
+  playbookEvaluation=undefined, knowledgeCandidateTournament=undefined, nullMarketEvaluation=null, dataMeta=null,
 } = {}) {
   const resolvedWalkForward = walkForwardEvaluation === undefined ? getLatestWalkForwardEvaluation() : walkForwardEvaluation;
   const resolvedForwardDemo = forwardDemoEvaluation === undefined ? getLatestForwardDemoEvaluation() : forwardDemoEvaluation;
   const resolvedKnowledge = knowledgeEvaluation === undefined ? getLatestKnowledgeEvaluation() : knowledgeEvaluation;
   const resolvedPlaybook = playbookEvaluation === undefined ? getLatestPlaybookEvaluation() : playbookEvaluation;
+  const resolvedTournament = knowledgeCandidateTournament === undefined ? getLatestKnowledgeCandidateTournament() : knowledgeCandidateTournament;
   return JSON.stringify({
-    exportVersion: RESEARCH_EXPORT_VERSION,
-    exportedAt: new Date().toISOString(),
-    eventCount: events.length,
-    notes: [
+    exportVersion:RESEARCH_EXPORT_VERSION,
+    exportedAt:new Date().toISOString(),
+    eventCount:events.length,
+    notes:[
       'DecisionEvent counterfactual outcomes from the same event are clustered observations and are not IID samples.',
       'Baseline evaluation is a descriptive same-series comparator and is not proof of a reproducible edge.',
       'Strategy Registry Challenger results are same-series Shadow diagnostics only and cannot automatically promote or mutate the frozen Champion.',
@@ -120,15 +77,17 @@ export function buildResearchJson({
       'Human Knowledge directional rules are normalized by family before the composite so adding many correlated rules to one family does not automatically increase that family weighting; regime and risk diagnostics do not cast directional votes.',
       'Knowledge Attribution uses leave-one-Expert-out and leave-one-Family-out sensitivity diagnostics. Positive deltas mean removing that element worsened the same-series result; this is not causal attribution and never triggers automatic pruning or weighting changes.',
       'Family Knowledge Negative Controls lag only the target family using past signals while preserving the market series, other families, and current risk/regime context. Null95 and exceedance rates are screening diagnostics, not formal p-values.',
-      'Human Trading Playbook Engine Wave 2 encodes preregistered multi-condition setups such as trend pullback, breakout confirmation, squeeze expansion, range mean reversion and failed-breakout reversal. A playbook is inactive outside its intended context rather than casting an opposite vote.',
+      'Human Trading Playbook Engine Wave 2 encodes preregistered multi-condition setups. A playbook is inactive outside its intended context rather than casting an opposite vote.',
       'Playbook Shadow, leave-one-Playbook-out attribution, archetype lag controls, regime-conditioned metrics and three-fold chronological holdout are research diagnostics only. Playbook scores are not expected-return bps or calibrated probabilities.',
-      'Playbook chronological holdout has no fitting and uses fixed rules with a 3-bar embargo, but the historical BTC/USD series has already been inspected; therefore it is not pristine untouched OOS evidence and cannot make Wave 2 promotion-eligible.',
+      'Knowledge Candidate Tournament contains exactly four preregistered integration candidates: Wave 1 reference, Wave 2 reference, same-side consensus, and Playbook with a fixed Wave 1 strong-opposition veto. It does not generate or search candidate combinations.',
+      'Candidate Tournament rankings are display-only same-series diagnostics. Candidate lag controls use past decisions, chronological holdout uses fixed rules with a 3-bar embargo and no fitting, and neither result can automatically select or promote a candidate.',
+      'Candidate Tournament trading costs are applied only to realized simulated trade returns; raw Knowledge or Playbook scores are never treated as basis-point returns and never have costs subtracted from them.',
+      'A future Champion proposal requires a separately frozen prospective epoch, negative-control review, execution-cost review and human approval. Current Candidate Tournament promotionEligible is false.',
       'Chronological walk-forward uses frozen strategies, three ordered test folds, and a 3-bar embargo with no fitting; because this historical series has already been inspected by same-series research views, it is a holdout diagnostic rather than pristine untouched OOS proof.',
       'Prospective Forward Demo epoch forward-001 is frozen at 2026-08-16T14:27:00Z; only fully closed 4H candles whose open timestamp is strictly after that boundary may contribute Forward P&L evidence.',
       'Forward evidence is stored locally in this browser and deduplicated by epoch/strategy/entry/exit key. Clearing site storage can remove the local archive, so JSON exports should be retained for durable evidence.',
-      'Forward Demo evidence is necessary but not sufficient for future Champion promotion; negative-control review and human approval remain required.',
       'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values or proof of statistical significance.',
-      'Null-transformed series, Human Knowledge outputs, Knowledge Attribution outputs, Human Playbook outputs, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the frozen live/demo Champion decision engine.',
+      'Null-transformed series, Human Knowledge outputs, Knowledge Attribution outputs, Human Playbook outputs, Candidate Tournament outputs, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the frozen live/demo Champion decision engine.',
       'Synthetic market data is not research eligible.',
     ],
     dataMeta,
@@ -137,22 +96,14 @@ export function buildResearchJson({
     challengerEvaluation,
     knowledgeEvaluation:resolvedKnowledge,
     playbookEvaluation:resolvedPlaybook,
+    knowledgeCandidateTournament:resolvedTournament,
     walkForwardEvaluation:resolvedWalkForward,
     forwardDemoEvaluation:resolvedForwardDemo,
     nullMarketEvaluation,
     decisionEvents:events,
-  }, null, 2);
+  },null,2);
 }
 
-export function downloadResearchText({ filename, text, mimeType }) {
-  const blob = new Blob([text], { type:mimeType });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.style.display = 'none';
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+export function downloadResearchText({ filename,text,mimeType }) {
+  const blob=new Blob([text],{type:mimeType});const url=URL.createObjectURL(blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=filename;anchor.style.display='none';document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
