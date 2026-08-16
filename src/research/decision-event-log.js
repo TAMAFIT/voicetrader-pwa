@@ -1,3 +1,5 @@
+import { resolvePositionDecision } from '../engine/decision-policy.js';
+
 const DB_NAME = 'voicetrader-research-v1';
 const DB_VERSION = 1;
 const STORE = 'decisionEvents';
@@ -38,7 +40,7 @@ export class DecisionEventLogger {
   async record(event) {
     const db = await this.db();
     const payload = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       strategyVersion: this.strategyVersion,
       recordedAt: Date.now(),
       ...event,
@@ -62,16 +64,6 @@ export class DecisionEventLogger {
   }
 }
 
-export function policyDecision({ analysis, hasPosition, positionSide }) {
-  if (!hasPosition) {
-    if (analysis.action === 'BUY') return 'ENTER_LONG';
-    if (analysis.action === 'SELL') return 'ENTER_SHORT';
-    return 'NO_ENTRY';
-  }
-  const opposite = (positionSide === 'BUY' && analysis.action === 'SELL') || (positionSide === 'SELL' && analysis.action === 'BUY');
-  return opposite ? 'EXIT_SIGNAL' : 'HOLD';
-}
-
 export function buildDecisionEvent({
   key,
   timeframe,
@@ -83,6 +75,11 @@ export function buildDecisionEvent({
   aiPosition,
 }) {
   const candleTime = Number(candle?.t || 0);
+  const experts = analysis.experts?.results || [];
+  const policyDecision = resolvePositionDecision({
+    entryDecision: analysis.entryDecision,
+    positionSide: aiPosition?.side,
+  });
   return {
     eventId: `${dataMeta.id}:${key}:${timeframe}h:${candleTime}`,
     instrument: key,
@@ -94,6 +91,16 @@ export function buildDecisionEvent({
     dataSignature: dataMeta.signature,
     researchEligible: Boolean(dataMeta.researchEligible),
     engineVersion: analysis.engineVersion,
+    expertSetVersion: analysis.experts?.version || null,
+    expertWeights: analysis.experts?.weights ? { ...analysis.experts.weights } : {},
+    experts: experts.map(expert => ({
+      id: expert.id,
+      version: expert.version,
+      score: expert.score,
+      weight: expert.weight,
+      contribution: expert.contribution,
+      inputs: { ...expert.inputs },
+    })),
     regime: analysis.regime,
     market: {
       price: analysis.p,
@@ -113,11 +120,8 @@ export function buildDecisionEvent({
     costs: {
       estimatedRoundTripCostBps,
     },
-    rawAction: analysis.action,
-    policyDecision: policyDecision({
-      analysis,
-      hasPosition: Boolean(aiPosition),
-      positionSide: aiPosition?.side,
-    }),
+    entryDecision: analysis.entryDecision,
+    legacyAction: analysis.action,
+    policyDecision,
   };
 }
