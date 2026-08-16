@@ -1,5 +1,6 @@
 import { runKnowledgeForwardSnapshot } from './knowledge-forward-runner.js';
 import { mergeKnowledgeForwardArchive } from './knowledge-forward-store.js';
+import { KNOWLEDGE_FORWARD_EPOCH_ID } from './knowledge-forward-epoch.js';
 import {
   FROZEN_KNOWLEDGE_EVALUATOR_COMMIT,
   KRAKEN_SPOT_BTCUSD_4H_URL,
@@ -32,6 +33,12 @@ export async function collectKnowledgeForwardAutonomously({
   workflowRunId=null,
   workflowRunAttempt=null,
 } = {}) {
+  if (existingDocument?.epochId && existingDocument.epochId !== KNOWLEDGE_FORWARD_EPOCH_ID) {
+    throw new Error('collector existing archive epoch mismatch');
+  }
+  if (existingDocument?.frozenEvaluatorCommit && existingDocument.frozenEvaluatorCommit !== FROZEN_KNOWLEDGE_EVALUATOR_COMMIT) {
+    throw new Error('collector existing archive evaluator mismatch');
+  }
   const normalizedExisting = normalizeKnowledgeForwardRemoteDocument(existingDocument);
   if (normalizedExisting.frozenEvaluatorCommit !== FROZEN_KNOWLEDGE_EVALUATOR_COMMIT) throw new Error('collector existing archive evaluator mismatch');
 
