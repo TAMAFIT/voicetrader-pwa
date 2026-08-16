@@ -6,6 +6,7 @@ import { getLatestPlaybookEvaluation } from './playbook-state.js';
 export const RESEARCH_EXPORT_VERSION = 'research-export-0.8';
 export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.7';
 export const LEGACY_RESEARCH_EXPORT_VERSION = 'research-export-0.6';
+export const LEGACY_RESEARCH_EXPORT_VERSION_V05 = 'research-export-0.5';
 
 const round = (value, digits = 4) => {
   if (value === null || value === undefined || value === '') return '';
