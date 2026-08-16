@@ -3,6 +3,7 @@ import { setupHumanKnowledgeUI } from './research/knowledge-ui.js';
 import { setupKnowledgeAttributionUI } from './research/knowledge-attribution-ui.js';
 import { setupHumanPlaybookUI } from './research/playbook-ui.js';
 import { setupKnowledgeCandidateTournamentUI } from './research/knowledge-candidate-ui.js';
+import { setupKnowledgeForwardUI } from './research/knowledge-forward-ui.js';
 import { setupWalkForwardUI } from './research/walk-forward-ui.js';
 import { setupForwardDemoUI } from './research/forward-demo-ui.js';
 import { setupLiveForwardTradingUI } from './live/live-forward-ui.js';
@@ -20,6 +21,7 @@ export function setupPWA() {
   setupKnowledgeAttributionUI();
   setupHumanPlaybookUI();
   setupKnowledgeCandidateTournamentUI();
+  setupKnowledgeForwardUI();
   setupWalkForwardUI();
   setupForwardDemoUI();
   setupLiveForwardTradingUI();
