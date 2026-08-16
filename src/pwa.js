@@ -1,4 +1,5 @@
 import { setupResearchEvaluationUI } from './research/research-evaluation-ui.js';
+import { setupWalkForwardUI } from './research/walk-forward-ui.js';
 
 let deferredInstallPrompt = null;
 
@@ -9,6 +10,7 @@ export function setupPWA() {
   const updateBtn = document.getElementById('updateBtn');
 
   setupResearchEvaluationUI();
+  setupWalkForwardUI();
 
   const updateOnlineStatus = () => {
     const online = navigator.onLine;
