@@ -1,15 +1,17 @@
 import { instruments } from '../config.js';
 import { sma, rsi, atrPct, clamp } from './indicators.js';
+import { runAlphaExperts } from './experts.js';
+import { decideEntry, entryDecisionToLegacyAction } from './decision-policy.js';
 
 /**
- * Shadow Engine v0.3
- * 人類の既存金融知識を決定論的な計算へ落とす層。
- * rawAlphaScore と decisionScore を分離し、将来の期待収益(bps)校正と混同しない。
+ * Shadow Engine v0.4
+ * Championの既存挙動を保ったまま、Alpha要因を独立Expertとして観測可能にする。
+ * Expert weights are frozen; no tournament or online learning is performed here.
  */
 export class ShadowEngine {
   constructor({ seriesProvider }) {
     this.seriesProvider = seriesProvider;
-    this.version = '0.3-score-separation';
+    this.version = '0.4-fixed-experts-policy';
   }
 
   analyze(key, idx) {
@@ -21,23 +23,26 @@ export class ShadowEngine {
     const rsiValue = rsi(arr, 14, idx);
     const atr = atrPct(arr, 14, idx);
 
-    const trend = clamp(((fast / slow) - 1) * 1600, -22, 22);
-    const momentum = clamp((rsiValue - 50) * .52, -18, 18);
     const recent = arr.slice(Math.max(0, idx - 18), idx).map(x => x.c);
     const hi = Math.max(...recent);
     const lo = Math.min(...recent);
-    let breakout = 0;
-    if (p > hi) breakout = 10;
-    if (p < lo) breakout = -10;
+    const expertSet = runAlphaExperts({
+      fast,
+      slow,
+      rsiValue,
+      price: p,
+      recentHigh: hi,
+      recentLow: lo,
+    });
+    const rawAlphaScore = expertSet.rawAlphaScore;
 
-    // This is a dimensionless signal score, NOT expected return in basis points.
-    const rawAlphaScore = trend + momentum + breakout;
     const up = clamp(50 + rawAlphaScore, 12, 88);
     const dir = up >= 50 ? 'UP' : 'DOWN';
     const conf = Math.round(Math.max(up, 100 - up));
     const trendStrength = clamp(Math.abs((fast / slow) - 1) * 4200, 0, 100);
+    const breakoutScore = expertSet.results.find(expert => expert.id === 'breakout')?.score || 0;
     const timing = Math.round(clamp(
-      42 + trendStrength * .45 + Math.abs(rsiValue - 50) * .35 + (breakout ? 12 : 0) - Math.max(0, atr - 2.2) * 8,
+      42 + trendStrength * .45 + Math.abs(rsiValue - 50) * .35 + (breakoutScore ? 12 : 0) - Math.max(0, atr - 2.2) * 8,
       8,
       96,
     ));
@@ -47,28 +52,38 @@ export class ShadowEngine {
       92,
     ));
     const decisionScore = timing - risk * .38 + (conf - 50) * .7;
-
-    let action = 'WAIT';
-    if (decisionScore > 42 && conf >= 61) action = dir === 'UP' ? 'BUY' : 'SELL';
+    const entryDecision = decideEntry({
+      decisionScore,
+      confidenceScore: conf,
+      direction: dir,
+    });
+    const action = entryDecisionToLegacyAction(entryDecision);
 
     const regime = trendStrength > 55
       ? (dir === 'UP' ? '上昇トレンド' : '下降トレンド')
       : (atr > 2 ? '荒いレンジ' : 'レンジ');
 
     let comment = '方向感が弱いため、無理に入らず様子を見る場面です。';
-    if (action === 'BUY') comment = '上向きの流れとタイミングが重なっています。買い候補ですが、損切り前提で考えます。';
-    if (action === 'SELL') comment = '下向きの流れが優勢で、エントリー条件もそろっています。売り候補です。';
-    if (conf > 67 && action === 'WAIT') comment = `${dir === 'UP' ? '上' : '下'}方向の見込みはありますが、今は入る位置・リスク条件が十分ではありません。`;
+    if (entryDecision === 'ENTER_LONG') comment = '上向きの流れとタイミングが重なっています。買い候補ですが、損切り前提で考えます。';
+    if (entryDecision === 'ENTER_SHORT') comment = '下向きの流れが優勢で、エントリー条件もそろっています。売り候補です。';
+    if (conf > 67 && entryDecision === 'NO_ENTRY') comment = `${dir === 'UP' ? '上' : '下'}方向の見込みはありますが、今は入る位置・リスク条件が十分ではありません。`;
+
+    const factors = {
+      trend: expertSet.results.find(expert => expert.id === 'trend')?.score || 0,
+      momentum: expertSet.results.find(expert => expert.id === 'momentum')?.score || 0,
+      breakout: breakoutScore,
+      trendStrength,
+    };
 
     return {
       engineVersion: this.version,
       p, fast, slow, rsi: rsiValue, atr,
-      up, dir, conf, timing, risk, action, regime, comment,
+      up, dir, conf, timing, risk, action, entryDecision, regime, comment,
       rawAlphaScore,
       decisionScore,
-      // Backward-compatible alias until all UI/research callers migrate.
       edge: decisionScore,
-      factors: { trend, momentum, breakout, trendStrength },
+      factors,
+      experts: expertSet,
     };
   }
 
