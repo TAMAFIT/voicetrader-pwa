@@ -2,14 +2,14 @@ import { instruments } from '../config.js';
 import { sma, rsi, atrPct, clamp } from './indicators.js';
 
 /**
- * Shadow Engine v0.2
+ * Shadow Engine v0.3
  * 人類の既存金融知識を決定論的な計算へ落とす層。
- * LLMではなく、同じ入力には同じ出力を返す「機械的な採点機」。
+ * rawAlphaScore と decisionScore を分離し、将来の期待収益(bps)校正と混同しない。
  */
 export class ShadowEngine {
   constructor({ seriesProvider }) {
     this.seriesProvider = seriesProvider;
-    this.version = '0.2-rule';
+    this.version = '0.3-score-separation';
   }
 
   analyze(key, idx) {
@@ -30,8 +30,9 @@ export class ShadowEngine {
     if (p > hi) breakout = 10;
     if (p < lo) breakout = -10;
 
-    const raw = trend + momentum + breakout;
-    const up = clamp(50 + raw, 12, 88);
+    // This is a dimensionless signal score, NOT expected return in basis points.
+    const rawAlphaScore = trend + momentum + breakout;
+    const up = clamp(50 + rawAlphaScore, 12, 88);
     const dir = up >= 50 ? 'UP' : 'DOWN';
     const conf = Math.round(Math.max(up, 100 - up));
     const trendStrength = clamp(Math.abs((fast / slow) - 1) * 4200, 0, 100);
@@ -45,10 +46,10 @@ export class ShadowEngine {
       8,
       92,
     ));
-    const edge = timing - risk * .38 + (conf - 50) * .7;
+    const decisionScore = timing - risk * .38 + (conf - 50) * .7;
 
     let action = 'WAIT';
-    if (edge > 42 && conf >= 61) action = dir === 'UP' ? 'BUY' : 'SELL';
+    if (decisionScore > 42 && conf >= 61) action = dir === 'UP' ? 'BUY' : 'SELL';
 
     const regime = trendStrength > 55
       ? (dir === 'UP' ? '上昇トレンド' : '下降トレンド')
@@ -62,7 +63,11 @@ export class ShadowEngine {
     return {
       engineVersion: this.version,
       p, fast, slow, rsi: rsiValue, atr,
-      up, dir, conf, timing, risk, action, regime, comment, edge,
+      up, dir, conf, timing, risk, action, regime, comment,
+      rawAlphaScore,
+      decisionScore,
+      // Backward-compatible alias until all UI/research callers migrate.
+      edge: decisionScore,
       factors: { trend, momentum, breakout, trendStrength },
     };
   }
@@ -70,6 +75,6 @@ export class ShadowEngine {
   scan(keys, idx) {
     return keys
       .map(key => ({ key, a: this.analyze(key, idx) }))
-      .sort((x, y) => y.a.edge - x.a.edge);
+      .sort((x, y) => y.a.decisionScore - x.a.decisionScore);
   }
 }
