@@ -47,16 +47,27 @@ assert.ok(csv.startsWith('\uFEFF'));
 assert.ok(csv.includes('cfLong3NetBps'));
 assert.ok(csv.includes("'=unsafe-event-id"), 'CSV formula-like text must be spreadsheet-safe');
 
+const nullMarketEvaluation = {
+  version: 'null-market-controls-0.1',
+  status: 'complete',
+  methodology: { formalPValue: false, usedByDecisionEngine: false },
+  methods: [{ id: 'return_shuffle', screening: 'null-overlap' }],
+};
 const jsonText = buildResearchJson({
   events: [event],
   baselineEvaluation: { status: 'complete', results: [] },
+  nullMarketEvaluation,
   dataMeta: { provider: 'Kraken public OHLC' },
 });
 const parsed = JSON.parse(jsonText);
-assert.equal(parsed.exportVersion, 'research-export-0.1');
+assert.equal(parsed.exportVersion, 'research-export-0.2');
 assert.equal(parsed.eventCount, 1);
 assert.equal(parsed.decisionEvents[0].eventId, '=unsafe-event-id');
 assert.equal(parsed.baselineEvaluation.status, 'complete');
+assert.equal(parsed.nullMarketEvaluation.version, 'null-market-controls-0.1');
+assert.equal(parsed.nullMarketEvaluation.methodology.formalPValue, false);
 assert.ok(parsed.notes.some(note => note.includes('not IID')));
+assert.ok(parsed.notes.some(note => note.includes('Null95')));
+assert.ok(parsed.notes.some(note => note.includes('decision engine')));
 
 console.log('Research export regression tests passed.');

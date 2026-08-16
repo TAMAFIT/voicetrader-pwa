@@ -6,7 +6,7 @@ const fail=m=>{console.error(`PWA validation failed: ${m}`);process.exitCode=1;}
 const required=[
   'index.html','styles.css','ui-hotfix.css','ui-layout.css','ui-viewport.css','research-evaluation.css','manifest.webmanifest','sw.js',
   'src/app.js','src/config.js','src/pwa.js',
-  'src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/research-export.js','src/research/research-evaluation-ui.js',
+  'src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/null-market-runner.js','src/research/research-export.js','src/research/research-evaluation-ui.js',
   'src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js',
   'assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png','assets/icons/apple-touch-icon.png'
 ];
@@ -22,7 +22,7 @@ for(const marker of [
 for(const m of html.matchAll(/(?:src|href)="\.\/([^"#?]+)"/g)){if(!fs.existsSync(path.join(root,m[1])))fail(`HTML references missing file: ${m[1]}`)}
 JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-for(const file of ['index.html','styles.css','ui-hotfix.css','ui-layout.css','ui-viewport.css','research-evaluation.css','manifest.webmanifest','src/app.js','src/config.js','src/pwa.js','src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/research-export.js','src/research/research-evaluation-ui.js','src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png']){if(!sw.includes(`./${file}`))fail(`service worker cache missing: ${file}`)}
+for(const file of ['index.html','styles.css','ui-hotfix.css','ui-layout.css','ui-viewport.css','research-evaluation.css','manifest.webmanifest','src/app.js','src/config.js','src/pwa.js','src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/null-market-runner.js','src/research/research-export.js','src/research/research-evaluation-ui.js','src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png']){if(!sw.includes(`./${file}`))fail(`service worker cache missing: ${file}`)}
 const layout=fs.readFileSync(path.join(root,'ui-layout.css'),'utf8');
 for(const marker of ['.topbar-main','.topbar-lower','.trade-context','.mode-control','.runtime-meta','--control-h:46px','@media (max-width:760px)']){if(!layout.includes(marker))fail(`ui-layout.css missing hierarchy/responsive marker: ${marker}`)}
 const viewport=fs.readFileSync(path.join(root,'ui-viewport.css'),'utf8');
@@ -30,7 +30,7 @@ for(const marker of ['align-items:stretch','@media (min-width:1101px) and (max-h
 const app=fs.readFileSync(path.join(root,'src/app.js'),'utf8');
 for(const marker of ['loadBTCUSD4H','DecisionEventLogger','buildDecisionEvent','estimateRoundTripCostBps']){if(!app.includes(marker))fail(`src/app.js missing v0.4 marker: ${marker}`)}
 const pwa=fs.readFileSync(path.join(root,'src/pwa.js'),'utf8');
-for(const marker of ['setupResearchEvaluationUI','./research/research-evaluation-ui.js']){if(!pwa.includes(marker))fail(`src/pwa.js missing v0.5 research UI bootstrap marker: ${marker}`)}
+for(const marker of ['setupResearchEvaluationUI','./research/research-evaluation-ui.js']){if(!pwa.includes(marker))fail(`src/pwa.js missing research UI bootstrap marker: ${marker}`)}
 const shadow=fs.readFileSync(path.join(root,'src/engine/shadow-engine.js'),'utf8');
 for(const marker of ['runAlphaExperts','entryDecision','experts: expertSet']){if(!shadow.includes(marker))fail(`shadow-engine.js missing policy/expert marker: ${marker}`)}
 const policy=fs.readFileSync(path.join(root,'src/engine/decision-policy.js'),'utf8');
@@ -43,10 +43,12 @@ const logger=fs.readFileSync(path.join(root,'src/research/decision-event-log.js'
 for(const marker of ['getLoadedBTCUSD4H','buildFixedHorizonCounterfactual','clusterId: payload.eventId','async listAll()']){if(!logger.includes(marker))fail(`decision-event-log.js missing research/export wiring: ${marker}`)}
 const baseline=fs.readFileSync(path.join(root,'src/research/baseline-runner.js'),'utf8');
 for(const marker of ['BASELINE_RUNNER_VERSION','Matched Random','edgeProof: false','parameterSweep: false','championMutation: false']){if(!baseline.includes(marker))fail(`baseline-runner.js missing guardrail marker: ${marker}`)}
+const nullMarket=fs.readFileSync(path.join(root,'src/research/null-market-runner.js'),'utf8');
+for(const marker of ['NULL_CONTROL_VERSION','buildReturnShuffleSeries','buildBlockShuffleSeries','Signal Shift','formalPValue: false','usedByDecisionEngine: false','transformedSeriesInjectedIntoLiveEngine: false','parameterSweep: false']){if(!nullMarket.includes(marker))fail(`null-market-runner.js missing negative-control guardrail marker: ${marker}`)}
 const researchExport=fs.readFileSync(path.join(root,'src/research/research-export.js'),'utf8');
-for(const marker of ['RESEARCH_EXPORT_VERSION','researchEventsToCsv','buildResearchJson','not IID']){if(!researchExport.includes(marker))fail(`research-export.js missing export marker: ${marker}`)}
+for(const marker of ['research-export-0.2','researchEventsToCsv','buildResearchJson','nullMarketEvaluation','Null95','not IID']){if(!researchExport.includes(marker))fail(`research-export.js missing v0.6 export marker: ${marker}`)}
 const researchUi=fs.readFileSync(path.join(root,'src/research/research-evaluation-ui.js'),'utf8');
-for(const marker of ['Championは単純戦略より強い？','exportResearchJson','exportResearchCsv','runBaselineSuite','edgeの証明']){if(!researchUi.includes(marker))fail(`research-evaluation-ui.js missing UI/safety marker: ${marker}`)}
+for(const marker of ['Championは単純戦略より強い？','存在しないedgeまで発見していない？','exportResearchJson','runBaselineSuite','runNullMarketControls','正式なp値']){if(!researchUi.includes(marker))fail(`research-evaluation-ui.js missing v0.6 UI/safety marker: ${marker}`)}
 const researchCss=fs.readFileSync(path.join(root,'research-evaluation.css'),'utf8');
-for(const marker of ['.research-evaluation-card','.baseline-row.champion','.research-export-btn','@media (max-width:760px)']){if(!researchCss.includes(marker))fail(`research-evaluation.css missing layout marker: ${marker}`)}
-if(!process.exitCode)console.log('PWA v0.5 baseline evaluation + local research export integrity validation passed.');
+for(const marker of ['.research-evaluation-card','.baseline-row.champion','.research-export-btn','.null-control-section','.null-control-row','.null-diagnostic.clean','@media (max-width:760px)']){if(!researchCss.includes(marker))fail(`research-evaluation.css missing v0.6 layout marker: ${marker}`)}
+if(!process.exitCode)console.log('PWA v0.6 baseline + Null Market negative-control integrity validation passed.');

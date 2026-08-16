@@ -3,10 +3,12 @@ import { ShadowEngine } from '../engine/shadow-engine.js';
 import { ExecutionEngine } from '../engine/execution-engine.js';
 import { DecisionEventLogger } from './decision-event-log.js';
 import { runBaselineSuite } from './baseline-runner.js';
+import { runNullMarketControls } from './null-market-runner.js';
 import { buildResearchJson, researchEventsToCsv, downloadResearchText } from './research-export.js';
 
 const logger = new DecisionEventLogger({ strategyVersion: 'champion-001' });
 let latestBaseline = null;
+let latestNullControl = null;
 let latestDataMeta = null;
 let initialized = false;
 
@@ -72,6 +74,28 @@ function cardTemplate() {
       <div class="research-evaluation-note">
         同一のBTC/USD 4H履歴上で、固定3バーExitと決定論的コストを使う比較です。Baselineは説明用の対照群であり、再現可能なedgeの証明・自動最適化・Champion更新には使用しません。
       </div>
+
+      <div class="null-control-section" aria-labelledby="nullControlTitle">
+        <div class="null-control-head">
+          <div>
+            <div class="section-kicker">Negative Control</div>
+            <h3 id="nullControlTitle">存在しないedgeまで発見していない？</h3>
+            <p class="null-control-meta">Return Shuffle / Block Shuffle / Signal Shift を固定条件で反復し、Championの1取引あたり平均net bpをNull分布と比較します。</p>
+          </div>
+          <span id="nullControlStatus" class="null-control-status pending">計算待ち</span>
+        </div>
+        <div class="null-control-table" role="table" aria-label="Null market negative control">
+          <div class="null-control-row null-control-header" role="row">
+            <span>Control</span><span>Real</span><span>Null中央値</span><span>Null95</span><span>Null≥Real</span><span>診断</span>
+          </div>
+          <div id="nullControlRows" class="null-control-rows">
+            <div class="research-evaluation-empty">実市場データの準備後にNegative Controlを実行します。</div>
+          </div>
+        </div>
+        <div class="research-evaluation-note null-control-note">
+          Null95と「Null≥Real」はV0のスクリーニング診断です。正式なp値・統計的有意性・再現可能なedgeの証明ではありません。Null系列やSignal Shiftの結果は売買判断Engineへ一切戻しません。
+        </div>
+      </div>
     </section>
   `;
 }
@@ -110,6 +134,46 @@ function renderBaseline(suite, meta) {
   `).join('');
 }
 
+function renderNullControl(result, state = 'ready') {
+  const rows = document.getElementById('nullControlRows');
+  const status = document.getElementById('nullControlStatus');
+  if (!rows || !status) return;
+
+  if (state === 'running') {
+    status.className = 'null-control-status running';
+    status.textContent = '計算中';
+    rows.innerHTML = '<div class="research-evaluation-empty">24反復 × 3系統のNegative Controlを決定論的に計算しています。</div>';
+    return;
+  }
+
+  if (!result || result.status !== 'complete') {
+    status.className = 'null-control-status unavailable';
+    status.textContent = '対象外';
+    rows.innerHTML = '<div class="research-evaluation-empty">実市場データが利用できないためNegative Controlを停止しています。</div>';
+    return;
+  }
+
+  const separated = result.screening === 'separated-candidate';
+  status.className = `null-control-status ${separated ? 'separated' : 'overlap'}`;
+  status.textContent = separated
+    ? `分離候補 ${result.separatedMethods}/${result.methods.length}`
+    : `Null重複 ${result.separatedMethods}/${result.methods.length}`;
+
+  rows.innerHTML = result.methods.map((method) => {
+    const clean = method.screening === 'real-above-null95';
+    return `
+      <div class="null-control-row" role="row" title="${escapeHtml(method.description)}">
+        <span class="null-control-name">${escapeHtml(method.label)}<small>${method.replicates}反復</small></span>
+        <span>${formatMetric(method.realChampionAvgNetBps, 'bp', { signed: true })}</span>
+        <span>${formatMetric(method.nullAvgNetBps.median, 'bp', { signed: true })}</span>
+        <span>${formatMetric(method.nullAvgNetBps.p95, 'bp', { signed: true })}</span>
+        <span>${formatMetric(method.nullAvgNetBps.exceedanceRatePct, '%')}</span>
+        <span class="null-diagnostic ${clean ? 'clean' : 'overlap'}">${clean ? 'Real > Null95' : 'Nullと重複'}</span>
+      </div>
+    `;
+  }).join('');
+}
+
 async function refreshEventCount() {
   const el = document.getElementById('researchEventCount');
   if (!el) return;
@@ -135,6 +199,7 @@ async function exportJson() {
     const text = buildResearchJson({
       events,
       baselineEvaluation: compactBaselineForExport(latestBaseline),
+      nullMarketEvaluation: latestNullControl,
       dataMeta: latestDataMeta,
     });
     downloadResearchText({
@@ -164,9 +229,13 @@ async function exportCsv() {
   }
 }
 
-function evaluateSnapshot(snapshot) {
+async function evaluateSnapshot(snapshot) {
   if (!snapshot?.series || !snapshot?.meta?.researchEligible) {
+    latestBaseline = null;
+    latestNullControl = null;
+    latestDataMeta = snapshot?.meta ? { ...snapshot.meta } : null;
     renderBaseline(null, snapshot?.meta || null);
+    renderNullControl(null);
     return false;
   }
   const series = snapshot.series;
@@ -176,16 +245,29 @@ function evaluateSnapshot(snapshot) {
     random: () => 0.5,
     analyze: () => engine.analyze('BTCUSD', endIndex),
   });
+  const estimatedRoundTripCostBps = execution.estimateRoundTripCostBps('BTCUSD');
   latestBaseline = runBaselineSuite({
     series,
     endIndex,
-    estimatedRoundTripCostBps: execution.estimateRoundTripCostBps('BTCUSD'),
+    estimatedRoundTripCostBps,
     dataSignature: snapshot.meta.signature,
     instrument: 'BTCUSD',
     timeframeHours: 4,
   });
   latestDataMeta = { ...snapshot.meta };
   renderBaseline(latestBaseline, latestDataMeta);
+
+  renderNullControl(null, 'running');
+  await new Promise(resolve => setTimeout(resolve, 0));
+  latestNullControl = runNullMarketControls({
+    series,
+    endIndex,
+    estimatedRoundTripCostBps,
+    dataSignature: snapshot.meta.signature,
+    instrument: 'BTCUSD',
+    timeframeHours: 4,
+  });
+  renderNullControl(latestNullControl);
   return true;
 }
 
@@ -193,12 +275,13 @@ async function waitForMarketSnapshot() {
   for (let attempt = 0; attempt < 36; attempt++) {
     const snapshot = getLoadedBTCUSD4H();
     if (snapshot?.series && snapshot?.meta) {
-      evaluateSnapshot(snapshot);
+      await evaluateSnapshot(snapshot);
       return;
     }
     await new Promise(resolve => setTimeout(resolve, 250));
   }
   renderBaseline(null, null);
+  renderNullControl(null);
 }
 
 export function setupResearchEvaluationUI() {
@@ -206,9 +289,9 @@ export function setupResearchEvaluationUI() {
   initialized = true;
   ensureStylesheet();
   insertCard();
-  document.title = 'VoiceTrader Demo v0.5 Research Evaluation';
+  document.title = 'VoiceTrader Demo v0.6 Null Controls';
   const footer = document.querySelector('.app-footer');
-  if (footer) footer.textContent = 'VoiceTrader v0.5 Research Evaluation — デモ研究用。Baselineは同一履歴上の対照評価であり、実際の投資判断には使用しないでください。';
+  if (footer) footer.textContent = 'VoiceTrader v0.6 Research Evaluation — Baseline / Negative Controlは研究診断用であり、実際の投資判断には使用しないでください。';
   document.getElementById('exportResearchJson')?.addEventListener('click', exportJson);
   document.getElementById('exportResearchCsv')?.addEventListener('click', exportCsv);
   refreshEventCount();
