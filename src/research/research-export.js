@@ -1,10 +1,12 @@
 import { getLatestWalkForwardEvaluation } from './walk-forward-state.js';
 import { getLatestForwardDemoEvaluation } from './forward-demo-state.js';
 import { getLatestKnowledgeEvaluation } from './knowledge-state.js';
+import { getLatestPlaybookEvaluation } from './playbook-state.js';
 
-export const RESEARCH_EXPORT_VERSION = 'research-export-0.7';
-export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.6';
-export const LEGACY_RESEARCH_EXPORT_VERSION = 'research-export-0.5';
+export const RESEARCH_EXPORT_VERSION = 'research-export-0.8';
+export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.7';
+export const LEGACY_RESEARCH_EXPORT_VERSION = 'research-export-0.6';
+export const LEGACY_RESEARCH_EXPORT_VERSION_V05 = 'research-export-0.5';
 
 const round = (value, digits = 4) => {
   if (value === null || value === undefined || value === '') return '';
@@ -98,18 +100,14 @@ export function buildResearchJson({
   walkForwardEvaluation = undefined,
   forwardDemoEvaluation = undefined,
   knowledgeEvaluation = undefined,
+  playbookEvaluation = undefined,
   nullMarketEvaluation = null,
   dataMeta = null,
 } = {}) {
-  const resolvedWalkForward = walkForwardEvaluation === undefined
-    ? getLatestWalkForwardEvaluation()
-    : walkForwardEvaluation;
-  const resolvedForwardDemo = forwardDemoEvaluation === undefined
-    ? getLatestForwardDemoEvaluation()
-    : forwardDemoEvaluation;
-  const resolvedKnowledge = knowledgeEvaluation === undefined
-    ? getLatestKnowledgeEvaluation()
-    : knowledgeEvaluation;
+  const resolvedWalkForward = walkForwardEvaluation === undefined ? getLatestWalkForwardEvaluation() : walkForwardEvaluation;
+  const resolvedForwardDemo = forwardDemoEvaluation === undefined ? getLatestForwardDemoEvaluation() : forwardDemoEvaluation;
+  const resolvedKnowledge = knowledgeEvaluation === undefined ? getLatestKnowledgeEvaluation() : knowledgeEvaluation;
+  const resolvedPlaybook = playbookEvaluation === undefined ? getLatestPlaybookEvaluation() : playbookEvaluation;
   return JSON.stringify({
     exportVersion: RESEARCH_EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
@@ -122,23 +120,27 @@ export function buildResearchJson({
       'Human Knowledge directional rules are normalized by family before the composite so adding many correlated rules to one family does not automatically increase that family weighting; regime and risk diagnostics do not cast directional votes.',
       'Knowledge Attribution uses leave-one-Expert-out and leave-one-Family-out sensitivity diagnostics. Positive deltas mean removing that element worsened the same-series result; this is not causal attribution and never triggers automatic pruning or weighting changes.',
       'Family Knowledge Negative Controls lag only the target family using past signals while preserving the market series, other families, and current risk/regime context. Null95 and exceedance rates are screening diagnostics, not formal p-values.',
+      'Human Trading Playbook Engine Wave 2 encodes preregistered multi-condition setups such as trend pullback, breakout confirmation, squeeze expansion, range mean reversion and failed-breakout reversal. A playbook is inactive outside its intended context rather than casting an opposite vote.',
+      'Playbook Shadow, leave-one-Playbook-out attribution, archetype lag controls, regime-conditioned metrics and three-fold chronological holdout are research diagnostics only. Playbook scores are not expected-return bps or calibrated probabilities.',
+      'Playbook chronological holdout has no fitting and uses fixed rules with a 3-bar embargo, but the historical BTC/USD series has already been inspected; therefore it is not pristine untouched OOS evidence and cannot make Wave 2 promotion-eligible.',
       'Chronological walk-forward uses frozen strategies, three ordered test folds, and a 3-bar embargo with no fitting; because this historical series has already been inspected by same-series research views, it is a holdout diagnostic rather than pristine untouched OOS proof.',
       'Prospective Forward Demo epoch forward-001 is frozen at 2026-08-16T14:27:00Z; only fully closed 4H candles whose open timestamp is strictly after that boundary may contribute Forward P&L evidence.',
       'Forward evidence is stored locally in this browser and deduplicated by epoch/strategy/entry/exit key. Clearing site storage can remove the local archive, so JSON exports should be retained for durable evidence.',
       'Forward Demo evidence is necessary but not sufficient for future Champion promotion; negative-control review and human approval remain required.',
       'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values or proof of statistical significance.',
-      'Null-transformed series, Human Knowledge outputs, Knowledge Attribution outputs, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the frozen live/demo Champion decision engine.',
+      'Null-transformed series, Human Knowledge outputs, Knowledge Attribution outputs, Human Playbook outputs, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the frozen live/demo Champion decision engine.',
       'Synthetic market data is not research eligible.',
     ],
     dataMeta,
     baselineEvaluation,
     strategyRegistry,
     challengerEvaluation,
-    knowledgeEvaluation: resolvedKnowledge,
-    walkForwardEvaluation: resolvedWalkForward,
-    forwardDemoEvaluation: resolvedForwardDemo,
+    knowledgeEvaluation:resolvedKnowledge,
+    playbookEvaluation:resolvedPlaybook,
+    walkForwardEvaluation:resolvedWalkForward,
+    forwardDemoEvaluation:resolvedForwardDemo,
     nullMarketEvaluation,
-    decisionEvents: events,
+    decisionEvents:events,
   }, null, 2);
 }
 
