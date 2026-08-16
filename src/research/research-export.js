@@ -2,9 +2,9 @@ import { getLatestWalkForwardEvaluation } from './walk-forward-state.js';
 import { getLatestForwardDemoEvaluation } from './forward-demo-state.js';
 import { getLatestKnowledgeEvaluation } from './knowledge-state.js';
 
-export const RESEARCH_EXPORT_VERSION = 'research-export-0.6';
-// Kept as a lineage marker so older integrity checks can identify the immediately previous schema.
-export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.5';
+export const RESEARCH_EXPORT_VERSION = 'research-export-0.7';
+export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.6';
+export const LEGACY_RESEARCH_EXPORT_VERSION = 'research-export-0.5';
 
 const round = (value, digits = 4) => {
   if (value === null || value === undefined || value === '') return '';
@@ -120,12 +120,14 @@ export function buildResearchJson({
       'Strategy Registry Challenger results are same-series Shadow diagnostics only and cannot automatically promote or mutate the frozen Champion.',
       'Human Trading Knowledge Engine Wave 1 is a same-series research-only candidate layer. Its Knowledge score is neither expected return nor a calibrated probability, and it does not mutate Champion, Live Forward, or Forward Evidence.',
       'Human Knowledge directional rules are normalized by family before the composite so adding many correlated rules to one family does not automatically increase that family weighting; regime and risk diagnostics do not cast directional votes.',
+      'Knowledge Attribution uses leave-one-Expert-out and leave-one-Family-out sensitivity diagnostics. Positive deltas mean removing that element worsened the same-series result; this is not causal attribution and never triggers automatic pruning or weighting changes.',
+      'Family Knowledge Negative Controls lag only the target family using past signals while preserving the market series, other families, and current risk/regime context. Null95 and exceedance rates are screening diagnostics, not formal p-values.',
       'Chronological walk-forward uses frozen strategies, three ordered test folds, and a 3-bar embargo with no fitting; because this historical series has already been inspected by same-series research views, it is a holdout diagnostic rather than pristine untouched OOS proof.',
       'Prospective Forward Demo epoch forward-001 is frozen at 2026-08-16T14:27:00Z; only fully closed 4H candles whose open timestamp is strictly after that boundary may contribute Forward P&L evidence.',
       'Forward evidence is stored locally in this browser and deduplicated by epoch/strategy/entry/exit key. Clearing site storage can remove the local archive, so JSON exports should be retained for durable evidence.',
       'Forward Demo evidence is necessary but not sufficient for future Champion promotion; negative-control review and human approval remain required.',
       'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values or proof of statistical significance.',
-      'Null-transformed series, Human Knowledge outputs, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the frozen live/demo Champion decision engine.',
+      'Null-transformed series, Human Knowledge outputs, Knowledge Attribution outputs, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the frozen live/demo Champion decision engine.',
       'Synthetic market data is not research eligible.',
     ],
     dataMeta,
@@ -141,7 +143,7 @@ export function buildResearchJson({
 }
 
 export function downloadResearchText({ filename, text, mimeType }) {
-  const blob = new Blob([text], { type: mimeType });
+  const blob = new Blob([text], { type:mimeType });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = url;

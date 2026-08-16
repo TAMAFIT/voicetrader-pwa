@@ -1,0 +1,188 @@
+import { getLoadedBTCUSD4H } from '../data/market-data-provider.js';
+import { ExecutionEngine } from '../engine/execution-engine.js';
+import { runKnowledgeAttribution, FAMILY_NEGATIVE_CONTROL_LAGS } from './knowledge-attribution-runner.js';
+import { getLatestKnowledgeEvaluation, setLatestKnowledgeEvaluation } from './knowledge-state.js';
+
+let initialized = false;
+
+const escapeHtml = value => String(value ?? '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+
+function fmt(value, suffix = '', signed = false) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '—';
+  const prefix = signed && number > 0 ? '+' : '';
+  return `${prefix}${number.toFixed(Math.abs(number) >= 100 ? 0 : 2)}${suffix}`;
+}
+
+function template() {
+  return `
+    <div id="knowledgeAttributionSection" class="knowledge-attribution-section" aria-labelledby="knowledgeAttributionTitle">
+      <div class="knowledge-attribution-head">
+        <div>
+          <div class="section-kicker">Knowledge Attribution / Ablation</div>
+          <h4 id="knowledgeAttributionTitle">どのExpert・Familyが実際に寄与している？</h4>
+          <p id="knowledgeAttributionMeta">15 Expert / 5 Familyを1つずつ外し、Family信号だけを過去へずらしたNegative Controlも比較します。</p>
+        </div>
+        <span id="knowledgeAttributionStatus" class="knowledge-attribution-status pending">計算待ち</span>
+      </div>
+
+      <div class="knowledge-attribution-summary" id="knowledgeAttributionSummary"></div>
+
+      <div class="knowledge-attribution-table family-table" role="table" aria-label="Knowledge family attribution">
+        <div class="knowledge-attribution-row family-header" role="row">
+          <span>Family</span><span>ΔReturn</span><span>ΔAvg</span><span>ΔTrades</span><span>Lag Null95</span><span>Null≥Full</span><span>診断</span>
+        </div>
+        <div id="knowledgeFamilyAttributionRows"></div>
+      </div>
+
+      <div class="knowledge-attribution-table expert-table" role="table" aria-label="Knowledge expert attribution">
+        <div class="knowledge-attribution-row expert-header" role="row">
+          <span>Expert</span><span>Family</span><span>ΔReturn</span><span>ΔAvg</span><span>ΔTrades</span><span>感度診断</span>
+        </div>
+        <div id="knowledgeExpertAttributionRows"></div>
+      </div>
+
+      <div class="research-evaluation-note knowledge-attribution-note">
+        Δは「Full Knowledge − そのExpert/Familyを外した場合」です。正なら、その要素を外すと同一履歴上の成績が悪化したことを示します。ただしLeave-one-outは因果効果の証明ではありません。Family Negative Controlは対象Familyだけを7〜47本前の過去信号へずらし、現在の市場系列・他Family・Risk/Regimeは維持します。Null95やNull≥Fullはスクリーニング診断であり正式なp値ではありません。結果から自動削除・自動重み変更・Champion昇格は行いません。
+      </div>
+    </div>
+  `;
+}
+
+function insertSection() {
+  if (document.getElementById('knowledgeAttributionSection')) return true;
+  const host = document.getElementById('humanKnowledgeSection');
+  if (!host) return false;
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = template().trim();
+  const note = host.querySelector('.human-knowledge-note');
+  if (note) host.insertBefore(wrapper.firstElementChild, note);
+  else host.appendChild(wrapper.firstElementChild);
+  return true;
+}
+
+function statusText(diagnostic) {
+  const labels = {
+    'supportive-and-time-aligned':'支持 + 時間整合',
+    'supportive-ablation-null-overlap':'支持 / Null重複',
+    'supportive-sensitivity':'支持感度',
+    'drag-in-sample':'外すと改善',
+    'mixed-sensitivity':'混合',
+  };
+  return labels[diagnostic] || diagnostic || '—';
+}
+
+function renderUnavailable(message) {
+  const status = document.getElementById('knowledgeAttributionStatus');
+  const meta = document.getElementById('knowledgeAttributionMeta');
+  if (status) {
+    status.className = 'knowledge-attribution-status unavailable';
+    status.textContent = 'UNAVAILABLE';
+  }
+  if (meta) meta.textContent = message;
+}
+
+function render(result) {
+  const status = document.getElementById('knowledgeAttributionStatus');
+  const meta = document.getElementById('knowledgeAttributionMeta');
+  const summary = document.getElementById('knowledgeAttributionSummary');
+  const familyRows = document.getElementById('knowledgeFamilyAttributionRows');
+  const expertRows = document.getElementById('knowledgeExpertAttributionRows');
+  if (!status || !meta || !summary || !familyRows || !expertRows) return;
+
+  status.className = 'knowledge-attribution-status ready';
+  status.textContent = 'DIAGNOSTIC';
+  meta.textContent = `${result.expertAblations.length} Expert LOO / ${result.familyAblations.length} Family LOO / ${FAMILY_NEGATIVE_CONTROL_LAGS.length} lag controls × Family / ${result.dataSignature}`;
+  const ref = result.referenceSummary;
+  summary.innerHTML = `
+    <span><small>Full trades</small><b>${ref.trades}</b></span>
+    <span><small>Full Return</small><b>${fmt(ref.returnPct, '%', true)}</b></span>
+    <span><small>Full Avg net</small><b>${fmt(ref.avgNetBps, 'bp', true)}</b></span>
+    <span><small>Full PF</small><b>${fmt(ref.profitFactor)}</b></span>
+    <span><small>Family controls</small><b>${result.familyNegativeControl.families.length * FAMILY_NEGATIVE_CONTROL_LAGS.length}</b></span>
+  `;
+
+  familyRows.innerHTML = result.familyAblations.map(item => {
+    const nc = item.negativeControl;
+    const diagClass = item.diagnostic === 'supportive-and-time-aligned' ? 'positive' : item.diagnostic === 'drag-in-sample' ? 'negative' : '';
+    return `
+      <div class="knowledge-attribution-row family-data" role="row">
+        <span><b>${escapeHtml(item.family)}</b></span>
+        <span class="${item.deltaReturnPct > 0 ? 'positive' : item.deltaReturnPct < 0 ? 'negative' : ''}">${fmt(item.deltaReturnPct, '%', true)}</span>
+        <span class="${item.deltaAvgNetBps > 0 ? 'positive' : item.deltaAvgNetBps < 0 ? 'negative' : ''}">${fmt(item.deltaAvgNetBps, 'bp', true)}</span>
+        <span>${fmt(item.deltaTrades, '', true)}</span>
+        <span>${fmt(nc?.avgNetBpsNull?.p95, 'bp', true)}</span>
+        <span>${fmt(nc?.avgNetBpsNull?.exceedanceRatePct, '%')}</span>
+        <span class="attribution-diagnostic ${diagClass}">${escapeHtml(statusText(item.diagnostic))}</span>
+      </div>
+    `;
+  }).join('');
+
+  expertRows.innerHTML = result.expertAblations.map((item, index) => {
+    const diagClass = item.diagnostic === 'supportive-sensitivity' ? 'positive' : item.diagnostic === 'drag-in-sample' ? 'negative' : '';
+    return `
+      <div class="knowledge-attribution-row expert-data" role="row">
+        <span><b>${index + 1}. ${escapeHtml(item.label)}</b></span>
+        <span>${escapeHtml(item.family)}</span>
+        <span class="${item.deltaReturnPct > 0 ? 'positive' : item.deltaReturnPct < 0 ? 'negative' : ''}">${fmt(item.deltaReturnPct, '%', true)}</span>
+        <span class="${item.deltaAvgNetBps > 0 ? 'positive' : item.deltaAvgNetBps < 0 ? 'negative' : ''}">${fmt(item.deltaAvgNetBps, 'bp', true)}</span>
+        <span>${fmt(item.deltaTrades, '', true)}</span>
+        <span class="attribution-diagnostic ${diagClass}">${escapeHtml(statusText(item.diagnostic))}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+async function waitAndEvaluate() {
+  for (let attempt = 0; attempt < 60; attempt++) {
+    const snapshot = getLoadedBTCUSD4H();
+    const knowledge = getLatestKnowledgeEvaluation();
+    if (snapshot?.series && snapshot?.meta && knowledge?.shadowEvaluation) {
+      if (!snapshot.meta.researchEligible) {
+        renderUnavailable('SyntheticデータはKnowledge Attribution対象外です。');
+        return;
+      }
+      const status = document.getElementById('knowledgeAttributionStatus');
+      if (status) {
+        status.className = 'knowledge-attribution-status running';
+        status.textContent = '計算中';
+      }
+      await new Promise(resolve => setTimeout(resolve, 0));
+      const execution = new ExecutionEngine({ random:() => .5, analyze:() => ({}) });
+      const costBps = execution.estimateRoundTripCostBps('BTCUSD');
+      const result = runKnowledgeAttribution({
+        series:snapshot.series,
+        endIndex:snapshot.series.length - 1,
+        estimatedRoundTripCostBps:costBps,
+        dataSignature:snapshot.meta.signature,
+      });
+      if (result.status !== 'complete') {
+        renderUnavailable(`Attribution停止: ${result.reason || result.status}`);
+        return;
+      }
+      render(result);
+      const latest = getLatestKnowledgeEvaluation() || {};
+      setLatestKnowledgeEvaluation({ ...latest, attributionEvaluation:result });
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  renderUnavailable('Knowledge ShadowまたはBTC/USD 4Hデータの準備がタイムアウトしました。');
+}
+
+export function setupKnowledgeAttributionUI() {
+  if (initialized) return;
+  initialized = true;
+  if (!insertSection()) {
+    setTimeout(() => {
+      if (insertSection()) waitAndEvaluate();
+    }, 0);
+    return;
+  }
+  waitAndEvaluate();
+}

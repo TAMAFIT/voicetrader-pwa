@@ -1,5 +1,6 @@
 import { setupResearchEvaluationUI } from './research/research-evaluation-ui.js';
 import { setupHumanKnowledgeUI } from './research/knowledge-ui.js';
+import { setupKnowledgeAttributionUI } from './research/knowledge-attribution-ui.js';
 import { setupWalkForwardUI } from './research/walk-forward-ui.js';
 import { setupForwardDemoUI } from './research/forward-demo-ui.js';
 import { setupLiveForwardTradingUI } from './live/live-forward-ui.js';
@@ -14,6 +15,7 @@ export function setupPWA() {
 
   setupResearchEvaluationUI();
   setupHumanKnowledgeUI();
+  setupKnowledgeAttributionUI();
   setupWalkForwardUI();
   setupForwardDemoUI();
   setupLiveForwardTradingUI();
