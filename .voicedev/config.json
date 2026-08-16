@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "profile": "pwa",
+  "productionBranch": "main",
+  "deployment": {
+    "type": "github-pages",
+    "preserveProductionUrl": true,
+    "requiredSecrets": [],
+    "url": "https://tamafit.github.io/voicetrader-pwa/"
+  },
+  "checks": {
+    "test": "auto",
+    "build": "auto",
+    "healthcheckUrl": "https://tamafit.github.io/voicetrader-pwa/"
+  },
+  "handoff": {
+    "runtimeMasterDependency": false,
+    "clientOwnsRuntime": true
+  },
+  "projectRoot": ".",
+  "factory": {
+    "createdBy": "VoiceDev Repo Factory",
+    "sourceRepository": "TAMAFIT/TAMAFIT-voicedev-master",
+    "sourceIssue": 258
+  }
+}
