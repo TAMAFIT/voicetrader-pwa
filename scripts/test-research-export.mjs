@@ -47,6 +47,18 @@ assert.ok(csv.startsWith('\uFEFF'));
 assert.ok(csv.includes('cfLong3NetBps'));
 assert.ok(csv.includes("'=unsafe-event-id"), 'CSV formula-like text must be spreadsheet-safe');
 
+const strategyRegistry = {
+  version: 'strategy-registry-0.1',
+  champion: { id: 'champion-001', frozen: true },
+  challengers: [{ id: 'challenger-001-stricter-entry' }],
+  governance: { automaticPromotion: false },
+};
+const challengerEvaluation = {
+  version: 'challenger-shadow-0.1',
+  status: 'complete',
+  methodology: { automaticPromotion: false, promotionEligible: false },
+  results: [{ id: 'champion-001' }, { id: 'challenger-001-stricter-entry' }],
+};
 const nullMarketEvaluation = {
   version: 'null-market-controls-0.1',
   status: 'complete',
@@ -56,17 +68,24 @@ const nullMarketEvaluation = {
 const jsonText = buildResearchJson({
   events: [event],
   baselineEvaluation: { status: 'complete', results: [] },
+  strategyRegistry,
+  challengerEvaluation,
   nullMarketEvaluation,
   dataMeta: { provider: 'Kraken public OHLC' },
 });
 const parsed = JSON.parse(jsonText);
-assert.equal(parsed.exportVersion, 'research-export-0.2');
+assert.equal(parsed.exportVersion, 'research-export-0.3');
 assert.equal(parsed.eventCount, 1);
 assert.equal(parsed.decisionEvents[0].eventId, '=unsafe-event-id');
 assert.equal(parsed.baselineEvaluation.status, 'complete');
+assert.equal(parsed.strategyRegistry.champion.id, 'champion-001');
+assert.equal(parsed.strategyRegistry.governance.automaticPromotion, false);
+assert.equal(parsed.challengerEvaluation.methodology.promotionEligible, false);
 assert.equal(parsed.nullMarketEvaluation.version, 'null-market-controls-0.1');
 assert.equal(parsed.nullMarketEvaluation.methodology.formalPValue, false);
 assert.ok(parsed.notes.some(note => note.includes('not IID')));
+assert.ok(parsed.notes.some(note => note.includes('automatically promote')));
+assert.ok(parsed.notes.some(note => note.includes('out-of-sample')));
 assert.ok(parsed.notes.some(note => note.includes('Null95')));
 assert.ok(parsed.notes.some(note => note.includes('decision engine')));
 
