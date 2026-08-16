@@ -43,7 +43,6 @@ assert.equal(a.governance.championMutation, false);
 assert.equal(a.confidenceIsCalibratedProbability, false);
 assert.equal(a.scoreIsExpectedReturn, false);
 
-// No-lookahead: changing future bars cannot change an analysis at the same historical index.
 const alteredFuture = JSON.parse(JSON.stringify(series));
 for (let i = idx + 1; i < alteredFuture.length; i++) {
   alteredFuture[i].c *= 10;
@@ -54,7 +53,6 @@ for (let i = idx + 1; i < alteredFuture.length; i++) {
 const noLookahead = engine.analyze(alteredFuture, idx);
 assert.deepEqual(a, noLookahead, 'Future candles must not affect current knowledge analysis');
 
-// Family normalization: adding more rules inside a family does not grant that family more aggregate weight.
 const aggregation = aggregateFamilies([
   { family:'trend', score:100, active:true, id:'t1' },
   { family:'trend', score:-100, active:true, id:'t2' },
@@ -62,7 +60,7 @@ const aggregation = aggregateFamilies([
 ]);
 assert.equal(aggregation.families.trend.score, 0);
 assert.equal(aggregation.families.momentum.score, 50);
-assert.equal(aggregation.compositeScore, 10, 'Five equal families include empty families at zero in the normalized composite');
+assert.equal(aggregation.compositeScore, 25, 'Active families receive equal aggregate weight regardless of how many rules are inside each family');
 assert.equal(aggregation.equalFamilyWeight, true);
 
 const shadowA = runKnowledgeShadow({ series, estimatedRoundTripCostBps:10, dataSignature:'test-series' });
@@ -77,7 +75,6 @@ for (let i = 1; i < shadowA.trades.length; i++) {
   assert.ok(shadowA.trades[i].entryIndex > shadowA.trades[i - 1].exitIndex, 'Research trades must not overlap');
 }
 
-// Architectural isolation: the frozen Champion and Live Forward loop do not import the new Knowledge Engine.
 const championSource = fs.readFileSync(new URL('../src/engine/shadow-engine.js', import.meta.url), 'utf8');
 const liveSource = fs.readFileSync(new URL('../src/live/live-forward-paper.js', import.meta.url), 'utf8');
 const forwardSource = fs.readFileSync(new URL('../src/research/forward-demo-runner.js', import.meta.url), 'utf8');
