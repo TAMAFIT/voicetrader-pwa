@@ -1,57 +1,243 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1769d2">
-<meta name="description" content="VoiceTrader デモトレード研究PWA">
-<link rel="manifest" href="./manifest.webmanifest">
-<title>VoiceTrader v0.2.2</title>
-<style>
-:root{--bg:#f4f7fb;--card:#fff;--ink:#132238;--muted:#6d7d91;--line:#dfe7f1;--blue:#1769d2;--green:#169b62;--red:#d94b5a;--amber:#d99119}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Yu Gothic UI","Noto Sans JP",sans-serif}button,select{font:inherit}button{cursor:pointer}.wrap{max-width:1500px;margin:auto;padding:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 24px #1b35500d}.top{display:flex;gap:12px;align-items:center;padding:12px 14px;position:sticky;top:6px;z-index:5}.brand{font-weight:900;font-size:20px}.sub{font-size:10px;color:var(--muted)}.grow{flex:1}.tabs{display:flex;gap:5px;background:#edf2f8;padding:4px;border-radius:11px}.tabs button{border:0;background:transparent;padding:8px 12px;border-radius:8px;font-weight:700;color:var(--muted)}.tabs button.on{background:#fff;color:var(--blue)}select,.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 11px}.btn.primary{background:var(--green);color:#fff;border-color:var(--green);font-weight:800}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;margin-top:10px}.mode{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;text-align:left}.mode.on{border-color:#91b9ef;background:#f4f8ff}.mode b{display:block}.mode small{color:var(--muted)}.grid{display:grid;grid-template-columns:1.35fr 1fr .8fr;gap:10px;margin-top:10px}.col{display:grid;gap:10px;align-content:start}.pad{padding:14px}h2{font-size:16px;margin:2px 0 10px}.k{font-size:10px;color:var(--muted);font-weight:800}.head{display:flex;justify-content:space-between;gap:8px;align-items:center}.price{font-size:22px;font-weight:900}#chart{width:100%;height:380px;background:#fcfdff;border-radius:10px}.legend{font-size:10px;color:var(--muted);margin-top:5px}.score{display:grid;grid-template-columns:1fr 100px;gap:10px;align-items:center}.direction{font-size:30px;font-weight:900}.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--blue) 0 60%,#e7edf4 60%)}.ring div{width:72px;height:72px;border-radius:50%;background:#fff;display:grid;place-items:center;align-content:center}.ring strong{font-size:22px}.meters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.meter{background:#f7f9fc;padding:9px;border-radius:10px}.meterline{display:flex;justify-content:space-between;font-size:11px}.track{height:7px;border-radius:10px;background:#e6ecf4;overflow:hidden;margin-top:6px}.track i{display:block;height:100%;background:var(--green)}.track.red i{background:var(--red)}.comment{background:#eef8f4;padding:10px;border-radius:10px;font-size:12px;line-height:1.6;margin-top:10px}.signal{background:#fff4d8;border:1px solid #f2cd7c;padding:10px;border-radius:10px;margin-top:10px;font-weight:800}.hidden{display:none}.scanner{display:grid;grid-template-columns:1fr 1fr;gap:7px}.scan{border:1px solid var(--line);border-radius:10px;padding:9px;background:#fafbfd}.scan.hot{border-color:#edc968;background:#fff8dd}.scan .row{display:flex;justify-content:space-between}.bar{height:5px;background:#e6ecf4;border-radius:10px;overflow:hidden;margin:5px 0}.bar i{display:block;height:100%;background:var(--amber)}.trade{display:grid;gap:7px}.trade button{border:0;border-radius:12px;padding:13px;color:#fff;font-weight:900}.buy{background:var(--green)}.wait{background:#7c8794}.sell{background:var(--red)}.position{background:#f7f9fc;border-radius:9px;padding:8px;text-align:center;font-size:11px}.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center}.vs strong{display:block;font-size:18px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.stats div{background:#f7f9fc;padding:7px;border-radius:8px;text-align:center;font-size:10px}.history{margin-top:10px;padding:14px}.histhead,.histrow{display:grid;grid-template-columns:55px 75px 70px 1fr 90px;gap:6px;font-size:10px;padding:7px}.histhead{color:var(--muted);font-weight:800}.histrow{background:#f7f9fc;border-radius:8px;margin-top:4px}.pos{color:var(--green);font-weight:800}.neg{color:var(--red);font-weight:800}.note{font-size:10px;color:var(--muted);line-height:1.5}.status{font-size:10px;padding:5px 8px;border-radius:20px;background:#eaf7f0;color:#14764e;font-weight:800}@media(max-width:1050px){.grid{grid-template-columns:1fr}.top{flex-wrap:wrap}.grow{display:none}}@media(max-width:640px){.wrap{padding:8px}.modes{grid-template-columns:1fr}.scanner{grid-template-columns:1fr 1fr}.top select{max-width:120px}#chart{height:290px}.histhead,.histrow{grid-template-columns:45px 60px 60px 1fr}.histhead span:last-child,.histrow span:last-child{display:none}}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1464d2" />
+  <meta name="description" content="AIと人間が同じ相場で競う、日本語初心者向けVoiceTraderデモ研究PWA" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="VoiceTrader" />
+  <title>VoiceTrader Demo v0.3 UI</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-<noscript><div style="padding:20px">VoiceTraderを動かすにはJavaScriptを有効にしてください。</div></noscript>
-<div class="wrap">
-<header class="top card"><div><div class="brand">VoiceTrader</div><div class="sub">AIデモトレード研究所 v0.2.2</div></div><div class="tabs"><button data-market="crypto" class="on">暗号資産</button><button data-market="fx">FX</button></div><select id="instrument"></select><select id="tf"><option value="1">1時間</option><option value="4" selected>4時間</option><option value="12">12時間</option><option value="24">24時間</option></select><button id="play" class="btn primary">デモ開始</button><button id="step" class="btn">1本進める</button><div class="grow"></div><span class="status">Shadow Engine</span></header>
-<section class="modes card"><button class="mode on" data-mode="battle"><b>AIと対戦</b><small>AIスコアを見ながら自由に取引</small></button><button class="mode" data-mode="signal"><b>AIシグナル</b><small>条件が揃うと「今だ」を表示</small></button><button class="mode" data-mode="free"><b>フリー</b><small>スコアだけ表示し自己判断</small></button></section>
-<main class="grid">
-<section class="col"><article class="card pad"><div class="head"><div><div class="k">現在の市場</div><h2 id="title">BTC / USD</h2></div><div><div class="price" id="price">--</div><div class="sub" id="move">--</div></div></div><canvas id="chart" width="900" height="380"></canvas><div class="legend">青=短期平均　黄=長期平均　緑/赤=売買マーカー</div></article><article class="card pad"><div class="k">初心者メモ</div><p class="note">買う=上昇方向を狙う、売る=下落方向を狙う、様子見=何もしない判断です。現在は研究用の疑似市場です。</p></article></section>
-<section class="col"><article class="card pad"><div class="head"><div><div class="k">AIのリアルタイム評価</div><h2>いま市場をどう見ている？</h2></div><span class="status" id="regime">分析中</span></div><div class="score"><div><div class="sub">方向予測</div><div class="direction" id="dir">--</div><div class="sub" id="dirsub">--</div></div><div class="ring" id="ring"><div><strong id="conf">--</strong><small>% 自信度</small></div></div></div><div class="meters"><div class="meter"><div class="meterline"><span>タイミング</span><b id="timing">--</b></div><div class="track"><i id="timingbar"></i></div></div><div class="meter"><div class="meterline"><span>危険度</span><b id="risk">--</b></div><div class="track red"><i id="riskbar"></i></div></div></div><div class="signal hidden" id="signal">AIシグナル</div><div class="comment" id="comment">データを計算しています。</div></article><article class="card pad"><div class="k">影AI・市場スキャナー</div><h2>4銘柄を同時チェック</h2><div class="scanner" id="scanner"></div></article></section>
-<section class="col"><article class="card pad"><div class="k">あなたの操作</div><h2 id="actionTitle">AIと競争する</h2><div class="trade"><button class="buy" id="buy">↑ 買う</button><button class="wait" id="wait">● 様子見</button><button class="sell" id="sell">↓ 売る</button></div><div class="position" id="position">現在ポジション：なし</div></article><article class="card pad"><div class="k">あなた vs 影AI</div><h2>同じ相場で競争中</h2><div class="vs"><div><small>あなた</small><strong id="heq">100,000円</strong><span id="hret">±0.0%</span></div><b>VS</b><div><small>影AI</small><strong id="aeq">100,000円</strong><span id="aret">±0.0%</span></div></div><div class="stats"><div>あなた<br><b id="htr">0</b>取引</div><div>影AI<br><b id="atr">0</b>取引</div><div>AI保有<br><b id="apos">0</b></div></div></article><article class="card pad"><div class="k">約定リアリティ</div><p class="note">スプレッド ON / 手数料 ON / 簡易スリッページ ON / 遅延想定 120ms。将来は実板・実測値に交換します。</p></article></section>
-</main>
-<section class="history card"><div class="head"><div><div class="k">履歴</div><h2>何が起きたか保存</h2></div><button id="reset" class="btn">リセット</button></div><div class="histhead"><span>時点</span><span>誰</span><span>行動</span><span>内容</span><span>結果</span></div><div id="history"></div></section>
-<p class="note">VoiceTrader v0.2.2 — デモ研究用。実際の投資判断には使用しないでください。</p>
-</div>
-<script>
-(()=>{'use strict';
-const CAPITAL=100000,KEY='voicetrader-state-v022';
-const I={BTCUSD:{label:'BTC / USD（ビットコイン）',short:'BTC/USD',market:'crypto',base:9800000,vol:.011,spread:4,fee:6,d:0},ETHUSD:{label:'ETH / USD（イーサリアム）',short:'ETH/USD',market:'crypto',base:560000,vol:.013,spread:5,fee:6,d:0},USDJPY:{label:'USD / JPY（ドル円）',short:'USD/JPY',market:'fx',base:148.2,vol:.0025,spread:.8,fee:.25,d:3},EURUSD:{label:'EUR / USD（ユーロドル）',short:'EUR/USD',market:'fx',base:1.085,vol:.0022,spread:.7,fee:.25,d:5}};
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function rng(seed){let x=seed>>>0;return()=>((x=Math.imul(1664525,x)+1013904223>>>0)/4294967296)}
-function make(k){const m=I[k],r=rng([...k].reduce((a,c)=>a+c.charCodeAt(0),17)),a=[];let p=m.base;for(let n=0;n<620;n++){const cyc=Math.sin(n/31)*m.vol*.20,shock=(r()-.5)*2*m.vol;p*=1+cyc*.10+shock*.32;const o=p/(1+(r()-.5)*m.vol*.15),h=Math.max(o,p)*(1+r()*m.vol*.25),l=Math.min(o,p)*(1-r()*m.vol*.25);a.push({o,h,l,c:p})}return a}
-const S=Object.fromEntries(Object.keys(I).map(k=>[k,make(k)]));
-let state={market:'crypto',instrument:'BTCUSD',mode:'battle',tf:4,idx:120,playing:false,human:{cash:CAPITAL,pos:null,trades:0},ai:{cash:CAPITAL,pos:{},trades:0},hist:[],marks:[]};try{const x=JSON.parse(localStorage.getItem(KEY));if(x)state={...state,...x,playing:false}}catch{}
-const sma=(a,n,i)=>{if(i<n-1)return a[i].c;let s=0;for(let j=i-n+1;j<=i;j++)s+=a[j].c;return s/n};
-function rsi(a,n,i){if(i<n)return 50;let g=0,l=0;for(let j=i-n+1;j<=i;j++){const d=a[j].c-a[j-1].c;d>=0?g+=d:l-=d}return l===0?80:100-100/(1+g/l)}
-function atr(a,n,i){if(i<n)return 0;let s=0;for(let j=i-n+1;j<=i;j++){const pc=a[j-1].c,tr=Math.max(a[j].h-a[j].l,Math.abs(a[j].h-pc),Math.abs(a[j].l-pc));s+=tr/pc}return s/n*100}
-function analyze(k){const a=S[k],i=state.idx,p=a[i].c,f=sma(a,12,i),s=sma(a,34,i),rv=rsi(a,14,i),av=atr(a,14,i),hi=Math.max(...a.slice(i-20,i).map(x=>x.h)),lo=Math.min(...a.slice(i-20,i).map(x=>x.l));const trend=(f/s-1)*2800,mom=(rv-50)*1.1,br=p>hi?18:p<lo?-18:0,raw=trend+mom+br,up=clamp(50+raw,10,90),dir=up>=50?'UP':'DOWN',conf=Math.round(Math.max(up,100-up)),strength=clamp(Math.abs(f/s-1)*4200,0,100),timing=Math.round(clamp(42+strength*.45+Math.abs(rv-50)*.35+(br?12:0)-Math.max(0,av-2.2)*8,8,96)),risk=Math.round(clamp(18+av*13+(I[k].spread+I[k].fee)*.8+Math.abs(rv-50)*.15,8,92)),edge=timing-risk*.38+(conf-50)*.7;let action='WAIT';if(edge>42&&conf>=61)action=dir==='UP'?'BUY':'SELL';const regime=strength>55?(dir==='UP'?'上昇トレンド':'下降トレンド'):(av>2?'荒いレンジ':'レンジ');let comment='方向感が弱いため、無理に入らず様子を見る場面です。';if(action==='BUY')comment='上向きの流れとタイミングが重なっています。買い候補ですが、損切り前提で考えます。';if(action==='SELL')comment='下向きの流れが優勢です。売り候補ですが、急反発リスクも残ります。';return{p,f,s,rv,av,up,dir,conf,timing,risk,edge,action,regime,comment}}
-function fill(k,side,p){const m=I[k],half=m.spread/20000,sl=(.45+Math.random()*1.15)*Math.max(.15,analyze(k).av)*(m.market==='crypto'?1:.35)/10000;return p*(1+(side==='BUY'?1:-1)*(half+sl))}
-function fee(k,n){return n*I[k].fee/10000}
-function eqHuman(){let e=state.human.cash;if(state.human.pos){const q=state.human.pos,eprice=S[q.k][state.idx].c;e+=q.side==='BUY'?(eprice-q.entry)*q.qty:(q.entry-eprice)*q.qty}return e}
-function eqAI(){let e=state.ai.cash;for(const q of Object.values(state.ai.pos)){const p=S[q.k][state.idx].c;e+=q.side==='BUY'?(p-q.entry)*q.qty:(q.entry-p)*q.qty}return e}
-function hist(w,a,d,r,c=''){state.hist.unshift({i:state.idx,w,a,d,r,c});state.hist=state.hist.slice(0,40)}
-function human(side){const k=state.instrument,p=S[k][state.idx].c;if(side==='WAIT'){hist('あなた','待つ',I[k].short,'取引なし');render();return}const cur=state.human.pos;if(cur){const exit=fill(cur.k,cur.side==='BUY'?'SELL':'BUY',S[cur.k][state.idx].c),pl=(cur.side==='BUY'?exit-cur.entry:cur.entry-exit)*cur.qty-fee(cur.k,exit*cur.qty);state.human.cash+=pl;state.human.trades++;hist('あなた','決済',I[cur.k].short,(pl>=0?'+':'')+Math.round(pl)+'円',pl>=0?'pos':'neg');state.human.pos=null;if(cur.side===side){render();return}}const entry=fill(k,side,p),notional=Math.min(state.human.cash*.25,25000),qty=notional/entry;state.human.cash-=fee(k,notional);state.human.pos={k,side,entry,qty};state.marks.push({i:state.idx,k,side,who:'you'});hist('あなた',side==='BUY'?'買い':'売り',I[k].short,'約定');render()}
-function shadow(){const ranked=Object.keys(I).map(k=>({k,a:analyze(k)})).sort((x,y)=>y.a.edge-x.a.edge);for(const [k,q] of Object.entries({...state.ai.pos})){const a=analyze(k);if(a.action==='WAIT'||a.action!==q.side||state.idx-q.open>18){const exit=fill(k,q.side==='BUY'?'SELL':'BUY',S[k][state.idx].c),pl=(q.side==='BUY'?exit-q.entry:q.entry-exit)*q.qty-fee(k,exit*q.qty);state.ai.cash+=pl;state.ai.trades++;hist('影AI','決済',I[k].short,(pl>=0?'+':'')+Math.round(pl)+'円',pl>=0?'pos':'neg');delete state.ai.pos[k]}}for(const x of ranked){if(Object.keys(state.ai.pos).length>=2)break;if(state.ai.pos[x.k]||x.a.action==='WAIT'||x.a.edge<48)continue;const entry=fill(x.k,x.a.action,S[x.k][state.idx].c),notional=Math.min(state.ai.cash*.18,18000),qty=notional/entry;state.ai.cash-=fee(x.k,notional);state.ai.pos[x.k]={k:x.k,side:x.a.action,entry,qty,open:state.idx};state.marks.push({i:state.idx,k:x.k,side:x.a.action,who:'ai'});hist('影AI',x.a.action==='BUY'?'買い':'売り',I[x.k].short,'自動約定')}}
-function step(){state.idx++;if(state.idx>=610){state.idx=120;state.human.pos=null;state.ai.pos={}}shadow();persist();render()}
-let timer=null;function play(){state.playing=!state.playing;document.getElementById('play').textContent=state.playing?'停止':'デモ開始';clearInterval(timer);if(state.playing)timer=setInterval(step,950)}
-function fmt(k,v){return I[k].d===0?Math.round(v).toLocaleString()+'円':v.toFixed(I[k].d)}function pct(v){return(v>=0?'+':'')+v.toFixed(1)+'%'}function persist(){const x={...state,playing:false};localStorage.setItem(KEY,JSON.stringify(x))}
-function chart(){const c=document.getElementById('chart'),ctx=c.getContext('2d'),r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=Math.max(300,Math.floor(r.width*d));c.height=Math.floor((innerWidth<640?290:380)*d);ctx.scale(d,d);const w=r.width,h=innerWidth<640?290:380,k=state.instrument,a=S[k],from=Math.max(0,state.idx-72),rows=a.slice(from,state.idx+1),max=Math.max(...rows.map(x=>x.h)),min=Math.min(...rows.map(x=>x.l)),x=i=>((i-from)/(state.idx-from||1))*(w-24)+12,y=p=>h-20-(p-min)/(max-min||1)*(h-40);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#e6ebf2';ctx.lineWidth=1;for(let j=0;j<5;j++){const yy=20+j*(h-40)/4;ctx.beginPath();ctx.moveTo(10,yy);ctx.lineTo(w-10,yy);ctx.stroke()}rows.forEach((q,j)=>{const xx=x(from+j),up=q.c>=q.o;ctx.strokeStyle=up?'#169b62':'#d94b5a';ctx.beginPath();ctx.moveTo(xx,y(q.h));ctx.lineTo(xx,y(q.l));ctx.stroke();ctx.fillStyle=ctx.strokeStyle;const yy=Math.min(y(q.o),y(q.c)),hh=Math.max(1,Math.abs(y(q.o)-y(q.c)));ctx.fillRect(xx-2.5,yy,5,hh)});for(const [n,col] of [[12,'#1769d2'],[34,'#d99119']]){ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();let first=true;for(let i=from;i<=state.idx;i++){const v=sma(a,n,i);if(first){ctx.moveTo(x(i),y(v));first=false}else ctx.lineTo(x(i),y(v))}ctx.stroke()}state.marks.filter(m=>m.k===k&&m.i>=from).forEach(m=>{ctx.fillStyle=m.side==='BUY'?'#169b62':'#d94b5a';ctx.beginPath();ctx.arc(x(m.i),m.side==='BUY'?h-16:16,4,0,Math.PI*2);ctx.fill()})}
-function populate(){const s=document.getElementById('instrument'),list=Object.entries(I).filter(([,v])=>v.market===state.market);if(!list.some(([k])=>k===state.instrument))state.instrument=list[0][0];s.innerHTML=list.map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');s.value=state.instrument}
-function setMode(m){state.mode=m;document.querySelectorAll('.mode').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));document.getElementById('actionTitle').textContent=m==='battle'?'AIと競争する':m==='signal'?'AIの「今だ」を待つ':'完全に自分で判断';persist();render()}
-function render(){const a=analyze(state.instrument),m=I[state.instrument],prev=S[state.instrument][state.idx-1].c,ch=(a.p/prev-1)*100;document.getElementById('title').textContent=m.label;document.getElementById('price').textContent=fmt(state.instrument,a.p);document.getElementById('move').textContent=pct(ch);document.getElementById('regime').textContent=a.regime;const dir=document.getElementById('dir');dir.textContent=a.dir==='UP'?'↑ 上がりそう':'↓ 下がりそう';dir.style.color=a.dir==='UP'?'var(--green)':'var(--red)';document.getElementById('dirsub').textContent=`上方向 ${Math.round(a.up)}% / 下方向 ${Math.round(100-a.up)}%`;document.getElementById('conf').textContent=a.conf;document.getElementById('ring').style.background=`conic-gradient(var(--blue) 0 ${a.conf}%,#e7edf4 ${a.conf}% 100%)`;document.getElementById('timing').textContent=a.timing+'点';document.getElementById('timingbar').style.width=a.timing+'%';document.getElementById('risk').textContent=a.risk+'点';document.getElementById('riskbar').style.width=a.risk+'%';document.getElementById('comment').textContent=a.comment;const sig=document.getElementById('signal');sig.classList.toggle('hidden',!(state.mode==='signal'&&a.action!=='WAIT'));sig.textContent=`AIシグナル：今は${a.action==='BUY'?'買い':a.action==='SELL'?'売り':'待ち'}候補（自信度 ${a.conf}%）`;const sc=Object.keys(I).map(k=>({k,a:analyze(k)})).sort((x,y)=>y.a.edge-x.a.edge);document.getElementById('scanner').innerHTML=sc.map((x,i)=>`<div class="scan ${i===0?'hot':''}"><div class="row"><b>${I[x.k].short}</b><strong>${x.a.timing}</strong></div><div class="bar"><i style="width:${x.a.timing}%"></i></div><small>自信 ${x.a.conf}% / 危険 ${x.a.risk}</small></div>`).join('');const he=eqHuman(),ae=eqAI();document.getElementById('heq').textContent=Math.round(he).toLocaleString()+'円';document.getElementById('hret').textContent=pct((he/CAPITAL-1)*100);document.getElementById('aeq').textContent=Math.round(ae).toLocaleString()+'円';document.getElementById('aret').textContent=pct((ae/CAPITAL-1)*100);document.getElementById('htr').textContent=state.human.trades;document.getElementById('atr').textContent=state.ai.trades;document.getElementById('apos').textContent=Object.keys(state.ai.pos).length;document.getElementById('position').textContent=state.human.pos?`現在ポジション：${state.human.pos.side==='BUY'?'買い':'売り'} / ${I[state.human.pos.k].short}`:'現在ポジション：なし';document.getElementById('history').innerHTML=state.hist.length?state.hist.map(h=>`<div class="histrow"><span>#${h.i}</span><b>${h.w}</b><span>${h.a}</span><span>${h.d}</span><span class="${h.c}">${h.r}</span></div>`).join(''):'<p class="note">まだ履歴はありません。</p>';chart()}
-document.querySelectorAll('[data-market]').forEach(b=>b.onclick=()=>{state.market=b.dataset.market;document.querySelectorAll('[data-market]').forEach(x=>x.classList.toggle('on',x===b));populate();persist();render()});document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));document.getElementById('instrument').onchange=e=>{state.instrument=e.target.value;persist();render()};document.getElementById('tf').onchange=e=>{state.tf=+e.target.value;persist();render()};document.getElementById('play').onclick=play;document.getElementById('step').onclick=step;document.getElementById('buy').onclick=()=>human('BUY');document.getElementById('wait').onclick=()=>human('WAIT');document.getElementById('sell').onclick=()=>human('SELL');document.getElementById('reset').onclick=()=>{clearInterval(timer);localStorage.removeItem(KEY);location.reload()};addEventListener('resize',chart);populate();document.getElementById('tf').value=state.tf;document.querySelectorAll('[data-market]').forEach(b=>b.classList.toggle('on',b.dataset.market===state.market));setMode(state.mode);render();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-})();
-</script>
-</body></html>
+  <div id="updateBar" class="update-bar" hidden>
+    <span>新しいバージョンがあります。</span>
+    <button id="updateBtn">更新する</button>
+  </div>
+
+  <div class="app-shell">
+    <header class="topbar card">
+      <div class="brand">
+        <img src="./assets/icons/icon-192.png" class="brand-icon" alt="VoiceTrader" />
+        <div>
+          <div class="brand-title">VoiceTrader</div>
+          <div class="brand-sub">AIデモトレード研究所</div>
+        </div>
+      </div>
+
+      <div class="market-toggle" role="tablist" aria-label="市場">
+        <button class="seg active" data-market="crypto">暗号資産</button>
+        <button class="seg" data-market="fx">FX</button>
+      </div>
+
+      <div class="header-selects">
+        <label class="select-pill icon-select">
+          <span>銘柄</span>
+          <select id="instrumentSelect"></select>
+        </label>
+        <label class="select-pill">
+          <span>時間足</span>
+          <select id="timeframeSelect">
+            <option value="1">1時間</option>
+            <option value="4" selected>4時間</option>
+            <option value="12">12時間</option>
+            <option value="24">24時間</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="mode-switch" role="tablist" aria-label="モード">
+        <button class="mode-tab active" data-mode="battle">AIと対戦</button>
+        <button class="mode-tab" data-mode="signal">AIシグナル</button>
+        <button class="mode-tab" data-mode="free">フリー</button>
+      </div>
+
+      <div class="header-actions">
+        <button id="playBtn" class="small-btn primary">▶ デモ開始</button>
+        <button id="stepBtn" class="small-btn secondary">1本進める</button>
+        <button id="installBtn" class="small-btn secondary install-btn" hidden>＋ 追加</button>
+        <span id="runStateBadge" class="live-pill">● 停止中</span>
+      </div>
+
+      <div class="runtime-meta">
+        <span id="connectionStatus" class="connection-status">オンライン</span>
+        <span id="engineVersion" class="engine-version">Shadow</span>
+      </div>
+    </header>
+
+    <section class="duel-strip card">
+      <div class="duel-player you">
+        <div class="player-head">
+          <div class="avatar blue">👤</div>
+          <span>あなた</span>
+        </div>
+        <div class="player-stats">
+          <strong id="humanEquity">100,000円</strong>
+          <span id="humanReturn">±0.0%</span>
+        </div>
+      </div>
+      <div class="duel-vs">VS</div>
+      <div class="duel-player ai">
+        <div class="player-head">
+          <div class="avatar purple">🕶</div>
+          <span>影AI</span>
+        </div>
+        <div class="player-stats">
+          <strong id="aiEquity">100,000円</strong>
+          <span id="aiReturn">±0.0%</span>
+        </div>
+      </div>
+    </section>
+
+    <main class="main-grid">
+      <section class="chart-card card">
+        <div class="card-head chart-head">
+          <div>
+            <div class="section-kicker">現在の市場</div>
+            <h2 id="chartTitle">BTC / USD（ビットコイン）</h2>
+          </div>
+          <div class="price-box">
+            <div id="priceLabel">--</div>
+            <small id="priceMove">--</small>
+          </div>
+        </div>
+
+        <canvas id="chartCanvas" width="900" height="430"></canvas>
+
+        <div class="chart-meta-row">
+          <div class="legend compact">
+            <span><i class="dot maFast"></i>MA(20)</span>
+            <span><i class="dot maSlow"></i>MA(60)</span>
+            <span><i class="buy-mark"></i>買い</span>
+            <span><i class="sell-mark"></i>売り</span>
+          </div>
+          <div class="quick-timeframes">
+            <button class="tf-btn" data-value="1">1時間</button>
+            <button class="tf-btn active" data-value="4">4時間</button>
+            <button class="tf-btn" data-value="12">12時間</button>
+            <button class="tf-btn" data-value="24">1日</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="decision-card card">
+        <div class="decision-head">
+          <div>
+            <div class="section-kicker">影AIの判断</div>
+            <h2>いまどう見ている？</h2>
+            <span id="providerBadge" class="provider-badge">無料ルール型</span>
+          </div>
+          <span id="regimeBadge" class="badge">分析中</span>
+        </div>
+
+        <div class="direction-hero">
+          <div id="directionArrow" class="hero-arrow">↗</div>
+          <div class="hero-copy">
+            <div id="directionText" class="direction-large">上がりそう</div>
+            <div class="confidence-inline"><strong id="confidenceValue">72</strong><span>%</span></div>
+            <small id="directionSub">上方向 72% / 下方向 28%</small>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-box">
+            <div class="metric-label">タイミング</div>
+            <div class="metric-value" id="timingValue">84点</div>
+            <div class="mini-ring blue"><i id="timingBar" style="width:84%"></i></div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">危険度</div>
+            <div class="metric-value" id="riskValue">31点</div>
+            <div class="mini-ring amber"><i id="riskBar" style="width:31%"></i></div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">AIの行動</div>
+            <div class="metric-value action-text" id="aiActionText">まだ待つ</div>
+          </div>
+        </div>
+
+        <div id="signalPanel" class="signal-banner hidden">
+          <div class="signal-star">✦</div>
+          <div>
+            <strong id="signalTitle">AIシグナル</strong>
+            <p id="signalText">条件がそろうとここに表示されます。</p>
+          </div>
+        </div>
+
+        <div class="comment-box">
+          <p id="aiComment">データを読み込んでいます。</p>
+        </div>
+
+        <div class="action-caption">
+          <strong id="actionHeading">AIと競争してみる</strong>
+          <p id="actionDescription">AIスコアを参考にしても、逆らってもOKです。</p>
+        </div>
+
+        <div class="trade-actions">
+          <button id="buyBtn" class="trade-btn buy-btn">↑ 買う</button>
+          <button id="waitBtn" class="trade-btn wait-btn">● 様子見</button>
+          <button id="sellBtn" class="trade-btn sell-btn">↓ 売る</button>
+        </div>
+
+        <div id="positionBox" class="position-box">現在ポジション：なし</div>
+
+        <div class="mini-info-grid">
+          <div class="info-item"><span>あなたの取引</span><b id="humanTrades">0</b></div>
+          <div class="info-item"><span>影AIの取引</span><b id="aiTrades">0</b></div>
+          <div class="info-item"><span>影AI 保有中</span><b id="aiPositions">0</b></div>
+        </div>
+
+        <div class="execution-box">
+          <div class="exec-row"><span>スプレッド</span><b id="spreadDisplay">ON</b></div>
+          <div class="exec-row"><span>手数料</span><b id="feeDisplay">ON</b></div>
+          <div class="exec-row"><span>スリッページ</span><b id="slippageDisplay">推定</b></div>
+          <div class="exec-row"><span>遅延</span><b id="latencyDisplay">120ms</b></div>
+        </div>
+
+        <div id="knowledgeRow" class="knowledge-row"></div>
+      </aside>
+    </main>
+
+    <section class="scanner-card card">
+      <div class="card-head compact">
+        <div>
+          <div class="section-kicker">影AI・市場スキャナー</div>
+          <h2>4市場の中でどこが狙い目？</h2>
+        </div>
+      </div>
+      <div id="scannerGrid" class="scanner-strip"></div>
+      <div id="scannerNote" class="scanner-note">影AIが最も条件の良い場所を探しています。</div>
+    </section>
+
+    <section class="history-card card">
+      <div class="card-head compact">
+        <div>
+          <div class="section-kicker">最近の動き</div>
+          <h2>何が起きたか全部残す</h2>
+        </div>
+        <button id="resetBtn" class="ghost">リセット</button>
+      </div>
+
+      <div class="history-table">
+        <div class="history-head">
+          <span>時刻</span>
+          <span>誰</span>
+          <span>銘柄 / 行動</span>
+          <span>内容</span>
+          <span>結果</span>
+        </div>
+        <div id="historyRows"></div>
+      </div>
+    </section>
+
+    <footer class="app-footer">VoiceTrader v0.3 UI モック実装 — デモ研究用。実際の投資判断には使用しないでください。</footer>
+  </div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
