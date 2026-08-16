@@ -1,6 +1,6 @@
-const CACHE_NAME='voicetrader-shell-v0.4.2-counterfactual';
+const CACHE_NAME='voicetrader-shell-v0.4.3-ui-hierarchy';
 const APP_SHELL=[
-  './','./index.html','./styles.css','./ui-hotfix.css','./manifest.webmanifest',
+  './','./index.html','./styles.css','./ui-hotfix.css','./ui-layout.css','./manifest.webmanifest',
   './src/app.js','./src/config.js','./src/pwa.js',
   './src/data/market-data-provider.js','./src/research/decision-event-log.js','./src/research/counterfactual-shadow.js',
   './src/engine/indicators.js','./src/engine/experts.js','./src/engine/decision-policy.js','./src/engine/shadow-engine.js','./src/engine/ai-provider.js','./src/engine/execution-engine.js',
