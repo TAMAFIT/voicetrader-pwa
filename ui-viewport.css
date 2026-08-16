@@ -1,0 +1,501 @@
+/* VoiceTrader desktop viewport-density pass.
+   Presentation only: preserve all trading/research IDs and logic. */
+
+@media (min-width:1101px){
+  .main-grid{
+    align-items:stretch;
+  }
+
+  .chart-card,
+  .decision-card{
+    height:100%;
+    min-height:0;
+  }
+
+  .chart-card{
+    display:flex;
+    flex-direction:column;
+  }
+}
+
+/* Typical 1080p desktop browser leaves ~750-850 CSS px of usable height.
+   In that range, prioritize one-screen visibility of header + duel + primary trading workspace. */
+@media (min-width:1101px) and (max-height:900px){
+  :root{
+    --control-h:40px;
+    --status-h:24px;
+  }
+
+  .app-shell{
+    padding:9px 14px 16px;
+  }
+
+  .topbar{
+    top:5px;
+  }
+
+  .topbar-main{
+    gap:16px;
+    padding:8px 14px 7px;
+  }
+
+  .topbar-lower{
+    min-height:38px;
+    gap:14px;
+    padding:4px 14px;
+  }
+
+  .brand{
+    gap:9px;
+  }
+
+  .brand-icon{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+  }
+
+  .brand-title{
+    font-size:17px;
+  }
+
+  .brand-sub{
+    margin-top:2px;
+    font-size:9px;
+  }
+
+  .trade-context{
+    gap:8px;
+  }
+
+  .market-toggle{
+    min-height:40px;
+  }
+
+  .seg{
+    min-height:32px;
+    padding:0 13px;
+    font-size:11px;
+  }
+
+  .header-selects{
+    gap:7px;
+  }
+
+  .select-pill{
+    min-width:132px;
+    height:40px;
+    padding:4px 10px;
+  }
+
+  .select-pill:first-child{
+    min-width:146px;
+  }
+
+  .select-pill span{
+    font-size:8px;
+  }
+
+  .select-pill select{
+    font-size:11px;
+  }
+
+  .header-actions{
+    gap:7px;
+  }
+
+  .small-btn{
+    min-height:40px;
+    padding:0 13px;
+    font-size:11px;
+  }
+
+  .small-btn.primary{
+    min-width:106px;
+  }
+
+  .mode-control{
+    gap:8px;
+  }
+
+  .control-group-label{
+    font-size:9px;
+  }
+
+  .mode-switch{
+    min-height:32px;
+    grid-template-columns:repeat(3,minmax(80px,1fr));
+  }
+
+  .mode-tab{
+    min-height:26px;
+    padding:0 11px;
+    font-size:10px;
+  }
+
+  .runtime-meta{
+    gap:5px;
+  }
+
+  .runtime-meta .live-pill,
+  .runtime-meta .connection-status,
+  .runtime-meta .data-source-badge,
+  .runtime-meta .engine-version{
+    min-height:24px;
+    padding:0 8px;
+    font-size:9px;
+  }
+
+  .runtime-meta .engine-version{
+    max-width:215px;
+  }
+
+  .duel-strip{
+    margin-top:8px;
+    grid-template-columns:1fr 92px 1fr;
+  }
+
+  .duel-player{
+    min-height:54px;
+    padding:8px 16px;
+  }
+
+  .player-head{
+    gap:9px;
+    font-size:15px;
+  }
+
+  .avatar{
+    width:32px;
+    height:32px;
+    font-size:16px;
+  }
+
+  .player-stats{
+    gap:10px;
+  }
+
+  .player-stats strong{
+    font-size:25px;
+  }
+
+  .player-stats span{
+    font-size:12px;
+  }
+
+  .duel-vs{
+    font-size:27px;
+  }
+
+  .main-grid{
+    margin-top:8px;
+    gap:10px;
+    align-items:stretch;
+  }
+
+  .chart-card,
+  .decision-card{
+    padding:11px 13px;
+  }
+
+  .card-head h2,
+  .decision-head h2{
+    margin-top:2px;
+    font-size:18px;
+  }
+
+  .section-kicker{
+    font-size:9px;
+  }
+
+  .price-box div{
+    font-size:34px;
+  }
+
+  .price-box small{
+    margin-top:4px;
+    font-size:15px;
+  }
+
+  #chartCanvas{
+    height:338px;
+    min-height:338px;
+    margin-top:7px;
+    border-radius:11px;
+  }
+
+  .chart-meta-row{
+    margin-top:7px;
+    gap:8px;
+    min-height:32px;
+  }
+
+  .legend{
+    gap:11px;
+  }
+
+  .legend span{
+    gap:5px;
+    font-size:10px;
+  }
+
+  .dot{
+    width:17px;
+  }
+
+  .buy-mark,
+  .sell-mark{
+    width:8px;
+    height:8px;
+  }
+
+  .quick-timeframes{
+    gap:6px;
+  }
+
+  .tf-btn{
+    min-height:32px;
+    padding:0 13px;
+    border-radius:9px;
+    font-size:11px;
+  }
+
+  .decision-head h2{
+    font-size:18px;
+  }
+
+  .decision-head .provider-badge,
+  .decision-head .badge{
+    margin-top:3px;
+    padding:4px 8px;
+    font-size:9px;
+  }
+
+  .direction-hero{
+    gap:8px;
+    margin-top:4px;
+    padding:0 0 3px;
+  }
+
+  .hero-arrow{
+    font-size:57px;
+  }
+
+  .direction-large{
+    font-size:22px;
+  }
+
+  .confidence-inline strong{
+    font-size:47px;
+  }
+
+  .confidence-inline span{
+    font-size:19px;
+  }
+
+  .hero-copy small{
+    font-size:9px;
+  }
+
+  .metric-grid{
+    gap:7px;
+    margin-top:5px;
+  }
+
+  .metric-box{
+    padding:7px 9px;
+    border-radius:11px;
+  }
+
+  .metric-label{
+    font-size:9px;
+  }
+
+  .metric-value{
+    margin-top:2px;
+    font-size:18px;
+  }
+
+  .metric-value.action-text{
+    font-size:18px;
+  }
+
+  .mini-ring{
+    height:5px;
+    margin-top:5px;
+  }
+
+  .action-caption{
+    height:32px;
+    margin-top:6px;
+  }
+
+  .action-caption strong{
+    font-size:11px;
+  }
+
+  .action-caption p{
+    margin-top:1px;
+    font-size:9px;
+    line-height:1.25;
+  }
+
+  .trade-actions{
+    gap:7px;
+    margin-top:5px;
+  }
+
+  .trade-btn{
+    min-height:40px;
+    padding:8px 6px;
+    font-size:15px;
+    border-radius:10px;
+  }
+
+  .position-box{
+    margin-top:5px;
+    padding:6px 10px;
+    border-radius:10px;
+    font-size:9px;
+  }
+
+  .signal-banner{
+    margin-top:6px;
+    padding:7px 9px;
+    border-radius:10px;
+  }
+
+  .signal-star{
+    width:23px;
+    height:23px;
+  }
+
+  .signal-banner strong{
+    font-size:10px;
+  }
+
+  .signal-banner p{
+    margin-top:1px;
+    font-size:9px;
+    line-height:1.25;
+  }
+
+  .comment-box{
+    margin-top:5px;
+    padding:7px 10px;
+    border-radius:10px;
+  }
+
+  .comment-box p{
+    font-size:9px;
+    line-height:1.35;
+  }
+
+  .mini-info-grid{
+    gap:6px;
+    margin-top:5px;
+  }
+
+  .info-item{
+    padding:6px 8px;
+    border-radius:10px;
+  }
+
+  .info-item span{
+    font-size:8px;
+  }
+
+  .info-item b{
+    margin-top:2px;
+    font-size:13px;
+  }
+
+  .execution-box{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:0;
+    margin-top:5px;
+    padding:6px 8px;
+    border-radius:10px;
+  }
+
+  .exec-row{
+    display:grid;
+    gap:2px;
+    padding:1px 7px;
+    border-right:1px solid #edf2f8;
+    font-size:8px;
+  }
+
+  .exec-row:last-child{
+    border-right:0;
+  }
+
+  .exec-row span,
+  .exec-row b{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .knowledge-row{
+    gap:4px;
+    margin-top:5px;
+    min-height:18px;
+    overflow:hidden;
+  }
+
+  .knowledge-row span{
+    padding:3px 6px;
+    font-size:8px;
+  }
+
+  .scanner-card,
+  .history-card{
+    margin-top:8px;
+  }
+}
+
+/* Extra compression for particularly short desktop viewports. */
+@media (min-width:1101px) and (max-height:790px){
+  .app-shell{
+    padding-top:6px;
+  }
+
+  .topbar-main{
+    padding-top:6px;
+    padding-bottom:5px;
+  }
+
+  .topbar-lower{
+    min-height:34px;
+    padding-top:3px;
+    padding-bottom:3px;
+  }
+
+  .duel-player{
+    min-height:48px;
+    padding-top:6px;
+    padding-bottom:6px;
+  }
+
+  #chartCanvas{
+    height:310px;
+    min-height:310px;
+  }
+
+  .chart-card,
+  .decision-card{
+    padding-top:9px;
+    padding-bottom:9px;
+  }
+
+  .direction-hero{
+    margin-top:2px;
+  }
+
+  .knowledge-row{
+    margin-top:3px;
+  }
+}
