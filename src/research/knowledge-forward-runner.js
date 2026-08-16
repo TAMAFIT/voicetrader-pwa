@@ -117,7 +117,7 @@ function evidenceRecord({ sourceId,role,entryIndex,exitIndex,series,side,decisio
   };
 }
 
-function evaluateSourcePath({ sourceId,role,series,eligibleIndexes,analyses,championAnalyses,dataSignature }) {
+function evaluateSourcePath({ sourceId,role,series,eligibleIndexes,analyses,championAnalyses,dataSignature,endIndex }) {
   const evidence = [];
   const decisions = [];
   let nextFreeIndex = eligibleIndexes.length ? eligibleIndexes[0] : Infinity;
@@ -141,7 +141,7 @@ function evaluateSourcePath({ sourceId,role,series,eligibleIndexes,analyses,cham
     const side = sideFromDecision(decision);
     if (!side) continue;
     const exitIndex = idx + KNOWLEDGE_FORWARD_EPOCH.horizonBars;
-    if (!series[exitIndex]) continue;
+    if (exitIndex > endIndex || !series[exitIndex]) continue;
     const entryTime = Number(series[idx]?.t);
     const exitTime = Number(series[exitIndex]?.t);
     if (!(entryTime > KNOWLEDGE_FORWARD_FREEZE_UNIX) || !(exitTime > KNOWLEDGE_FORWARD_FREEZE_UNIX)) continue;
@@ -190,7 +190,7 @@ export function runKnowledgeForwardSnapshot({ series,endIndex,dataSignature='unk
   const allDecisions = [];
   const allEvidence = [];
   for (const source of sources) {
-    const result = evaluateSourcePath({ sourceId:source.id,role:source.role,series,eligibleIndexes,analyses,championAnalyses,dataSignature });
+    const result = evaluateSourcePath({ sourceId:source.id,role:source.role,series,eligibleIndexes,analyses,championAnalyses,dataSignature,endIndex:safeEnd });
     allDecisions.push(...result.decisions);
     allEvidence.push(...result.evidence);
   }
@@ -213,6 +213,7 @@ export function runKnowledgeForwardSnapshot({ series,endIndex,dataSignature='unk
       candleOpenTimestampStrictlyAfterFreeze:true,
       preFreezeBarsIndicatorContextOnly:true,
       preFreezePnlForbidden:true,
+      exitsConstrainedToObservedEndIndex:true,
       fixedHorizonBars:KNOWLEDGE_FORWARD_EPOCH.horizonBars,
       independentNonOverlappingPathPerSource:true,
       matchedChampionBenchmark:true,
