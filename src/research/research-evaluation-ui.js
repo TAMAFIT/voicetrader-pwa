@@ -34,10 +34,10 @@ function compactBaselineForExport(suite) {
   };
 }
 
-function formatMetric(value, suffix = '') {
+function formatMetric(value, suffix = '', { signed = false } = {}) {
   const number = Number(value);
   if (!Number.isFinite(number)) return '—';
-  const prefix = suffix === '%' && number > 0 ? '+' : '';
+  const prefix = signed && number > 0 ? '+' : '';
   return `${prefix}${number.toFixed(Math.abs(number) >= 100 ? 0 : 2)}${suffix}`;
 }
 
@@ -100,7 +100,7 @@ function renderBaseline(suite, meta) {
   rows.innerHTML = suite.results.map((result) => `
     <div class="baseline-row ${result.id === 'champion' ? 'champion' : ''}" role="row" title="${escapeHtml(result.note)}">
       <span class="baseline-name">${escapeHtml(result.label)}${result.id === 'champion' ? '<small>正式ロジック</small>' : ''}</span>
-      <span class="baseline-return ${result.returnPct > 0 ? 'positive' : result.returnPct < 0 ? 'negative' : ''}">${formatMetric(result.returnPct, '%')}</span>
+      <span class="baseline-return ${result.returnPct > 0 ? 'positive' : result.returnPct < 0 ? 'negative' : ''}">${formatMetric(result.returnPct, '%', { signed: true })}</span>
       <span>${formatPf(result.profitFactor)}</span>
       <span>${formatMetric(result.winRatePct, '%')}</span>
       <span>${result.trades}</span>
