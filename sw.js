@@ -1,4 +1,4 @@
-const CACHE_NAME='voicetrader-shell-v0.10-live-forward';
+const CACHE_NAME='voicetrader-shell-v0.9-forward-epoch-v0.10-live-forward';
 const APP_SHELL=[
   './','./index.html','./styles.css','./ui-hotfix.css','./ui-layout.css','./ui-viewport.css','./research-evaluation.css','./walk-forward.css','./forward-demo.css','./live-forward.css','./manifest.webmanifest',
   './src/app.js','./src/config.js','./src/pwa.js',
