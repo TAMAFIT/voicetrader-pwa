@@ -2,6 +2,7 @@ const CACHE_KEY = 'voicetrader-market-cache-v1:BTCUSD:4h';
 const MAX_SERIES = 520;
 const INTERVAL_SECONDS = 4 * 60 * 60;
 const KRAKEN_OHLC_URL = 'https://api.kraken.com/0/public/OHLC?pair=XXBTZUSD&interval=240';
+let latestBTCUSD4HSnapshot = null;
 
 function normalizeKraken(rows) {
   const now = Math.floor(Date.now() / 1000);
@@ -35,6 +36,13 @@ function buildMeta(series, sourceType, fetchedAt = Date.now()) {
     fetchedAt,
     signature: `${first?.t || 0}:${last?.t || 0}:${series.length}`,
   };
+}
+
+function remember(snapshot) {
+  latestBTCUSD4HSnapshot = snapshot?.series && snapshot?.meta
+    ? { series: snapshot.series, meta: snapshot.meta }
+    : null;
+  return snapshot;
 }
 
 function saveCache(series, meta) {
@@ -77,14 +85,18 @@ export async function loadBTCUSD4H({ timeoutMs = 6500 } = {}) {
     if (series.length < 120) throw new Error(`Kraken OHLC returned only ${series.length} closed candles`);
     const meta = buildMeta(series, 'real');
     saveCache(series, meta);
-    return { series, meta, error: null };
+    return remember({ series, meta, error: null });
   } catch (error) {
     const cached = loadCache();
-    if (cached) return { ...cached, error: String(error?.message || error) };
-    return { series: null, meta: null, error: String(error?.message || error) };
+    if (cached) return remember({ ...cached, error: String(error?.message || error) });
+    return remember({ series: null, meta: null, error: String(error?.message || error) });
   } finally {
     clearTimeout(timer);
   }
+}
+
+export function getLoadedBTCUSD4H() {
+  return latestBTCUSD4HSnapshot;
 }
 
 export function syntheticMeta(key) {
