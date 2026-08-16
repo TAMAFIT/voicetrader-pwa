@@ -23,7 +23,7 @@ export function buildResearchJson({events=[],baselineEvaluation=null,strategyReg
 'Baseline evaluation is a descriptive same-series comparator and is not proof of a reproducible edge.',
 'Strategy Registry Challenger results are same-series Shadow diagnostics only and cannot automatically promote or mutate the frozen Champion.',
 'Human Trading Knowledge Engine Wave 1 is research-only. Its score is neither expected return nor a calibrated probability.',
-'Knowledge Attribution leave-one-out and Family lag controls are sensitivity/screening diagnostics, not causal attribution or formal p-values.',
+'Knowledge Attribution leave-one-Expert-out / leave-one-Family-out and Family lag controls are sensitivity/screening diagnostics, not causal attribution or formal p-values.',
 'Human Trading Playbook Engine Wave 2 encodes preregistered multi-condition setups and is inactive outside intended context rather than casting arbitrary opposite votes.',
 'Playbook Shadow, ablation, lag controls and chronological holdout are research diagnostics only; historical data already inspected is not pristine untouched OOS.',
 'Knowledge Candidate Tournament contains exactly four preregistered integration candidates and never generates/searches candidate combinations.',
