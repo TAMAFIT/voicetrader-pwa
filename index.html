@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="VoiceTrader" />
-  <title>VoiceTrader Demo v0.3.1 UI</title>
+  <title>VoiceTrader Demo v0.4 Research</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png" />
@@ -67,6 +67,7 @@
 
       <div class="runtime-meta">
         <span id="connectionStatus" class="connection-status">オンライン</span>
+        <span id="dataSourceBadge" class="data-source-badge loading">実データ取得中</span>
         <span id="engineVersion" class="engine-version">Shadow</span>
       </div>
     </header>
@@ -140,8 +141,8 @@
           <div id="directionArrow" class="hero-arrow">↗</div>
           <div class="hero-copy">
             <div id="directionText" class="direction-large">上がりそう</div>
-            <div class="confidence-inline"><strong id="confidenceValue">72</strong><span>%</span></div>
-            <small id="directionSub">上方向 72% / 下方向 28%</small>
+            <div class="confidence-inline"><strong id="confidenceValue">72</strong><span>点</span></div>
+            <small id="directionSub">上方向スコア 72 / 下方向 28</small>
           </div>
         </div>
 
@@ -236,7 +237,7 @@
       </div>
     </section>
 
-    <footer class="app-footer">VoiceTrader v0.3.1 UI — デモ研究用。実際の投資判断には使用しないでください。</footer>
+    <footer class="app-footer">VoiceTrader v0.4 Research — デモ研究用。BTC/USD 4Hのみ実市場データVertical Slice。実際の投資判断には使用しないでください。</footer>
   </div>
 
   <script type="module" src="./src/app.js"></script>

@@ -1,5 +1,4 @@
-/* VoiceTrader v0.3.1 — stable primary trade controls
-   Primary rule: BUY / WAIT / SELL must not move when modes or signal visibility change. */
+/* VoiceTrader v0.4 — stable primary trade controls + data provenance */
 
 .decision-card{
   display:flex;
@@ -18,11 +17,29 @@
 .execution-box{order:10}
 .knowledge-row{order:11}
 
+.data-source-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  padding:7px 12px;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.data-source-badge.loading{background:#f2f5f9;color:#6a778f}
+.data-source-badge.real{background:#e8f7ef;color:#157a47}
+.data-source-badge.cached{background:#fff5dc;color:#9b6b00}
+.data-source-badge.synthetic{background:#fff0f0;color:#b54848}
+.tf-btn:disabled{opacity:.35;cursor:not-allowed}
+.select-pill select:disabled{opacity:.65;cursor:not-allowed}
+
 @media (min-width:1101px){
   .decision-card{padding:14px 16px}
   .decision-head h2{font-size:20px}
   .provider-badge{margin-top:4px;padding:5px 9px;font-size:10px}
   .badge{padding:5px 9px;font-size:10px}
+  .data-source-badge{padding:5px 9px;font-size:10px}
 
   .direction-hero{
     gap:10px;
@@ -32,7 +49,7 @@
   .hero-arrow{font-size:70px}
   .direction-large{font-size:25px}
   .confidence-inline strong{font-size:56px}
-  .confidence-inline span{font-size:25px}
+  .confidence-inline span{font-size:22px}
   .hero-copy small{font-size:10px}
 
   .metric-grid{gap:8px;margin-top:7px}
@@ -56,7 +73,6 @@
 
   .position-box{margin-top:7px;padding:8px 11px;font-size:11px}
 
-  /* Signal/explanation are secondary to the permanent trade controls. */
   .signal-banner{margin-top:9px;padding:9px 10px;gap:9px}
   .signal-star{width:27px;height:27px;font-size:12px;flex:0 0 auto}
   .signal-banner strong{font-size:12px}
