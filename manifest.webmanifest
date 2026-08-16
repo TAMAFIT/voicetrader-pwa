@@ -1,9 +1,17 @@
 {
-  "name": "VoiceTrader",
+  "name": "VoiceTrader AIデモトレード研究所",
   "short_name": "VoiceTrader",
+  "description": "AIと人間が同じ相場で競う、日本語初心者向けデモトレード研究PWA",
+  "lang": "ja",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff"
+  "background_color": "#f4f7fb",
+  "theme_color": "#1464d2",
+  "orientation": "any",
+  "icons": [
+    {"src":"./assets/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"./assets/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"./assets/icons/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
 }
