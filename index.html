@@ -14,6 +14,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/icon-192.png" />
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="./ui-hotfix.css" />
+  <link rel="stylesheet" href="./ui-layout.css" />
 </head>
 <body>
   <div id="updateBar" class="update-bar" hidden>
@@ -23,52 +24,61 @@
 
   <div class="app-shell">
     <header class="topbar card">
-      <div class="brand">
-        <img src="./assets/icons/icon-192.png" class="brand-icon" alt="VoiceTrader" />
-        <div>
-          <div class="brand-title">VoiceTrader</div>
-          <div class="brand-sub">AIデモトレード研究所</div>
+      <div class="topbar-main">
+        <div class="brand">
+          <img src="./assets/icons/icon-192.png" class="brand-icon" alt="VoiceTrader" />
+          <div>
+            <div class="brand-title">VoiceTrader</div>
+            <div class="brand-sub">AIデモトレード研究所</div>
+          </div>
+        </div>
+
+        <div class="trade-context" aria-label="トレード条件">
+          <div class="market-toggle" role="tablist" aria-label="市場">
+            <button class="seg active" data-market="crypto">暗号資産</button>
+            <button class="seg" data-market="fx">FX</button>
+          </div>
+
+          <div class="header-selects">
+            <label class="select-pill icon-select">
+              <span>銘柄</span>
+              <select id="instrumentSelect"></select>
+            </label>
+            <label class="select-pill">
+              <span>時間足</span>
+              <select id="timeframeSelect">
+                <option value="1">1時間</option>
+                <option value="4" selected>4時間</option>
+                <option value="12">12時間</option>
+                <option value="24">24時間</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="header-actions" aria-label="デモ操作">
+          <button id="playBtn" class="small-btn primary">▶ デモ開始</button>
+          <button id="stepBtn" class="small-btn secondary">1本進める</button>
+          <button id="installBtn" class="small-btn secondary install-btn" hidden>＋ 追加</button>
         </div>
       </div>
 
-      <div class="market-toggle" role="tablist" aria-label="市場">
-        <button class="seg active" data-market="crypto">暗号資産</button>
-        <button class="seg" data-market="fx">FX</button>
-      </div>
+      <div class="topbar-lower">
+        <div class="mode-control">
+          <span class="control-group-label">表示モード</span>
+          <div class="mode-switch" role="tablist" aria-label="モード">
+            <button class="mode-tab active" data-mode="battle">AIと対戦</button>
+            <button class="mode-tab" data-mode="signal">AIシグナル</button>
+            <button class="mode-tab" data-mode="free">フリー</button>
+          </div>
+        </div>
 
-      <div class="header-selects">
-        <label class="select-pill icon-select">
-          <span>銘柄</span>
-          <select id="instrumentSelect"></select>
-        </label>
-        <label class="select-pill">
-          <span>時間足</span>
-          <select id="timeframeSelect">
-            <option value="1">1時間</option>
-            <option value="4" selected>4時間</option>
-            <option value="12">12時間</option>
-            <option value="24">24時間</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="mode-switch" role="tablist" aria-label="モード">
-        <button class="mode-tab active" data-mode="battle">AIと対戦</button>
-        <button class="mode-tab" data-mode="signal">AIシグナル</button>
-        <button class="mode-tab" data-mode="free">フリー</button>
-      </div>
-
-      <div class="header-actions">
-        <button id="playBtn" class="small-btn primary">▶ デモ開始</button>
-        <button id="stepBtn" class="small-btn secondary">1本進める</button>
-        <button id="installBtn" class="small-btn secondary install-btn" hidden>＋ 追加</button>
-        <span id="runStateBadge" class="live-pill">● 停止中</span>
-      </div>
-
-      <div class="runtime-meta">
-        <span id="connectionStatus" class="connection-status">オンライン</span>
-        <span id="dataSourceBadge" class="data-source-badge loading">実データ取得中</span>
-        <span id="engineVersion" class="engine-version">Shadow</span>
+        <div class="runtime-meta" aria-label="稼働状態">
+          <span id="runStateBadge" class="live-pill">● 停止中</span>
+          <span id="connectionStatus" class="connection-status">オンライン</span>
+          <span id="dataSourceBadge" class="data-source-badge loading">実データ取得中</span>
+          <span id="engineVersion" class="engine-version">Shadow</span>
+        </div>
       </div>
     </header>
 
