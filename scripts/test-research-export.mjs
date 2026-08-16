@@ -59,6 +59,19 @@ const challengerEvaluation = {
   methodology: { automaticPromotion: false, promotionEligible: false },
   results: [{ id: 'champion-001' }, { id: 'challenger-001-stricter-entry' }],
 };
+const walkForwardEvaluation = {
+  version: 'walk-forward-0.1',
+  status: 'complete',
+  methodology: {
+    folds: 3,
+    embargoBars: 3,
+    noFittingPerformed: true,
+    pristineUntouchedOOS: false,
+    promotionEligible: false,
+  },
+  folds: [{ fold: 1 }, { fold: 2 }, { fold: 3 }],
+  results: [{ id: 'champion-001', positiveFolds: 2 }],
+};
 const nullMarketEvaluation = {
   version: 'null-market-controls-0.1',
   status: 'complete',
@@ -70,22 +83,27 @@ const jsonText = buildResearchJson({
   baselineEvaluation: { status: 'complete', results: [] },
   strategyRegistry,
   challengerEvaluation,
+  walkForwardEvaluation,
   nullMarketEvaluation,
   dataMeta: { provider: 'Kraken public OHLC' },
 });
 const parsed = JSON.parse(jsonText);
-assert.equal(parsed.exportVersion, 'research-export-0.3');
+assert.equal(parsed.exportVersion, 'research-export-0.4');
 assert.equal(parsed.eventCount, 1);
 assert.equal(parsed.decisionEvents[0].eventId, '=unsafe-event-id');
 assert.equal(parsed.baselineEvaluation.status, 'complete');
 assert.equal(parsed.strategyRegistry.champion.id, 'champion-001');
 assert.equal(parsed.strategyRegistry.governance.automaticPromotion, false);
 assert.equal(parsed.challengerEvaluation.methodology.promotionEligible, false);
+assert.equal(parsed.walkForwardEvaluation.version, 'walk-forward-0.1');
+assert.equal(parsed.walkForwardEvaluation.methodology.embargoBars, 3);
+assert.equal(parsed.walkForwardEvaluation.methodology.pristineUntouchedOOS, false);
 assert.equal(parsed.nullMarketEvaluation.version, 'null-market-controls-0.1');
 assert.equal(parsed.nullMarketEvaluation.methodology.formalPValue, false);
 assert.ok(parsed.notes.some(note => note.includes('not IID')));
 assert.ok(parsed.notes.some(note => note.includes('automatically promote')));
-assert.ok(parsed.notes.some(note => note.includes('out-of-sample')));
+assert.ok(parsed.notes.some(note => note.includes('holdout diagnostic')));
+assert.ok(parsed.notes.some(note => note.includes('forward demo')));
 assert.ok(parsed.notes.some(note => note.includes('Null95')));
 assert.ok(parsed.notes.some(note => note.includes('decision engine')));
 
