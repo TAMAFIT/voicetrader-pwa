@@ -1,7 +1,10 @@
 import { getLatestWalkForwardEvaluation } from './walk-forward-state.js';
 import { getLatestForwardDemoEvaluation } from './forward-demo-state.js';
+import { getLatestKnowledgeEvaluation } from './knowledge-state.js';
 
-export const RESEARCH_EXPORT_VERSION = 'research-export-0.5';
+export const RESEARCH_EXPORT_VERSION = 'research-export-0.6';
+// Kept as a lineage marker so older integrity checks can identify the immediately previous schema.
+export const PREVIOUS_RESEARCH_EXPORT_VERSION = 'research-export-0.5';
 
 const round = (value, digits = 4) => {
   if (value === null || value === undefined || value === '') return '';
@@ -94,6 +97,7 @@ export function buildResearchJson({
   challengerEvaluation = null,
   walkForwardEvaluation = undefined,
   forwardDemoEvaluation = undefined,
+  knowledgeEvaluation = undefined,
   nullMarketEvaluation = null,
   dataMeta = null,
 } = {}) {
@@ -103,6 +107,9 @@ export function buildResearchJson({
   const resolvedForwardDemo = forwardDemoEvaluation === undefined
     ? getLatestForwardDemoEvaluation()
     : forwardDemoEvaluation;
+  const resolvedKnowledge = knowledgeEvaluation === undefined
+    ? getLatestKnowledgeEvaluation()
+    : knowledgeEvaluation;
   return JSON.stringify({
     exportVersion: RESEARCH_EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
@@ -111,18 +118,21 @@ export function buildResearchJson({
       'DecisionEvent counterfactual outcomes from the same event are clustered observations and are not IID samples.',
       'Baseline evaluation is a descriptive same-series comparator and is not proof of a reproducible edge.',
       'Strategy Registry Challenger results are same-series Shadow diagnostics only and cannot automatically promote or mutate the frozen Champion.',
+      'Human Trading Knowledge Engine Wave 1 is a same-series research-only candidate layer. Its Knowledge score is neither expected return nor a calibrated probability, and it does not mutate Champion, Live Forward, or Forward Evidence.',
+      'Human Knowledge directional rules are normalized by family before the composite so adding many correlated rules to one family does not automatically increase that family weighting; regime and risk diagnostics do not cast directional votes.',
       'Chronological walk-forward uses frozen strategies, three ordered test folds, and a 3-bar embargo with no fitting; because this historical series has already been inspected by same-series research views, it is a holdout diagnostic rather than pristine untouched OOS proof.',
       'Prospective Forward Demo epoch forward-001 is frozen at 2026-08-16T14:27:00Z; only fully closed 4H candles whose open timestamp is strictly after that boundary may contribute Forward P&L evidence.',
       'Forward evidence is stored locally in this browser and deduplicated by epoch/strategy/entry/exit key. Clearing site storage can remove the local archive, so JSON exports should be retained for durable evidence.',
       'Forward Demo evidence is necessary but not sufficient for future Champion promotion; negative-control review and human approval remain required.',
       'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values or proof of statistical significance.',
-      'Null-transformed series, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the live/demo decision engine.',
+      'Null-transformed series, Human Knowledge outputs, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the frozen live/demo Champion decision engine.',
       'Synthetic market data is not research eligible.',
     ],
     dataMeta,
     baselineEvaluation,
     strategyRegistry,
     challengerEvaluation,
+    knowledgeEvaluation: resolvedKnowledge,
     walkForwardEvaluation: resolvedWalkForward,
     forwardDemoEvaluation: resolvedForwardDemo,
     nullMarketEvaluation,
