@@ -1,3 +1,5 @@
+import { setupResearchEvaluationUI } from './research/research-evaluation-ui.js';
+
 let deferredInstallPrompt = null;
 
 export function setupPWA() {
@@ -5,6 +7,8 @@ export function setupPWA() {
   const status = document.getElementById('connectionStatus');
   const updateBar = document.getElementById('updateBar');
   const updateBtn = document.getElementById('updateBtn');
+
+  setupResearchEvaluationUI();
 
   const updateOnlineStatus = () => {
     const online = navigator.onLine;
