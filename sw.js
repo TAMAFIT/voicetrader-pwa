@@ -1,7 +1,8 @@
-const CACHE_NAME='voicetrader-shell-v0.3.1-stable-controls';
+const CACHE_NAME='voicetrader-shell-v0.4-real-btc4h';
 const APP_SHELL=[
   './','./index.html','./styles.css','./ui-hotfix.css','./manifest.webmanifest',
   './src/app.js','./src/config.js','./src/pwa.js',
+  './src/data/market-data-provider.js','./src/research/decision-event-log.js',
   './src/engine/indicators.js','./src/engine/shadow-engine.js','./src/engine/ai-provider.js','./src/engine/execution-engine.js',
   './assets/icons/icon-192.png','./assets/icons/icon-512.png','./assets/icons/icon-maskable-512.png','./assets/icons/apple-touch-icon.png'
 ];
