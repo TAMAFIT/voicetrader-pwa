@@ -1,4 +1,4 @@
-export const RESEARCH_EXPORT_VERSION = 'research-export-0.1';
+export const RESEARCH_EXPORT_VERSION = 'research-export-0.2';
 
 const round = (value, digits = 4) => {
   if (value === null || value === undefined || value === '') return '';
@@ -84,7 +84,12 @@ export function researchEventsToCsv(events = []) {
   return `\uFEFF${lines.join('\r\n')}`;
 }
 
-export function buildResearchJson({ events = [], baselineEvaluation = null, dataMeta = null } = {}) {
+export function buildResearchJson({
+  events = [],
+  baselineEvaluation = null,
+  nullMarketEvaluation = null,
+  dataMeta = null,
+} = {}) {
   return JSON.stringify({
     exportVersion: RESEARCH_EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
@@ -92,10 +97,13 @@ export function buildResearchJson({ events = [], baselineEvaluation = null, data
     notes: [
       'DecisionEvent counterfactual outcomes from the same event are clustered observations and are not IID samples.',
       'Baseline evaluation is a descriptive same-series comparator and is not proof of a reproducible edge.',
+      'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values or proof of statistical significance.',
+      'Null-transformed series and signal-shift outcomes are never inputs to the live/demo decision engine.',
       'Synthetic market data is not research eligible.',
     ],
     dataMeta,
     baselineEvaluation,
+    nullMarketEvaluation,
     decisionEvents: events,
   }, null, 2);
 }
