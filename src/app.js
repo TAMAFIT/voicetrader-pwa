@@ -3,23 +3,46 @@ import { sma } from './engine/indicators.js';
 import { ShadowEngine } from './engine/shadow-engine.js';
 import { ExecutionEngine } from './engine/execution-engine.js';
 import { createAIProvider } from './engine/ai-provider.js';
+import { loadBTCUSD4H, syntheticMeta } from './data/market-data-provider.js';
+import { DecisionEventLogger, buildDecisionEvent } from './research/decision-event-log.js';
 import { setupPWA } from './pwa.js';
 
-let seed = 20260816;
-const rand = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
-const gauss = () => { let u=0,v=0; while(!u)u=rand(); while(!v)v=rand(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
+function makeRng(initialSeed) {
+  let seed = initialSeed >>> 0;
+  return () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+}
+
+// Market generation and execution randomness are intentionally isolated.
+const marketRand = makeRng(20260816);
+const executionRand = makeRng(20260817);
+const gauss = () => {
+  let u = 0; let v = 0;
+  while (!u) u = marketRand();
+  while (!v) v = marketRand();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+};
+
 const money = n => `${Math.round(n).toLocaleString('ja-JP')}円`;
 const pct = n => `${n >= 0 ? '+' : ''}${n.toFixed(2)}%`;
-
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 const setText = (id, value) => { const el = $(id); if (el) el.textContent = value; };
 const setHTML = (id, value) => { const el = $(id); if (el) el.innerHTML = value; };
+const SYNTHETIC_START = Math.floor(Date.UTC(2026, 4, 1, 0, 0, 0) / 1000);
+const FOUR_HOURS = 4 * 60 * 60;
 
 const series = {};
-function makeSeries(key, n=520) {
-  const m = instruments[key]; let p = m.base; const out = []; let regime = 0;
+const seriesMeta = {};
+
+function makeSeries(key, n = 520) {
+  const m = instruments[key];
+  let p = m.base;
+  const out = [];
+  let regime = 0;
   for (let i = 0; i < n; i++) {
-    if (i % 70 === 0) regime = (rand() - .48) * m.vol * .35;
+    if (i % 70 === 0) regime = (marketRand() - .48) * m.vol * .35;
     const cyc = Math.sin(i / 31) * m.vol * .11;
     const ret = regime + cyc + gauss() * m.vol * .48;
     const o = p;
@@ -27,15 +50,25 @@ function makeSeries(key, n=520) {
     const range = Math.abs(gauss()) * m.vol * .7 + m.vol * .2;
     const h = Math.max(o, c) * (1 + range * .45);
     const l = Math.min(o, c) * (1 - range * .45);
-    out.push({ o, h, l, c, t: i, volume: Math.round(100 + rand() * 900) });
+    out.push({
+      o, h, l, c,
+      t: SYNTHETIC_START + i * FOUR_HOURS,
+      volume: Math.round(100 + marketRand() * 900),
+    });
     p = c;
   }
   return out;
 }
-Object.keys(instruments).forEach((k) => { series[k] = makeSeries(k); });
+
+Object.keys(instruments).forEach((key) => {
+  series[key] = makeSeries(key);
+  seriesMeta[key] = syntheticMeta(key);
+});
 
 const shadowEngine = new ShadowEngine({ seriesProvider: key => series[key] });
 const aiProvider = createAIProvider('rule-based');
+const researchLog = new DecisionEventLogger({ strategyVersion: 'champion-001' });
+
 let state = {
   market: 'crypto',
   instrument: 'BTCUSD',
@@ -43,16 +76,18 @@ let state = {
   mode: 'battle',
   idx: 120,
   playing: false,
+  dataSourceId: seriesMeta.BTCUSD.id,
+  dataSignature: seriesMeta.BTCUSD.signature,
   human: { cash: INITIAL_CAPITAL, position: null, trades: 0 },
   ai: { cash: INITIAL_CAPITAL, positions: {}, trades: 0 },
   history: [],
   markers: [],
 };
 
-const STORAGE_KEY = 'voicetrader-v0.3-session';
+const STORAGE_KEY = 'voicetrader-v0.4-session';
 
 function analyze(key, idx = state.idx) { return shadowEngine.analyze(key, idx); }
-const execution = new ExecutionEngine({ random: rand, analyze: key => analyze(key) });
+const execution = new ExecutionEngine({ random: executionRand, analyze: key => analyze(key) });
 
 function currentPrice(key) { return series[key][state.idx].c; }
 function formatPrice(key, p) {
@@ -62,10 +97,15 @@ function formatPrice(key, p) {
 
 function persist() {
   try {
-    const snapshot = { ...state, playing: false };
+    const snapshot = {
+      ...state,
+      playing: false,
+      cursorTime: series[state.instrument]?.[state.idx]?.t || null,
+    };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
   } catch {}
 }
+
 function restore() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -76,12 +116,58 @@ function restore() {
   } catch {}
 }
 
+function resetPortfoliosAndReplayCursor() {
+  const maxIndex = Math.max(120, series.BTCUSD.length - 121);
+  state.idx = Math.min(maxIndex, series.BTCUSD.length - 2);
+  state.human = { cash: INITIAL_CAPITAL, position: null, trades: 0 };
+  state.ai = { cash: INITIAL_CAPITAL, positions: {}, trades: 0 };
+  state.history = [];
+  state.markers = [];
+}
+
+async function hydrateRealBTCUSD4H() {
+  const badge = $('dataSourceBadge');
+  if (badge) {
+    badge.textContent = '実データ取得中';
+    badge.className = 'data-source-badge loading';
+  }
+
+  const loaded = await loadBTCUSD4H();
+  if (!loaded.series || !loaded.meta) {
+    seriesMeta.BTCUSD = { ...syntheticMeta('BTCUSD'), label: 'Synthetic fallback' };
+    state.dataSourceId = seriesMeta.BTCUSD.id;
+    state.dataSignature = seriesMeta.BTCUSD.signature;
+    syncTimeframeControls();
+    render();
+    return;
+  }
+
+  const previousSignature = state.dataSignature;
+  series.BTCUSD = loaded.series.slice(-520);
+  seriesMeta.BTCUSD = loaded.meta;
+  state.instrument = 'BTCUSD';
+  state.market = 'crypto';
+  state.timeframe = 4;
+  state.dataSourceId = loaded.meta.id;
+  state.dataSignature = loaded.meta.signature;
+
+  if (previousSignature !== loaded.meta.signature) resetPortfoliosAndReplayCursor();
+  else state.idx = Math.min(Math.max(60, state.idx), series.BTCUSD.length - 2);
+
+  syncMarketTabs();
+  populate();
+  syncTimeframeControls();
+  renderHistory();
+  render();
+  persist();
+}
+
 function humanTrade(side) {
   const key = state.instrument;
   const p = currentPrice(key);
   const h = state.human;
   if (side === 'WAIT') {
-    addHistory('あなた', 'WAIT', `${instruments[key].shortLabel}`, '今回は何もしない', '—');
+    addHistory('あなた', 'WAIT', instruments[key].shortLabel, '今回は何もしない', '—');
     return;
   }
   if (h.position) {
@@ -96,7 +182,7 @@ function humanTrade(side) {
   h.position = { key, side, entry, qty, notional, opened: state.idx };
   h.trades++;
   state.markers.push({ idx: state.idx, key, side, who: 'human' });
-  addHistory('あなた', side, `${instruments[key].shortLabel}`, `価格 ${formatPrice(key, entry)} でエントリー`, `手数料 -${money(f)}`);
+  addHistory('あなた', side, instruments[key].shortLabel, `価格 ${formatPrice(key, entry)} でエントリー`, `手数料 -${money(f)}`);
 }
 
 function closeHuman(reason = '決済') {
@@ -108,7 +194,7 @@ function closeHuman(reason = '決済') {
   const f = execution.fee(pos.key, pos.qty * exit);
   h.cash += pnl - f;
   h.position = null;
-  addHistory('あなた', reason, `${instruments[pos.key].shortLabel}`, `${pos.side === 'BUY' ? '買い' : '売り'}ポジションを決済`, `${pnl - f >= 0 ? '+' : ''}${money(pnl - f)}`, (pnl - f) >= 0 ? 'good' : 'bad');
+  addHistory('あなた', reason, instruments[pos.key].shortLabel, `${pos.side === 'BUY' ? '買い' : '売り'}ポジションを決済`, `${pnl - f >= 0 ? '+' : ''}${money(pnl - f)}`, (pnl - f) >= 0 ? 'good' : 'bad');
 }
 
 function humanEquity() {
@@ -126,16 +212,38 @@ function aiEquity() {
   return eq;
 }
 
+function recordResearchDecision(key, analysis) {
+  const meta = seriesMeta[key];
+  if (!meta?.researchEligible || key !== 'BTCUSD' || state.timeframe !== 4) return;
+  const candle = series[key]?.[state.idx];
+  if (!candle) return;
+  const event = buildDecisionEvent({
+    key,
+    timeframe: state.timeframe,
+    idx: state.idx,
+    candle,
+    analysis,
+    dataMeta: meta,
+    estimatedRoundTripCostBps: execution.estimateRoundTripCostBps(key),
+    aiPosition: state.ai.positions[key] || null,
+  });
+  researchLog.record(event).catch(() => {});
+}
+
 function shadowTick() {
   const scored = shadowEngine.scan(Object.keys(instruments), state.idx);
+  const btc = scored.find(item => item.key === 'BTCUSD');
+  if (btc) recordResearchDecision('BTCUSD', btc.a);
+
   for (const [key, pos] of Object.entries(state.ai.positions)) {
     const a = analyze(key);
     const move = (currentPrice(key) - pos.entry) / pos.entry * (pos.side === 'BUY' ? 1 : -1);
     const opposite = (pos.side === 'BUY' && a.action === 'SELL') || (pos.side === 'SELL' && a.action === 'BUY');
     if (move > 0.018 || move < -0.010 || opposite || state.idx - pos.opened > 24) closeAI(key, move > 0 ? '利確' : '決済');
   }
+
   if (Object.keys(state.ai.positions).length < 2) {
-    const candidate = scored.find((x) => x.a.action !== 'WAIT' && !state.ai.positions[x.key] && x.a.edge > 46);
+    const candidate = scored.find(x => x.a.action !== 'WAIT' && !state.ai.positions[x.key] && x.a.decisionScore > 46);
     if (candidate) openAI(candidate.key, candidate.a.action);
   }
   return scored;
@@ -154,7 +262,7 @@ function openAI(key, side) {
   ai.positions[key] = { key, side, entry, qty, opened: state.idx };
   ai.trades++;
   state.markers.push({ idx: state.idx, key, side, who: 'ai' });
-  addHistory('影AI', side, `${instruments[key].shortLabel}`, '自動エントリー', `手数料 -${money(f)}`);
+  addHistory('影AI', side, instruments[key].shortLabel, '自動エントリー', `手数料 -${money(f)}`);
 }
 
 function closeAI(key, reason) {
@@ -166,11 +274,15 @@ function closeAI(key, reason) {
   const f = execution.fee(pos.key, pos.qty * exit);
   ai.cash += pnl - f;
   delete ai.positions[key];
-  addHistory('影AI', reason, `${instruments[key].shortLabel}`, 'ポジションを決済', `${pnl - f >= 0 ? '+' : ''}${money(pnl - f)}`, (pnl - f) >= 0 ? 'good' : 'bad');
+  addHistory('影AI', reason, instruments[pos.key].shortLabel, 'ポジションを決済', `${pnl - f >= 0 ? '+' : ''}${money(pnl - f)}`, (pnl - f) >= 0 ? 'good' : 'bad');
 }
 
 function addHistory(who, action, symbol, detail, result, cls = '') {
-  state.history.unshift({ idx: state.idx, who, action, symbol, detail, result, cls });
+  state.history.unshift({
+    idx: state.idx,
+    candleTime: series[state.instrument]?.[state.idx]?.t || null,
+    who, action, symbol, detail, result, cls,
+  });
   state.history = state.history.slice(0, 18);
   renderHistory();
   persist();
@@ -185,7 +297,8 @@ function updateRunState() {
 }
 
 function step() {
-  if (state.idx >= Math.min(...Object.values(series).map(x => x.length)) - 2) {
+  const maxIndex = Math.min(...Object.values(series).map(x => x.length)) - 2;
+  if (state.idx >= maxIndex) {
     state.playing = false;
     clearInterval(timer);
     updateRunState();
@@ -214,6 +327,15 @@ function togglePlay() {
 
 const canvas = $('chartCanvas');
 const ctx = canvas.getContext('2d');
+
+function barLabel(bar, includeTime = false) {
+  const dt = new Date(Number(bar?.t || 0) * 1000);
+  if (Number.isNaN(dt.getTime())) return '';
+  const date = `${dt.getMonth() + 1}/${dt.getDate()}`;
+  if (!includeTime) return date;
+  return `${date} ${String(dt.getHours()).padStart(2, '0')}:00`;
+}
+
 function drawChart() {
   const dpr = window.devicePixelRatio || 1;
   const cssW = canvas.clientWidth;
@@ -227,6 +349,7 @@ function drawChart() {
   const end = state.idx;
   const start = Math.max(0, end - 70);
   const data = arr.slice(start, end + 1);
+  if (!data.length) return;
   const pad = { l: 24, r: 68, t: 18, b: 28 };
   const W = cssW - pad.l - pad.r;
   const H = cssH - pad.t - pad.b;
@@ -234,8 +357,8 @@ function drawChart() {
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = max - min || 1;
-  const y = (p) => pad.t + (max - p) / range * H;
-  const x = (i) => pad.l + i / Math.max(1, data.length - 1) * W;
+  const y = p => pad.t + (max - p) / range * H;
+  const x = i => pad.l + i / Math.max(1, data.length - 1) * W;
 
   ctx.strokeStyle = '#e7edf5';
   ctx.lineWidth = 1;
@@ -270,18 +393,18 @@ function drawChart() {
   line(34, '#ff5e5e');
 
   const cw = Math.max(3, W / data.length * .55);
-  data.forEach((b, i) => {
+  data.forEach((bar, i) => {
     const xx = x(i);
-    const up = b.c >= b.o;
+    const up = bar.c >= bar.o;
     const col = up ? '#1fa56b' : '#db5a67';
     ctx.strokeStyle = col;
     ctx.fillStyle = col;
     ctx.beginPath();
-    ctx.moveTo(xx, y(b.h));
-    ctx.lineTo(xx, y(b.l));
+    ctx.moveTo(xx, y(bar.h));
+    ctx.lineTo(xx, y(bar.l));
     ctx.stroke();
-    const top = Math.min(y(b.o), y(b.c));
-    const bh = Math.max(1.2, Math.abs(y(b.o) - y(b.c)));
+    const top = Math.min(y(bar.o), y(bar.c));
+    const bh = Math.max(1.2, Math.abs(y(bar.o) - y(bar.c)));
     ctx.fillRect(xx - cw / 2, top, cw, bh);
   });
 
@@ -300,13 +423,14 @@ function drawChart() {
   ctx.font = '12px system-ui';
   ctx.fillText(formatPrice(state.instrument, current.c), cssW - pad.r + 10, currentY + 4);
 
-  state.markers.filter(m => m.key === state.instrument && m.idx >= start && m.idx <= end).slice(-16).forEach((m) => {
-    const i = m.idx - start;
-    const b = arr[m.idx];
+  state.markers.filter(m => m.key === state.instrument && m.idx >= start && m.idx <= end).slice(-16).forEach((marker) => {
+    const i = marker.idx - start;
+    const bar = arr[marker.idx];
     const xx = x(i);
-    const yy = m.side === 'BUY' ? y(b.l) + 16 : y(b.h) - 16;
-    const label = m.who === 'ai' ? '影AI BUY' : 'あなた BUY';
-    const fill = m.who === 'ai' ? '#8a5cff' : '#2f73e0';
+    const yy = marker.side === 'BUY' ? y(bar.l) + 16 : y(bar.h) - 16;
+    const sideLabel = marker.side === 'BUY' ? 'BUY' : 'SELL';
+    const label = `${marker.who === 'ai' ? '影AI' : 'あなた'} ${sideLabel}`;
+    const fill = marker.who === 'ai' ? '#8a5cff' : '#2f73e0';
     ctx.fillStyle = fill;
     ctx.beginPath();
     ctx.moveTo(xx, yy - 10);
@@ -332,10 +456,9 @@ function drawChart() {
   ctx.fillStyle = '#8c98ab';
   ctx.font = '11px system-ui';
   for (let i = 0; i < 8; i++) {
-    const idx = Math.floor(i * (data.length - 1) / 7);
-    const dt = new Date(Date.UTC(2026, 4, 8 + i, 12));
-    const label = i === 7 ? '12:00' : `${dt.getUTCMonth() + 1}/${dt.getUTCDate()}`;
-    ctx.fillText(label, x(idx) - 10, cssH - 8);
+    const localIdx = Math.floor(i * (data.length - 1) / 7);
+    const label = barLabel(data[localIdx], i === 7);
+    ctx.fillText(label, x(localIdx) - 10, cssH - 8);
   }
 }
 
@@ -346,18 +469,47 @@ function scannerLabel(score) {
   return '見送り';
 }
 
-function formatDemoTime(idx) {
-  const baseMinutes = 18 * 60;
-  const total = baseMinutes + idx * 4;
-  const hh = String(Math.floor(total / 60) % 24).padStart(2, '0');
-  const mm = String(total % 60).padStart(2, '0');
-  return `${hh}:${mm}`;
+function formatEventTime(item) {
+  const t = Number(item?.candleTime || 0);
+  if (t > 1_000_000_000) {
+    const dt = new Date(t * 1000);
+    return `${dt.getMonth() + 1}/${dt.getDate()} ${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+  }
+  return `#${item?.idx ?? '-'}`;
+}
+
+function updateDataSourceBadge() {
+  const badge = $('dataSourceBadge');
+  if (!badge) return;
+  const meta = seriesMeta[state.instrument] || syntheticMeta(state.instrument);
+  badge.textContent = meta.label;
+  badge.className = `data-source-badge ${meta.sourceType === 'real' ? 'real' : meta.sourceType === 'cached-real' ? 'cached' : 'synthetic'}`;
+  badge.title = meta.researchEligible
+    ? `${meta.provider} / research eligible / ${meta.signature}`
+    : `${meta.provider} / UI・動作確認用。edge検証には使用しません。`;
+}
+
+function syncTimeframeControls() {
+  const locked = state.instrument === 'BTCUSD' && Boolean(seriesMeta.BTCUSD?.researchEligible);
+  const select = $('timeframeSelect');
+  if (locked) state.timeframe = 4;
+  if (select) {
+    select.value = String(state.timeframe);
+    select.disabled = locked;
+    select.title = locked ? '実市場Vertical Sliceは現在4時間足のみです。' : '';
+  }
+  document.querySelectorAll('.tf-btn').forEach((btn) => {
+    const value = Number(btn.dataset.value);
+    btn.disabled = locked && value !== 4;
+    btn.classList.toggle('active', value === state.timeframe);
+  });
 }
 
 async function render() {
+  state.idx = Math.min(state.idx, series[state.instrument].length - 2);
   const a = analyze(state.instrument);
   const m = instruments[state.instrument];
-  const prev = series[state.instrument][state.idx - 1].c;
+  const prev = series[state.instrument][Math.max(0, state.idx - 1)].c;
   const ch = (a.p / prev - 1) * 100;
   const aiReview = await aiProvider.review({ instrument: state.instrument, timeframe: state.timeframe, analysis: a });
 
@@ -365,13 +517,17 @@ async function render() {
   setText('chartTitle', m.label);
   setText('priceLabel', formatPrice(state.instrument, a.p));
   const pm = $('priceMove');
-  if (pm) { pm.textContent = `${ch >= 0 ? '+' : ''}${formatPrice(state.instrument, Math.abs(a.p - prev))} (${pct(ch)})`; pm.style.color = ch >= 0 ? 'var(--green)' : 'var(--red)'; }
+  if (pm) {
+    pm.textContent = `${ch >= 0 ? '+' : ''}${formatPrice(state.instrument, Math.abs(a.p - prev))} (${pct(ch)})`;
+    pm.style.color = ch >= 0 ? 'var(--green)' : 'var(--red)';
+  }
   setText('regimeBadge', a.regime);
+  updateDataSourceBadge();
+  syncTimeframeControls();
 
   const up = Math.round(a.up);
-  const dirText = a.dir === 'UP' ? '上がりそう' : '下がりそう';
-  setText('directionText', dirText);
-  setText('directionSub', `上方向 ${up}% / 下方向 ${100 - up}%`);
+  setText('directionText', a.dir === 'UP' ? '上がりそう' : '下がりそう');
+  setText('directionSub', `上方向スコア ${up} / 下方向 ${100 - up}`);
   setText('confidenceValue', a.conf);
   setText('timingValue', `${a.timing}`);
   setText('riskValue', `${a.risk}`);
@@ -393,7 +549,6 @@ async function render() {
   const riskBar = $('riskBar');
   if (riskBar) riskBar.style.width = `${a.risk}%`;
   setText('aiActionText', aiReview.action === 'BUY' ? '買い候補' : aiReview.action === 'SELL' ? '売り候補' : 'まだ待つ');
-
   setHTML('knowledgeRow', knowledge.map(k => `<span title="${k.id}: ${k.hint}">${k.name}</span>`).join(''));
 
   const panel = $('signalPanel');
@@ -401,7 +556,7 @@ async function render() {
     if (state.mode === 'signal' && aiReview.action !== 'WAIT') {
       panel.classList.remove('hidden');
       setText('signalTitle', `AIシグナル：${aiReview.action === 'BUY' ? '買い候補' : '売り候補'}`);
-      setText('signalText', `自信度 ${a.conf}%・タイミング ${a.timing}点。押すか見送るかはあなたが決めます。`);
+      setText('signalText', `判断スコア ${a.conf}/100・タイミング ${a.timing}点。これは校正済み確率ではありません。`);
     } else {
       panel.classList.add('hidden');
     }
@@ -433,24 +588,27 @@ async function render() {
       </div>
     </button>
   `).join(''));
-  setText('scannerNote', `現在の影AI注目：${instruments[best.key].label}。条件が揃えば自動で取引します。`);
+  const disclosure = seriesMeta.BTCUSD?.researchEligible
+    ? 'BTC/USDのみ実市場4H。他3市場はまだSynthetic検証用です。'
+    : '現在は全市場Synthetic検証用です。';
+  setText('scannerNote', `現在の影AI注目：${instruments[best.key].label}。${disclosure}`);
   document.querySelectorAll('.scan-item').forEach((btn) => btn.addEventListener('click', () => {
     const key = btn.dataset.instrument;
     state.instrument = key;
     state.market = instruments[key].market;
     syncMarketTabs();
     populate();
+    syncTimeframeControls();
     render();
     persist();
   }));
 
   setText('spreadDisplay', `ON (${m.spreadBps.toFixed(1)}bp)`);
   setText('feeDisplay', `ON (${m.feeBps.toFixed(2)}bp)`);
-  setText('slippageDisplay', '推定');
-  setText('latencyDisplay', '120ms');
+  setText('slippageDisplay', `${execution.estimateSlippageBps(state.instrument).toFixed(2)}bp 推定`);
+  setText('latencyDisplay', seriesMeta[state.instrument]?.researchEligible ? 'Replay' : '120ms');
   setText('engineVersion', `Shadow ${a.engineVersion}`);
 
-  document.querySelectorAll('.tf-btn').forEach((btn) => btn.classList.toggle('active', Number(btn.dataset.value) === state.timeframe));
   updateRunState();
   drawChart();
 }
@@ -462,9 +620,9 @@ function renderHistory() {
     el.innerHTML = '<div class="history-empty">まだ履歴はありません。デモを開始するとここに記録されます。</div>';
     return;
   }
-  el.innerHTML = state.history.map((h) => `
+  el.innerHTML = state.history.map(h => `
     <div class="history-row">
-      <span>${formatDemoTime(h.idx)}</span>
+      <span>${formatEventTime(h)}</span>
       <span class="actor">${h.who}</span>
       <span><span class="action-pill">${h.symbol}</span> ${h.action}</span>
       <span>${h.detail}</span>
@@ -475,19 +633,19 @@ function renderHistory() {
 
 function populate() {
   const sel = $('instrumentSelect');
-  const list = Object.entries(instruments).filter(([, v]) => v.market === state.market);
-  if (!list.some(([k]) => k === state.instrument)) state.instrument = list[0][0];
-  sel.innerHTML = list.map(([k, v]) => `<option value="${k}" ${k === state.instrument ? 'selected' : ''}>${v.shortLabel}</option>`).join('');
+  const list = Object.entries(instruments).filter(([, value]) => value.market === state.market);
+  if (!list.some(([key]) => key === state.instrument)) state.instrument = list[0][0];
+  sel.innerHTML = list.map(([key, value]) => `<option value="${key}" ${key === state.instrument ? 'selected' : ''}>${value.shortLabel}</option>`).join('');
   sel.value = state.instrument;
 }
 
 function syncMarketTabs() {
-  document.querySelectorAll('.seg').forEach((b) => b.classList.toggle('active', b.dataset.market === state.market));
+  document.querySelectorAll('.seg').forEach(b => b.classList.toggle('active', b.dataset.market === state.market));
 }
 
 function setMode(mode) {
   state.mode = mode;
-  document.querySelectorAll('.mode-tab').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
+  document.querySelectorAll('.mode-tab').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   if (mode === 'battle') {
     setText('actionHeading', 'AIと競争してみる');
     setText('actionDescription', 'AIスコアは見えます。AIは裏で独立して自動売買します。');
@@ -505,28 +663,61 @@ function setMode(mode) {
 }
 
 function reset() {
+  const meta = seriesMeta.BTCUSD;
   state = {
-    market: 'crypto', instrument: 'BTCUSD', timeframe: 4, mode: 'battle', idx: 120, playing: false,
+    market: 'crypto',
+    instrument: 'BTCUSD',
+    timeframe: 4,
+    mode: 'battle',
+    idx: Math.min(Math.max(120, series.BTCUSD.length - 121), series.BTCUSD.length - 2),
+    playing: false,
+    dataSourceId: meta.id,
+    dataSignature: meta.signature,
     human: { cash: INITIAL_CAPITAL, position: null, trades: 0 },
     ai: { cash: INITIAL_CAPITAL, positions: {}, trades: 0 },
-    history: [], markers: []
+    history: [],
+    markers: [],
   };
   clearInterval(timer);
   localStorage.removeItem(STORAGE_KEY);
   setText('playBtn', '▶ デモ開始');
   syncMarketTabs();
   populate();
+  syncTimeframeControls();
   setMode('battle');
   renderHistory();
   render();
 }
 
 restore();
-document.querySelectorAll('.seg').forEach((b) => b.addEventListener('click', () => { state.market = b.dataset.market; syncMarketTabs(); populate(); render(); persist(); }));
-document.querySelectorAll('.mode-tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
-$('instrumentSelect').addEventListener('change', (e) => { state.instrument = e.target.value; render(); persist(); });
-$('timeframeSelect').addEventListener('change', (e) => { state.timeframe = Number(e.target.value); render(); persist(); });
-document.querySelectorAll('.tf-btn').forEach((btn) => btn.addEventListener('click', () => { state.timeframe = Number(btn.dataset.value); $('timeframeSelect').value = String(state.timeframe); render(); persist(); }));
+document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => {
+  state.market = b.dataset.market;
+  syncMarketTabs();
+  populate();
+  syncTimeframeControls();
+  render();
+  persist();
+}));
+document.querySelectorAll('.mode-tab').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+$('instrumentSelect').addEventListener('change', (event) => {
+  state.instrument = event.target.value;
+  syncTimeframeControls();
+  render();
+  persist();
+});
+$('timeframeSelect').addEventListener('change', (event) => {
+  state.timeframe = Number(event.target.value);
+  syncTimeframeControls();
+  render();
+  persist();
+});
+document.querySelectorAll('.tf-btn').forEach(btn => btn.addEventListener('click', () => {
+  if (btn.disabled) return;
+  state.timeframe = Number(btn.dataset.value);
+  $('timeframeSelect').value = String(state.timeframe);
+  render();
+  persist();
+}));
 $('playBtn').addEventListener('click', togglePlay);
 $('stepBtn').addEventListener('click', step);
 $('buyBtn').addEventListener('click', () => { humanTrade('BUY'); render(); });
@@ -538,8 +729,9 @@ window.addEventListener('pagehide', persist);
 
 syncMarketTabs();
 populate();
-$('timeframeSelect').value = String(state.timeframe);
+syncTimeframeControls();
 setMode(state.mode);
 renderHistory();
 render();
 setupPWA();
+hydrateRealBTCUSD4H();
