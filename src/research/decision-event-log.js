@@ -1,4 +1,6 @@
 import { resolvePositionDecision } from '../engine/decision-policy.js';
+import { getLoadedBTCUSD4H } from '../data/market-data-provider.js';
+import { buildFixedHorizonCounterfactual } from './counterfactual-shadow.js';
 
 const DB_NAME = 'voicetrader-research-v1';
 const DB_VERSION = 1;
@@ -26,6 +28,30 @@ function openDb() {
   });
 }
 
+function counterfactualFor(payload) {
+  if (!payload.researchEligible || payload.instrument !== 'BTCUSD' || payload.timeframeHours !== 4) return null;
+  const snapshot = getLoadedBTCUSD4H();
+  if (!snapshot?.series || snapshot.meta?.signature !== payload.dataSignature) {
+    return {
+      version: 'cf-fixed-horizons-0.1',
+      clusterId: payload.eventId,
+      independentSamples: false,
+      usedByDecisionEngine: false,
+      status: 'unavailable',
+      reason: 'matching-research-series-not-loaded',
+      outcomes: [],
+    };
+  }
+  return {
+    clusterId: payload.eventId,
+    ...buildFixedHorizonCounterfactual({
+      series: snapshot.series,
+      entryIndex: payload.barIndex,
+      estimatedRoundTripCostBps: payload.costs?.estimatedRoundTripCostBps || 0,
+    }),
+  };
+}
+
 export class DecisionEventLogger {
   constructor({ strategyVersion = 'champion-001' } = {}) {
     this.strategyVersion = strategyVersion;
@@ -40,11 +66,12 @@ export class DecisionEventLogger {
   async record(event) {
     const db = await this.db();
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       strategyVersion: this.strategyVersion,
       recordedAt: Date.now(),
       ...event,
     };
+    payload.counterfactual = counterfactualFor(payload);
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE, 'readwrite');
       tx.objectStore(STORE).put(payload);
