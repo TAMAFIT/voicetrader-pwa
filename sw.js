@@ -1,8 +1,8 @@
-const CACHE_NAME='voicetrader-shell-v0.6-null-market-controls';
+const CACHE_NAME='voicetrader-shell-v0.7-strategy-registry';
 const APP_SHELL=[
   './','./index.html','./styles.css','./ui-hotfix.css','./ui-layout.css','./ui-viewport.css','./research-evaluation.css','./manifest.webmanifest',
   './src/app.js','./src/config.js','./src/pwa.js',
-  './src/data/market-data-provider.js','./src/research/decision-event-log.js','./src/research/counterfactual-shadow.js','./src/research/baseline-runner.js','./src/research/null-market-runner.js','./src/research/research-export.js','./src/research/research-evaluation-ui.js',
+  './src/data/market-data-provider.js','./src/research/decision-event-log.js','./src/research/counterfactual-shadow.js','./src/research/baseline-runner.js','./src/research/null-market-runner.js','./src/research/strategy-registry.js','./src/research/challenger-runner.js','./src/research/research-export.js','./src/research/research-evaluation-ui.js',
   './src/engine/indicators.js','./src/engine/experts.js','./src/engine/decision-policy.js','./src/engine/shadow-engine.js','./src/engine/ai-provider.js','./src/engine/execution-engine.js',
   './assets/icons/icon-192.png','./assets/icons/icon-512.png','./assets/icons/icon-maskable-512.png','./assets/icons/apple-touch-icon.png'
 ];

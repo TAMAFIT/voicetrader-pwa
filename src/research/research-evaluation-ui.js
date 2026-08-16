@@ -3,11 +3,14 @@ import { ShadowEngine } from '../engine/shadow-engine.js';
 import { ExecutionEngine } from '../engine/execution-engine.js';
 import { DecisionEventLogger } from './decision-event-log.js';
 import { runBaselineSuite } from './baseline-runner.js';
+import { runChallengerShadow } from './challenger-runner.js';
 import { runNullMarketControls } from './null-market-runner.js';
+import { getStrategyRegistrySnapshot } from './strategy-registry.js';
 import { buildResearchJson, researchEventsToCsv, downloadResearchText } from './research-export.js';
 
 const logger = new DecisionEventLogger({ strategyVersion: 'champion-001' });
 let latestBaseline = null;
+let latestChallenger = null;
 let latestNullControl = null;
 let latestDataMeta = null;
 let initialized = false;
@@ -29,6 +32,14 @@ function ensureStylesheet() {
 }
 
 function compactBaselineForExport(suite) {
+  if (!suite) return null;
+  return {
+    ...suite,
+    results: suite.results.map(({ tradesDetail, ...summary }) => summary),
+  };
+}
+
+function compactChallengerForExport(suite) {
   if (!suite) return null;
   return {
     ...suite,
@@ -73,6 +84,28 @@ function cardTemplate() {
       </div>
       <div class="research-evaluation-note">
         同一のBTC/USD 4H履歴上で、固定3バーExitと決定論的コストを使う比較です。Baselineは説明用の対照群であり、再現可能なedgeの証明・自動最適化・Champion更新には使用しません。
+      </div>
+
+      <div class="challenger-section" aria-labelledby="challengerTitle">
+        <div class="challenger-head">
+          <div>
+            <div class="section-kicker">Strategy Registry</div>
+            <h3 id="challengerTitle">固定ChampionとChallenger Shadow</h3>
+            <p class="challenger-meta">Championは凍結した比較アンカー。3つの事前定義Challengerだけを同じ4H履歴・共通Exit・同一コスト条件でShadow評価します。</p>
+          </div>
+          <span id="challengerStatus" class="challenger-status pending">計算待ち</span>
+        </div>
+        <div class="challenger-table" role="table" aria-label="Champion and Challenger Shadow comparison">
+          <div class="challenger-row challenger-header" role="row">
+            <span>Strategy</span><span>Hypothesis</span><span>Return</span><span>Δ vs Champ</span><span>PF</span><span>Trades</span>
+          </div>
+          <div id="challengerRows" class="challenger-rows">
+            <div class="research-evaluation-empty">実市場データの準備後にChallenger Shadowを評価します。</div>
+          </div>
+        </div>
+        <div class="research-evaluation-note challenger-note">
+          同一期間で良かったChallengerをそのまま採用しません。V0.7では自動昇格・自己学習・重み最適化を禁止し、将来のOOS・Negative Control・Forward Demo・人間承認を通るまでChampionは固定です。
+        </div>
       </div>
 
       <div class="null-control-section" aria-labelledby="nullControlTitle">
@@ -132,6 +165,36 @@ function renderBaseline(suite, meta) {
       <span>${formatMetric(result.exposurePct, '%')}</span>
     </div>
   `).join('');
+}
+
+function renderChallengers(result) {
+  const rows = document.getElementById('challengerRows');
+  const status = document.getElementById('challengerStatus');
+  if (!rows || !status) return;
+
+  if (!result || result.status !== 'complete') {
+    status.className = 'challenger-status unavailable';
+    status.textContent = '対象外';
+    rows.innerHTML = '<div class="research-evaluation-empty">実市場データが利用できないためChallenger Shadowを停止しています。</div>';
+    return;
+  }
+
+  status.className = 'challenger-status research-only';
+  status.textContent = `${result.methodology.challengerCount} Challenger / 昇格不可`;
+  rows.innerHTML = result.results.map((strategy) => {
+    const champion = strategy.role === 'champion';
+    const delta = strategy.deltaVsChampion?.returnPct || 0;
+    return `
+      <div class="challenger-row ${champion ? 'champion' : ''}" role="row" title="${escapeHtml(strategy.hypothesis)}">
+        <span class="challenger-name">${escapeHtml(strategy.label)}<small>${champion ? 'FROZEN' : 'SHADOW'}</small></span>
+        <span class="challenger-hypothesis">${escapeHtml(strategy.hypothesis)}</span>
+        <span class="challenger-return ${strategy.returnPct > 0 ? 'positive' : strategy.returnPct < 0 ? 'negative' : ''}">${formatMetric(strategy.returnPct, '%', { signed: true })}</span>
+        <span class="challenger-delta ${delta > 0 ? 'positive' : delta < 0 ? 'negative' : ''}">${champion ? '—' : formatMetric(delta, '%', { signed: true })}</span>
+        <span>${formatPf(strategy.profitFactor)}</span>
+        <span>${strategy.trades}</span>
+      </div>
+    `;
+  }).join('');
 }
 
 function renderNullControl(result, state = 'ready') {
@@ -199,6 +262,8 @@ async function exportJson() {
     const text = buildResearchJson({
       events,
       baselineEvaluation: compactBaselineForExport(latestBaseline),
+      strategyRegistry: getStrategyRegistrySnapshot(),
+      challengerEvaluation: compactChallengerForExport(latestChallenger),
       nullMarketEvaluation: latestNullControl,
       dataMeta: latestDataMeta,
     });
@@ -232,9 +297,11 @@ async function exportCsv() {
 async function evaluateSnapshot(snapshot) {
   if (!snapshot?.series || !snapshot?.meta?.researchEligible) {
     latestBaseline = null;
+    latestChallenger = null;
     latestNullControl = null;
     latestDataMeta = snapshot?.meta ? { ...snapshot.meta } : null;
     renderBaseline(null, snapshot?.meta || null);
+    renderChallengers(null);
     renderNullControl(null);
     return false;
   }
@@ -254,8 +321,17 @@ async function evaluateSnapshot(snapshot) {
     instrument: 'BTCUSD',
     timeframeHours: 4,
   });
+  latestChallenger = runChallengerShadow({
+    series,
+    endIndex,
+    estimatedRoundTripCostBps,
+    dataSignature: snapshot.meta.signature,
+    instrument: 'BTCUSD',
+    timeframeHours: 4,
+  });
   latestDataMeta = { ...snapshot.meta };
   renderBaseline(latestBaseline, latestDataMeta);
+  renderChallengers(latestChallenger);
 
   renderNullControl(null, 'running');
   await new Promise(resolve => setTimeout(resolve, 0));
@@ -281,6 +357,7 @@ async function waitForMarketSnapshot() {
     await new Promise(resolve => setTimeout(resolve, 250));
   }
   renderBaseline(null, null);
+  renderChallengers(null);
   renderNullControl(null);
 }
 
@@ -289,9 +366,9 @@ export function setupResearchEvaluationUI() {
   initialized = true;
   ensureStylesheet();
   insertCard();
-  document.title = 'VoiceTrader Demo v0.6 Null Controls';
+  document.title = 'VoiceTrader Demo v0.7 Strategy Registry';
   const footer = document.querySelector('.app-footer');
-  if (footer) footer.textContent = 'VoiceTrader v0.6 Research Evaluation — Baseline / Negative Controlは研究診断用であり、実際の投資判断には使用しないでください。';
+  if (footer) footer.textContent = 'VoiceTrader v0.7 Research Evaluation — Champion固定 / Challenger Shadow / Negative Controlは研究診断用であり、実際の投資判断には使用しないでください。';
   document.getElementById('exportResearchJson')?.addEventListener('click', exportJson);
   document.getElementById('exportResearchCsv')?.addEventListener('click', exportCsv);
   refreshEventCount();
