@@ -1,4 +1,3 @@
-import { instruments } from '../config.js';
 import { sma, rsi } from '../engine/indicators.js';
 import { ShadowEngine } from '../engine/shadow-engine.js';
 
@@ -152,6 +151,15 @@ function buyAndHold({ series, startIndex, endIndex, costBps }) {
   });
 }
 
+function buildNonOverlappingGrids({ startIndex, endIndex, horizonBars }) {
+  const stride = horizonBars + 1;
+  return Array.from({ length: stride }, (_, offset) => {
+    const entries = [];
+    for (let idx = startIndex + offset; idx + horizonBars <= endIndex; idx += stride) entries.push(idx);
+    return entries;
+  });
+}
+
 function matchedRandom({ series, startIndex, endIndex, horizonBars, costBps, champion, seed }) {
   const targetCount = champion.trades;
   if (!targetCount) {
@@ -166,28 +174,20 @@ function matchedRandom({ series, startIndex, endIndex, horizonBars, costBps, cha
   }
 
   const random = makeRng(seed);
-  const eligible = [];
-  for (let idx = startIndex; idx + horizonBars <= endIndex; idx++) eligible.push(idx);
-  const shuffled = shuffle(eligible, random);
-  const selected = [];
-  for (const idx of shuffled) {
-    if (selected.every(existing => Math.abs(existing - idx) > horizonBars)) selected.push(idx);
-    if (selected.length >= targetCount) break;
-  }
-  if (selected.length < targetCount) {
-    for (const idx of eligible) {
-      if (selected.every(existing => Math.abs(existing - idx) > horizonBars)) selected.push(idx);
-      if (selected.length >= targetCount) break;
-    }
-  }
-  selected.sort((a, b) => a - b);
+  const grids = buildNonOverlappingGrids({ startIndex, endIndex, horizonBars });
+  const capableGrids = grids.filter(entries => entries.length >= targetCount);
+  const fallback = [...grids].sort((a, b) => b.length - a.length)[0] || [];
+  const sourceGrid = capableGrids.length
+    ? capableGrids[Math.floor(random() * capableGrids.length)]
+    : fallback;
+  const selected = shuffle(sourceGrid, random).slice(0, targetCount).sort((a, b) => a - b);
 
   const sides = shuffle([
     ...Array.from({ length: champion.longTrades }, () => 'LONG'),
     ...Array.from({ length: champion.shortTrades }, () => 'SHORT'),
   ], random);
 
-  const trades = selected.slice(0, targetCount).map((entryIndex, index) => {
+  const trades = selected.map((entryIndex, index) => {
     const side = sides[index] || (random() >= 0.5 ? 'LONG' : 'SHORT');
     const exitIndex = entryIndex + horizonBars;
     const returns = tradeReturnBps(series, entryIndex, exitIndex, side, costBps);
@@ -240,7 +240,7 @@ export function runBaselineSuite({
   }
 
   const costBps = Math.max(0, Number(estimatedRoundTripCostBps) || 0);
-  const localEngine = new ShadowEngine({ seriesProvider: key => key === instrument ? series : series });
+  const localEngine = new ShadowEngine({ seriesProvider: () => series });
 
   const champion = simulateSignals({
     id: 'champion',
@@ -323,6 +323,7 @@ export function runBaselineSuite({
       signalStrategiesUseNonOverlappingTrades: true,
       championMutation: false,
       matchedRandomDeterministic: true,
+      matchedRandomTradeCountRule: 'same-as-champion',
       maxDrawdownBasis: 'closed-trade-equity',
     },
     results: [champion, hold, trend, meanReversion, random],
