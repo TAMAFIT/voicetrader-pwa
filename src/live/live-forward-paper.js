@@ -33,8 +33,13 @@ function nextAlignedOpenAfter(unix, intervalSeconds = INTERVAL_SECONDS) {
   return (Math.floor(Number(unix) / intervalSeconds) + 1) * intervalSeconds;
 }
 
+function hasProcessedCandle(state) {
+  const value = state?.lastProcessedCandleTime;
+  return value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
+}
+
 function expectedNextTime(state, epoch = FORWARD_EPOCH) {
-  if (Number.isFinite(Number(state?.lastProcessedCandleTime))) {
+  if (hasProcessedCandle(state)) {
     return Number(state.lastProcessedCandleTime) + epoch.timeframeHours * 60 * 60;
   }
   return nextAlignedOpenAfter(epoch.frozenAtUnix, epoch.timeframeHours * 60 * 60);
@@ -199,7 +204,7 @@ export function processLiveForwardSnapshot({
   }
 
   const expected = expectedNextTime(nextState, epoch);
-  const pending = eligible.filter(item => !Number.isFinite(Number(nextState.lastProcessedCandleTime)) || item.t > Number(nextState.lastProcessedCandleTime));
+  const pending = eligible.filter(item => !hasProcessedCandle(nextState) || item.t > Number(nextState.lastProcessedCandleTime));
   if (pending.length && pending[0].t !== expected) {
     return {
       status: 'blocked',
