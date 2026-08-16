@@ -1,10 +1,7 @@
 import { atrPct, clamp, rsi, sma } from '../engine/indicators.js';
 
 const EPS = 1e-12;
-
-function closeAt(series, index) {
-  return Number(series?.[index]?.c);
-}
+const closeAt = (series, index) => Number(series?.[index]?.c);
 
 function windowValues(series, idx, len, getter) {
   const start = Math.max(0, idx - len + 1);
@@ -17,8 +14,7 @@ function windowValues(series, idx, len, getter) {
 }
 
 function mean(values) {
-  if (!values.length) return 0;
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
+  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
 }
 
 function std(values) {
@@ -35,8 +31,7 @@ export function ema(series, len, idx) {
   if (!Number.isFinite(value)) return null;
   for (let i = 1; i <= idx; i++) {
     const close = closeAt(series, i);
-    if (!Number.isFinite(close)) continue;
-    value = alpha * close + (1 - alpha) * value;
+    if (Number.isFinite(close)) value = alpha * close + (1 - alpha) * value;
   }
   return value;
 }
@@ -50,19 +45,22 @@ export function rocPct(series, len, idx) {
 }
 
 export function macd(series, idx, fastLen = 12, slowLen = 26, signalLen = 9) {
-  const fast = ema(series, fastLen, idx);
-  const slow = ema(series, slowLen, idx);
-  if (!Number.isFinite(fast) || !Number.isFinite(slow)) return { line:0, signal:0, histogram:0 };
-  const lineSeries = [];
-  for (let i = 0; i <= idx; i++) {
-    const f = ema(series, fastLen, i);
-    const s = ema(series, slowLen, i);
-    const line = Number.isFinite(f) && Number.isFinite(s) ? f - s : 0;
-    const close = closeAt(series, i) || 1;
-    lineSeries.push({ c: line, o:line, h:line, l:line, t:series[i]?.t, volume:series[i]?.volume, baseClose:close });
+  if (!Array.isArray(series) || idx < 0 || !series[idx]) return { line:0, signal:0, histogram:0 };
+  const fastAlpha = 2 / (fastLen + 1);
+  const slowAlpha = 2 / (slowLen + 1);
+  const signalAlpha = 2 / (signalLen + 1);
+  let fast = closeAt(series, 0) || 0;
+  let slow = fast;
+  let line = 0;
+  let signal = 0;
+  for (let i = 1; i <= idx; i++) {
+    const close = closeAt(series, i);
+    if (!Number.isFinite(close)) continue;
+    fast = fastAlpha * close + (1 - fastAlpha) * fast;
+    slow = slowAlpha * close + (1 - slowAlpha) * slow;
+    line = fast - slow;
+    signal = signalAlpha * line + (1 - signalAlpha) * signal;
   }
-  const signal = ema(lineSeries, signalLen, idx) || 0;
-  const line = fast - slow;
   return { line, signal, histogram: line - signal };
 }
 
@@ -102,11 +100,11 @@ export function donchian(series, idx, len = 20) {
   }
   if (!Number.isFinite(high) || !Number.isFinite(low)) {
     const p = closeAt(series, idx) || 0;
-    return { high:p, low:p, mid:p, position:0.5 };
+    return { high:p, low:p, mid:p, position:.5 };
   }
   const price = closeAt(series, idx) || (high + low) / 2;
   const range = Math.max(EPS, high - low);
-  return { high, low, mid:(high + low) / 2, position: clamp((price - low) / range, 0, 1) };
+  return { high, low, mid:(high + low) / 2, position:clamp((price - low) / range, 0, 1) };
 }
 
 function trueRange(series, idx) {
@@ -119,9 +117,7 @@ function trueRange(series, idx) {
 
 export function dmiAdx(series, idx, len = 14) {
   if (idx < len * 2) return { plusDI:0, minusDI:0, adx:0 };
-  const trs = [];
-  const plus = [];
-  const minus = [];
+  const trs = [], plus = [], minus = [];
   for (let i = 1; i <= idx; i++) {
     const upMove = Number(series[i]?.h) - Number(series[i - 1]?.h);
     const downMove = Number(series[i - 1]?.l) - Number(series[i]?.l);
@@ -130,27 +126,25 @@ export function dmiAdx(series, idx, len = 14) {
     minus.push(downMove > upMove && downMove > 0 ? downMove : 0);
   }
   const dx = [];
-  let lastPlusDI = 0;
-  let lastMinusDI = 0;
+  let lastPlusDI = 0, lastMinusDI = 0;
   for (let end = len - 1; end < trs.length; end++) {
-    const tr = mean(trs.slice(end - len + 1, end + 1));
-    const p = mean(plus.slice(end - len + 1, end + 1));
-    const m = mean(minus.slice(end - len + 1, end + 1));
+    let tr = 0, p = 0, m = 0;
+    for (let j = end - len + 1; j <= end; j++) { tr += trs[j]; p += plus[j]; m += minus[j]; }
+    tr /= len; p /= len; m /= len;
     lastPlusDI = tr > EPS ? 100 * p / tr : 0;
     lastMinusDI = tr > EPS ? 100 * m / tr : 0;
     const denom = lastPlusDI + lastMinusDI;
     dx.push(denom > EPS ? 100 * Math.abs(lastPlusDI - lastMinusDI) / denom : 0);
   }
   const adx = mean(dx.slice(-len));
-  return { plusDI: clamp(lastPlusDI, 0, 100), minusDI: clamp(lastMinusDI, 0, 100), adx: clamp(adx, 0, 100) };
+  return { plusDI:clamp(lastPlusDI,0,100), minusDI:clamp(lastMinusDI,0,100), adx:clamp(adx,0,100) };
 }
 
 export function realizedVolPct(series, idx, len = 20) {
   const returns = [];
   const start = Math.max(1, idx - len + 1);
   for (let i = start; i <= idx; i++) {
-    const a = closeAt(series, i - 1);
-    const b = closeAt(series, i);
+    const a = closeAt(series, i - 1), b = closeAt(series, i);
     if (a > 0 && b > 0) returns.push(Math.log(b / a));
   }
   return std(returns) * 100;
@@ -160,8 +154,7 @@ export function obv(series, idx) {
   let total = 0;
   for (let i = 1; i <= idx; i++) {
     const volume = Number(series[i]?.volume || 0);
-    const current = closeAt(series, i);
-    const previous = closeAt(series, i - 1);
+    const current = closeAt(series, i), previous = closeAt(series, i - 1);
     if (current > previous) total += volume;
     else if (current < previous) total -= volume;
   }
@@ -170,12 +163,10 @@ export function obv(series, idx) {
 
 export function obvSlopeNormalized(series, idx, len = 10) {
   if (idx < len) return 0;
-  const now = obv(series, idx);
-  const prior = obv(series, idx - len);
+  const now = obv(series, idx), prior = obv(series, idx - len);
   let totalVolume = 0;
   for (let i = idx - len + 1; i <= idx; i++) totalVolume += Math.abs(Number(series[i]?.volume || 0));
-  if (totalVolume < EPS) return 0;
-  return clamp((now - prior) / totalVolume, -1, 1);
+  return totalVolume < EPS ? 0 : clamp((now - prior) / totalVolume, -1, 1);
 }
 
 export function volumeZScore(series, idx, len = 30) {
@@ -187,30 +178,21 @@ export function volumeZScore(series, idx, len = 30) {
 
 export function marketStructure(series, idx, len = 8) {
   const start = Math.max(1, idx - len + 1);
-  let bullish = 0;
-  let bearish = 0;
-  let comparisons = 0;
+  let bullish = 0, bearish = 0, comparisons = 0;
   for (let i = start; i <= idx; i++) {
-    const current = series[i];
-    const prev = series[i - 1];
+    const current = series[i], prev = series[i - 1];
     if (!current || !prev) continue;
-    const hh = Number(current.h) > Number(prev.h);
-    const hl = Number(current.l) > Number(prev.l);
-    const lh = Number(current.h) < Number(prev.h);
-    const ll = Number(current.l) < Number(prev.l);
-    if (hh && hl) bullish += 1;
-    if (lh && ll) bearish += 1;
+    if (Number(current.h) > Number(prev.h) && Number(current.l) > Number(prev.l)) bullish += 1;
+    if (Number(current.h) < Number(prev.h) && Number(current.l) < Number(prev.l)) bearish += 1;
     comparisons += 1;
   }
-  const score = comparisons ? (bullish - bearish) / comparisons : 0;
-  return { bullish, bearish, comparisons, score: clamp(score, -1, 1) };
+  return { bullish, bearish, comparisons, score:clamp(comparisons ? (bullish - bearish) / comparisons : 0, -1, 1) };
 }
 
 export function percentileRank(values, current) {
   const finite = values.map(Number).filter(Number.isFinite);
   if (!finite.length || !Number.isFinite(Number(current))) return 50;
-  const belowOrEqual = finite.filter(value => value <= current).length;
-  return clamp((belowOrEqual / finite.length) * 100, 0, 100);
+  return clamp(finite.filter(value => value <= current).length / finite.length * 100, 0, 100);
 }
 
 export function rollingMetricPercentile(series, idx, lookback, metric) {
@@ -246,27 +228,13 @@ export function buildKnowledgeFeatures(series, idx) {
   const rvPercentile = rollingMetricPercentile(series, idx, 100, (s, i) => realizedVolPct(s, i, 20));
   const bbWidthPercentile = rollingMetricPercentile(series, idx, 100, (s, i) => bollinger(s, i, 20, 2).widthPct);
   return {
-    idx,
-    price,
-    fast,
-    slow,
-    fastSlopePct: fastPrev ? (fast / fastPrev - 1) * 100 : 0,
-    slowSlopePct: slowPrev ? (slow / slowPrev - 1) * 100 : 0,
-    rsi14,
-    atr14Pct,
-    atrPercentile,
-    macd: macdValue,
-    bollinger: bb,
-    stochastic14: stoch,
-    dmi,
-    donchian: channel,
-    roc6Pct: roc6,
-    roc24Pct: roc24,
-    realizedVol20Pct: rv20Pct,
-    realizedVolPercentile: rvPercentile,
-    obvSlopeNormalized: obvSlope,
-    volumeZScore: volumeZ,
-    marketStructure: structure,
-    bbWidthPercentile,
+    idx, price, fast, slow,
+    fastSlopePct:fastPrev ? (fast / fastPrev - 1) * 100 : 0,
+    slowSlopePct:slowPrev ? (slow / slowPrev - 1) * 100 : 0,
+    rsi14, atr14Pct, atrPercentile,
+    macd:macdValue, bollinger:bb, stochastic14:stoch, dmi, donchian:channel,
+    roc6Pct:roc6, roc24Pct:roc24,
+    realizedVol20Pct:rv20Pct, realizedVolPercentile:rvPercentile,
+    obvSlopeNormalized:obvSlope, volumeZScore:volumeZ, marketStructure:structure, bbWidthPercentile,
   };
 }
