@@ -1,0 +1,227 @@
+import { getLoadedBTCUSD4H } from '../data/market-data-provider.js';
+import { ExecutionEngine } from '../engine/execution-engine.js';
+import { HumanKnowledgeEngine } from '../knowledge/human-knowledge-engine.js';
+import { HUMAN_KNOWLEDGE_REGISTRY, getKnowledgeRegistrySnapshot } from '../knowledge/knowledge-registry.js';
+import { runKnowledgeShadow } from './knowledge-shadow-runner.js';
+import { setLatestKnowledgeEvaluation } from './knowledge-state.js';
+
+let initialized = false;
+
+const escapeHtml = value => String(value ?? '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
+
+function ensureStylesheet() {
+  if (document.querySelector('link[data-human-knowledge-style]')) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = './human-knowledge.css';
+  link.dataset.humanKnowledgeStyle = 'true';
+  document.head.appendChild(link);
+}
+
+function fmt(value, suffix = '', signed = false) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '—';
+  const prefix = signed && number > 0 ? '+' : '';
+  return `${prefix}${number.toFixed(Math.abs(number) >= 100 ? 0 : 2)}${suffix}`;
+}
+
+function template() {
+  const directional = HUMAN_KNOWLEDGE_REGISTRY.items.filter(item => item.role === 'alpha').length;
+  const context = HUMAN_KNOWLEDGE_REGISTRY.items.filter(item => item.role !== 'alpha').length;
+  return `
+    <div id="humanKnowledgeSection" class="human-knowledge-section" aria-labelledby="humanKnowledgeTitle">
+      <div class="human-knowledge-head">
+        <div>
+          <div class="section-kicker">Human Trading Knowledge Engine</div>
+          <h3 id="humanKnowledgeTitle">人類のトレード知識を、役割別Expertとしてコード化</h3>
+          <p id="humanKnowledgeMeta" class="human-knowledge-meta">BTC/USD 4H実市場データを待っています。</p>
+        </div>
+        <span id="humanKnowledgeStatus" class="human-knowledge-status pending">RESEARCH ONLY</span>
+      </div>
+
+      <div class="human-knowledge-strip">
+        <span><small>Registry</small><b>${HUMAN_KNOWLEDGE_REGISTRY.items.length} rules</b></span>
+        <span><small>Directional</small><b>${directional} experts</b></span>
+        <span><small>Context</small><b>${context} rules</b></span>
+        <span><small>Families</small><b>5 normalized</b></span>
+        <span><small>Champion</small><b>UNCHANGED</b></span>
+      </div>
+
+      <div class="human-knowledge-now">
+        <div class="human-knowledge-primary">
+          <small>Knowledge Shadow 現在判断</small>
+          <b id="humanKnowledgeDecision">計算待ち</b>
+          <span id="humanKnowledgeScore">score —</span>
+        </div>
+        <div class="human-knowledge-context">
+          <span><small>Regime</small><b id="humanKnowledgeRegime">—</b></span>
+          <span><small>Risk Gate</small><b id="humanKnowledgeRisk">—</b></span>
+          <span><small>Family agree</small><b id="humanKnowledgeAgreement">—</b></span>
+          <span><small>3-bar Shadow</small><b id="humanKnowledgeReturn">—</b></span>
+        </div>
+      </div>
+
+      <div class="human-family-grid" id="humanFamilyGrid"></div>
+
+      <div class="human-expert-columns">
+        <div>
+          <h4>支持Expert</h4>
+          <div id="humanSupportExperts" class="human-expert-list"></div>
+        </div>
+        <div>
+          <h4>反対Expert</h4>
+          <div id="humanOpposeExperts" class="human-expert-list"></div>
+        </div>
+      </div>
+
+      <div class="human-knowledge-performance" id="humanKnowledgePerformance"></div>
+      <div class="research-evaluation-note human-knowledge-note">
+        Wave 1は、MA / MACD / DMI-ADX / ROC / RSI / Stochastic / Bollinger Z / Donchian / HH-HL構造 / OBV / Volume spike / ATR / Realized Volatilityなどを透明なルールとして実装しています。似た指標を大量追加してTrend票だけが肥大化しないよう、Expert数ではなく5つのFamilyを等価に正規化します。RegimeとRiskは方向投票に混ぜません。このKnowledge Shadowは同一履歴上の研究候補であり、期待収益・校正済み確率・edgeの証明ではありません。Champion、Live Forward、Forward Evidenceには一切入力しません。
+      </div>
+    </div>
+  `;
+}
+
+function insertSection() {
+  if (document.getElementById('humanKnowledgeSection')) return true;
+  const card = document.getElementById('researchEvaluationCard');
+  if (!card) return false;
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = template().trim();
+  const section = wrapper.firstElementChild;
+  const nullSection = card.querySelector('.null-control-section');
+  if (nullSection) card.insertBefore(section, nullSection);
+  else card.appendChild(section);
+  return true;
+}
+
+function renderUnavailable(message) {
+  setLatestKnowledgeEvaluation(null);
+  const meta = document.getElementById('humanKnowledgeMeta');
+  const status = document.getElementById('humanKnowledgeStatus');
+  if (meta) meta.textContent = message;
+  if (status) {
+    status.className = 'human-knowledge-status unavailable';
+    status.textContent = 'UNAVAILABLE';
+  }
+}
+
+function render(snapshot, analysis, shadow, costBps) {
+  const decisionMap = { ENTER_LONG:'買い候補', ENTER_SHORT:'売り候補', NO_ENTRY:'NO ENTRY' };
+  const status = document.getElementById('humanKnowledgeStatus');
+  const meta = document.getElementById('humanKnowledgeMeta');
+  const decision = document.getElementById('humanKnowledgeDecision');
+  const score = document.getElementById('humanKnowledgeScore');
+  const regime = document.getElementById('humanKnowledgeRegime');
+  const risk = document.getElementById('humanKnowledgeRisk');
+  const agreement = document.getElementById('humanKnowledgeAgreement');
+  const ret = document.getElementById('humanKnowledgeReturn');
+  const families = document.getElementById('humanFamilyGrid');
+  const support = document.getElementById('humanSupportExperts');
+  const oppose = document.getElementById('humanOpposeExperts');
+  const performance = document.getElementById('humanKnowledgePerformance');
+  if (!status || !meta || !decision || !families) return;
+
+  status.className = 'human-knowledge-status research-only';
+  status.textContent = 'RESEARCH ONLY';
+  meta.textContent = `${snapshot.meta.label} / ${analysis.experts.length} directional experts / cost ${fmt(costBps, 'bp')} / ${snapshot.meta.signature}`;
+  decision.textContent = decisionMap[analysis.entryDecision] || analysis.entryDecision;
+  decision.className = `decision-${analysis.entryDecision === 'ENTER_LONG' ? 'long' : analysis.entryDecision === 'ENTER_SHORT' ? 'short' : 'wait'}`;
+  score.textContent = `Knowledge score ${fmt(analysis.knowledgeScore, '', true)} / confidence score ${fmt(analysis.confidenceScore)}`;
+  regime.textContent = analysis.context.regime;
+  risk.textContent = `${analysis.context.riskGate} ${fmt(analysis.context.riskScore)}`;
+  agreement.textContent = fmt(analysis.familyAgreement * 100, '%');
+  ret.textContent = fmt(shadow.summary.returnPct, '%', true);
+
+  families.innerHTML = Object.entries(analysis.families).map(([name, item]) => `
+    <div class="human-family-card">
+      <small>${escapeHtml(name)}</small>
+      <b class="${item.score > 8 ? 'positive' : item.score < -8 ? 'negative' : ''}">${fmt(item.score, '', true)}</b>
+      <span>${item.memberCount} experts</span>
+    </div>
+  `).join('');
+
+  const expertRows = list => list.map(item => `
+    <div class="human-expert-row">
+      <span><b>${escapeHtml(item.label)}</b><small>${escapeHtml(item.family)}</small></span>
+      <strong class="${item.score > 8 ? 'positive' : item.score < -8 ? 'negative' : ''}">${fmt(item.score, '', true)}</strong>
+    </div>
+  `).join('');
+  support.innerHTML = expertRows(analysis.topSupport);
+  oppose.innerHTML = expertRows(analysis.topOpposition);
+
+  const s = shadow.summary;
+  performance.innerHTML = `
+    <span><small>Research trades</small><b>${s.trades}</b></span>
+    <span><small>Return</small><b>${fmt(s.returnPct, '%', true)}</b></span>
+    <span><small>Avg net</small><b>${fmt(s.avgNetBps, 'bp', true)}</b></span>
+    <span><small>Win rate</small><b>${fmt(s.winRatePct, '%')}</b></span>
+    <span><small>PF</small><b>${fmt(s.profitFactor)}</b></span>
+    <span><small>MaxDD</small><b>${fmt(s.maxDrawdownPct, '%')}</b></span>
+  `;
+
+  setLatestKnowledgeEvaluation({
+    registry: getKnowledgeRegistrySnapshot(),
+    latestAnalysis: analysis,
+    shadowEvaluation: shadow,
+    dataMeta: snapshot.meta,
+    estimatedRoundTripCostBps: costBps,
+  });
+}
+
+function evaluate(snapshot) {
+  if (!snapshot?.series || !snapshot?.meta?.researchEligible) {
+    renderUnavailable('SyntheticデータはHuman Knowledge研究評価の対象外です。');
+    return;
+  }
+  const idx = snapshot.series.length - 1;
+  const engine = new HumanKnowledgeEngine();
+  const analysis = engine.analyze(snapshot.series, idx);
+  if (analysis.status !== 'complete') {
+    renderUnavailable('Knowledge Engineに必要な履歴が不足しています。');
+    return;
+  }
+  const execution = new ExecutionEngine({ random:() => .5, analyze:() => ({}) });
+  const costBps = execution.estimateRoundTripCostBps('BTCUSD');
+  const shadow = runKnowledgeShadow({
+    series: snapshot.series,
+    endIndex: idx,
+    estimatedRoundTripCostBps: costBps,
+    dataSignature: snapshot.meta.signature,
+  });
+  if (shadow.status !== 'complete') {
+    renderUnavailable(`Knowledge Shadow停止: ${shadow.reason || shadow.status}`);
+    return;
+  }
+  render(snapshot, analysis, shadow, costBps);
+}
+
+async function waitForSnapshot() {
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const snapshot = getLoadedBTCUSD4H();
+    if (snapshot?.series && snapshot?.meta) {
+      evaluate(snapshot);
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  renderUnavailable('BTC/USD 4H市場データの読み込みがタイムアウトしました。');
+}
+
+export function setupHumanKnowledgeUI() {
+  if (initialized) return;
+  initialized = true;
+  ensureStylesheet();
+  if (!insertSection()) {
+    setTimeout(() => {
+      if (insertSection()) waitForSnapshot();
+    }, 0);
+    return;
+  }
+  waitForSnapshot();
+}

@@ -59,6 +59,25 @@ const challengerEvaluation = {
   methodology: { automaticPromotion: false, promotionEligible: false },
   results: [{ id: 'champion-001' }, { id: 'challenger-001-stricter-entry' }],
 };
+const knowledgeEvaluation = {
+  registry: {
+    version: 'human-knowledge-registry-0.1',
+    philosophy: { adaptiveWeights: false, automaticPromotion: false },
+    items: [{ id: 'TREND_MACD_001', researchOnly: true }],
+  },
+  latestAnalysis: {
+    version: 'human-knowledge-wave1-0.1',
+    knowledgeScore: 17.5,
+    scoreIsExpectedReturn: false,
+    confidenceIsCalibratedProbability: false,
+    governance: { championMutation: false, usedByLiveDecisionEngine: false, usedByForwardEvidence: false },
+  },
+  shadowEvaluation: {
+    version: 'knowledge-shadow-0.1',
+    status: 'complete',
+    methodology: { sameSeriesDiagnosticOnly: true, championMutation: false },
+  },
+};
 const walkForwardEvaluation = {
   version: 'walk-forward-0.1',
   status: 'complete',
@@ -97,19 +116,23 @@ const jsonText = buildResearchJson({
   baselineEvaluation: { status: 'complete', results: [] },
   strategyRegistry,
   challengerEvaluation,
+  knowledgeEvaluation,
   walkForwardEvaluation,
   forwardDemoEvaluation,
   nullMarketEvaluation,
   dataMeta: { provider: 'Kraken public OHLC' },
 });
 const parsed = JSON.parse(jsonText);
-assert.equal(parsed.exportVersion, 'research-export-0.5');
+assert.equal(parsed.exportVersion, 'research-export-0.6');
 assert.equal(parsed.eventCount, 1);
 assert.equal(parsed.decisionEvents[0].eventId, '=unsafe-event-id');
 assert.equal(parsed.baselineEvaluation.status, 'complete');
 assert.equal(parsed.strategyRegistry.champion.id, 'champion-001');
 assert.equal(parsed.strategyRegistry.governance.automaticPromotion, false);
 assert.equal(parsed.challengerEvaluation.methodology.promotionEligible, false);
+assert.equal(parsed.knowledgeEvaluation.registry.version, 'human-knowledge-registry-0.1');
+assert.equal(parsed.knowledgeEvaluation.latestAnalysis.scoreIsExpectedReturn, false);
+assert.equal(parsed.knowledgeEvaluation.latestAnalysis.governance.usedByLiveDecisionEngine, false);
 assert.equal(parsed.walkForwardEvaluation.version, 'walk-forward-0.1');
 assert.equal(parsed.walkForwardEvaluation.methodology.embargoBars, 3);
 assert.equal(parsed.walkForwardEvaluation.methodology.pristineUntouchedOOS, false);
@@ -121,6 +144,8 @@ assert.equal(parsed.nullMarketEvaluation.version, 'null-market-controls-0.1');
 assert.equal(parsed.nullMarketEvaluation.methodology.formalPValue, false);
 assert.ok(parsed.notes.some(note => note.includes('not IID')));
 assert.ok(parsed.notes.some(note => note.includes('automatically promote')));
+assert.ok(parsed.notes.some(note => note.includes('Human Trading Knowledge Engine')));
+assert.ok(parsed.notes.some(note => note.includes('expected return')));
 assert.ok(parsed.notes.some(note => note.includes('holdout diagnostic')));
 assert.ok(parsed.notes.some(note => note.includes('Prospective Forward Demo')));
 assert.ok(parsed.notes.some(note => note.includes('strictly after')));

@@ -84,7 +84,10 @@ for (const marker of [
 }
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-if (pkg.version !== '0.10.0') fail(`package version expected 0.10.0, got ${pkg.version}`);
+const [major, minor] = String(pkg.version || '').split('.').map(Number);
+if (!(major === 0 && Number.isFinite(minor) && minor >= 10)) {
+  fail(`package version must preserve v0.10+ Live Forward contract, got ${pkg.version}`);
+}
 if (!pkg.scripts?.test?.includes('test-live-forward.mjs')) fail('npm test does not run live-forward regression tests');
 
-if (!process.exitCode) console.log('Live Forward v0.10 integrity validation passed.');
+if (!process.exitCode) console.log(`Live Forward v0.10 contract integrity validation passed under package ${pkg.version}.`);
