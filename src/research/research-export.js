@@ -1,4 +1,6 @@
-export const RESEARCH_EXPORT_VERSION = 'research-export-0.3';
+import { getLatestWalkForwardEvaluation } from './walk-forward-state.js';
+
+export const RESEARCH_EXPORT_VERSION = 'research-export-0.4';
 
 const round = (value, digits = 4) => {
   if (value === null || value === undefined || value === '') return '';
@@ -89,9 +91,13 @@ export function buildResearchJson({
   baselineEvaluation = null,
   strategyRegistry = null,
   challengerEvaluation = null,
+  walkForwardEvaluation = undefined,
   nullMarketEvaluation = null,
   dataMeta = null,
 } = {}) {
+  const resolvedWalkForward = walkForwardEvaluation === undefined
+    ? getLatestWalkForwardEvaluation()
+    : walkForwardEvaluation;
   return JSON.stringify({
     exportVersion: RESEARCH_EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
@@ -100,15 +106,17 @@ export function buildResearchJson({
       'DecisionEvent counterfactual outcomes from the same event are clustered observations and are not IID samples.',
       'Baseline evaluation is a descriptive same-series comparator and is not proof of a reproducible edge.',
       'Strategy Registry Challenger results are same-series Shadow diagnostics only and cannot automatically promote or mutate the frozen Champion.',
-      'Future Champion promotion requires predeclared hypothesis, out-of-sample validation, negative-control review, forward-demo observation, and human approval.',
+      'Chronological walk-forward uses frozen strategies, three ordered test folds, and a 3-bar embargo with no fitting; because this historical series has already been inspected by same-series research views, it is a holdout diagnostic rather than pristine untouched OOS proof.',
+      'Future Champion promotion still requires negative-control review, genuinely forward demo observation, and human approval.',
       'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values or proof of statistical significance.',
-      'Null-transformed series, Challenger outputs, and signal-shift outcomes are never inputs to the live/demo decision engine.',
+      'Null-transformed series, Challenger outputs, walk-forward diagnostics, and signal-shift outcomes are never inputs to the live/demo decision engine.',
       'Synthetic market data is not research eligible.',
     ],
     dataMeta,
     baselineEvaluation,
     strategyRegistry,
     challengerEvaluation,
+    walkForwardEvaluation: resolvedWalkForward,
     nullMarketEvaluation,
     decisionEvents: events,
   }, null, 2);
