@@ -7,7 +7,7 @@ const required=[
   'index.html','styles.css','ui-hotfix.css','manifest.webmanifest','sw.js',
   'src/app.js','src/config.js','src/pwa.js',
   'src/data/market-data-provider.js','src/research/decision-event-log.js',
-  'src/engine/indicators.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js',
+  'src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js',
   'assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png','assets/icons/apple-touch-icon.png'
 ];
 for(const file of required){if(!fs.existsSync(path.join(root,file)))fail(`missing required file: ${file}`)}
@@ -19,7 +19,13 @@ for(const marker of ['VoiceTrader','VoiceTrader Demo v0.4 Research','id="dataSou
 for(const m of html.matchAll(/(?:src|href)="\.\/([^"#?]+)"/g)){if(!fs.existsSync(path.join(root,m[1])))fail(`HTML references missing file: ${m[1]}`)}
 JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-for(const file of ['index.html','styles.css','ui-hotfix.css','manifest.webmanifest','src/app.js','src/config.js','src/pwa.js','src/data/market-data-provider.js','src/research/decision-event-log.js','src/engine/indicators.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png']){if(!sw.includes(`./${file}`))fail(`service worker cache missing: ${file}`)}
+for(const file of ['index.html','styles.css','ui-hotfix.css','manifest.webmanifest','src/app.js','src/config.js','src/pwa.js','src/data/market-data-provider.js','src/research/decision-event-log.js','src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png']){if(!sw.includes(`./${file}`))fail(`service worker cache missing: ${file}`)}
 const app=fs.readFileSync(path.join(root,'src/app.js'),'utf8');
 for(const marker of ['loadBTCUSD4H','DecisionEventLogger','buildDecisionEvent','estimateRoundTripCostBps']){if(!app.includes(marker))fail(`src/app.js missing v0.4 marker: ${marker}`)}
-if(!process.exitCode)console.log('PWA v0.4 research integrity validation passed.');
+const shadow=fs.readFileSync(path.join(root,'src/engine/shadow-engine.js'),'utf8');
+for(const marker of ['runAlphaExperts','entryDecision','experts: expertSet']){if(!shadow.includes(marker))fail(`shadow-engine.js missing policy/expert marker: ${marker}`)}
+const policy=fs.readFileSync(path.join(root,'src/engine/decision-policy.js'),'utf8');
+for(const marker of ['ENTER_LONG','ENTER_SHORT','NO_ENTRY','HOLD','EXIT_SIGNAL']){if(!policy.includes(marker))fail(`decision-policy.js missing state: ${marker}`)}
+const experts=fs.readFileSync(path.join(root,'src/engine/experts.js'),'utf8');
+for(const marker of ['Trend Expert','Momentum Expert','Breakout Expert','EXPERT_WEIGHTS']){if(!experts.includes(marker))fail(`experts.js missing fixed Expert marker: ${marker}`)}
+if(!process.exitCode)console.log('PWA v0.4.1 policy/expert integrity validation passed.');
