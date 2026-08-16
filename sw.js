@@ -1,4 +1,4 @@
-const CACHE_NAME='voicetrader-shell-v0.11-human-knowledge';
+const CACHE_NAME='voicetrader-shell-v0.9-forward-epoch-v0.10-live-forward-v0.11-human-knowledge';
 const APP_SHELL=[
   './','./index.html','./styles.css','./ui-hotfix.css','./ui-layout.css','./ui-viewport.css','./research-evaluation.css','./walk-forward.css','./forward-demo.css','./live-forward.css','./human-knowledge.css','./manifest.webmanifest',
   './src/app.js','./src/config.js','./src/pwa.js',
