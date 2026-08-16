@@ -4,9 +4,9 @@ import path from 'node:path';
 const root=process.cwd();
 const fail=m=>{console.error(`PWA validation failed: ${m}`);process.exitCode=1;};
 const required=[
-  'index.html','styles.css','ui-hotfix.css','ui-layout.css','ui-viewport.css','research-evaluation.css','walk-forward.css','manifest.webmanifest','sw.js',
+  'index.html','styles.css','ui-hotfix.css','ui-layout.css','ui-viewport.css','research-evaluation.css','walk-forward.css','forward-demo.css','manifest.webmanifest','sw.js',
   'src/app.js','src/config.js','src/pwa.js',
-  'src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/null-market-runner.js','src/research/strategy-registry.js','src/research/challenger-runner.js','src/research/walk-forward-runner.js','src/research/walk-forward-state.js','src/research/walk-forward-ui.js','src/research/research-export.js','src/research/research-evaluation-ui.js',
+  'src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/null-market-runner.js','src/research/strategy-registry.js','src/research/challenger-runner.js','src/research/walk-forward-runner.js','src/research/walk-forward-state.js','src/research/walk-forward-ui.js','src/research/forward-epoch.js','src/research/forward-demo-runner.js','src/research/forward-evidence-store.js','src/research/forward-demo-state.js','src/research/forward-demo-ui.js','src/research/research-export.js','src/research/research-evaluation-ui.js',
   'src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js',
   'assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png','assets/icons/apple-touch-icon.png'
 ];
@@ -22,7 +22,8 @@ for(const marker of [
 for(const m of html.matchAll(/(?:src|href)="\.\/([^"#?]+)"/g)){if(!fs.existsSync(path.join(root,m[1])))fail(`HTML references missing file: ${m[1]}`)}
 JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8'));
 const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-for(const file of ['index.html','styles.css','ui-hotfix.css','ui-layout.css','ui-viewport.css','research-evaluation.css','walk-forward.css','manifest.webmanifest','src/app.js','src/config.js','src/pwa.js','src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/null-market-runner.js','src/research/strategy-registry.js','src/research/challenger-runner.js','src/research/walk-forward-runner.js','src/research/walk-forward-state.js','src/research/walk-forward-ui.js','src/research/research-export.js','src/research/research-evaluation-ui.js','src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png']){if(!sw.includes(`./${file}`))fail(`service worker cache missing: ${file}`)}
+for(const file of ['index.html','styles.css','ui-hotfix.css','ui-layout.css','ui-viewport.css','research-evaluation.css','walk-forward.css','forward-demo.css','manifest.webmanifest','src/app.js','src/config.js','src/pwa.js','src/data/market-data-provider.js','src/research/decision-event-log.js','src/research/counterfactual-shadow.js','src/research/baseline-runner.js','src/research/null-market-runner.js','src/research/strategy-registry.js','src/research/challenger-runner.js','src/research/walk-forward-runner.js','src/research/walk-forward-state.js','src/research/walk-forward-ui.js','src/research/forward-epoch.js','src/research/forward-demo-runner.js','src/research/forward-evidence-store.js','src/research/forward-demo-state.js','src/research/forward-demo-ui.js','src/research/research-export.js','src/research/research-evaluation-ui.js','src/engine/indicators.js','src/engine/experts.js','src/engine/decision-policy.js','src/engine/shadow-engine.js','src/engine/execution-engine.js','src/engine/ai-provider.js','assets/icons/icon-192.png','assets/icons/icon-512.png','assets/icons/icon-maskable-512.png']){if(!sw.includes(`./${file}`))fail(`service worker cache missing: ${file}`)}
+if(!sw.includes('voicetrader-shell-v0.9-forward-epoch'))fail('service worker cache version is not v0.9 forward epoch');
 const layout=fs.readFileSync(path.join(root,'ui-layout.css'),'utf8');
 for(const marker of ['.topbar-main','.topbar-lower','.trade-context','.mode-control','.runtime-meta','--control-h:46px','@media (max-width:760px)']){if(!layout.includes(marker))fail(`ui-layout.css missing hierarchy/responsive marker: ${marker}`)}
 const viewport=fs.readFileSync(path.join(root,'ui-viewport.css'),'utf8');
@@ -30,7 +31,7 @@ for(const marker of ['align-items:stretch','@media (min-width:1101px) and (max-h
 const app=fs.readFileSync(path.join(root,'src/app.js'),'utf8');
 for(const marker of ['loadBTCUSD4H','DecisionEventLogger','buildDecisionEvent','estimateRoundTripCostBps']){if(!app.includes(marker))fail(`src/app.js missing v0.4 marker: ${marker}`)}
 const pwa=fs.readFileSync(path.join(root,'src/pwa.js'),'utf8');
-for(const marker of ['setupResearchEvaluationUI','./research/research-evaluation-ui.js','setupWalkForwardUI','./research/walk-forward-ui.js']){if(!pwa.includes(marker))fail(`src/pwa.js missing research UI bootstrap marker: ${marker}`)}
+for(const marker of ['setupResearchEvaluationUI','./research/research-evaluation-ui.js','setupWalkForwardUI','./research/walk-forward-ui.js','setupForwardDemoUI','./research/forward-demo-ui.js']){if(!pwa.includes(marker))fail(`src/pwa.js missing research UI bootstrap marker: ${marker}`)}
 const shadow=fs.readFileSync(path.join(root,'src/engine/shadow-engine.js'),'utf8');
 for(const marker of ['runAlphaExperts','entryDecision','experts: expertSet']){if(!shadow.includes(marker))fail(`shadow-engine.js missing policy/expert marker: ${marker}`)}
 const policy=fs.readFileSync(path.join(root,'src/engine/decision-policy.js'),'utf8');
@@ -55,12 +56,24 @@ const walkState=fs.readFileSync(path.join(root,'src/research/walk-forward-state.
 for(const marker of ['setLatestWalkForwardEvaluation','getLatestWalkForwardEvaluation']){if(!walkState.includes(marker))fail(`walk-forward-state.js missing marker: ${marker}`)}
 const walkUi=fs.readFileSync(path.join(root,'src/research/walk-forward-ui.js'),'utf8');
 for(const marker of ['Chronological Holdout','時系列を分けても成績は残る？','Embargo','pristineな未使用OOS証明ではなく時系列Holdout診断','runWalkForwardEvaluation','setLatestWalkForwardEvaluation']){if(!walkUi.includes(marker))fail(`walk-forward-ui.js missing v0.8 UI/safety marker: ${marker}`)}
+const epoch=fs.readFileSync(path.join(root,'src/research/forward-epoch.js'),'utf8');
+for(const marker of ['FORWARD_EPOCH_VERSION','forward-001','2026-08-16T14:27:00Z','1786890420','frozenCodeBaseCommit','d81aa5e0d480b7d8e94cf86307d83cf6c858a128','champion-001','challenger-001-stricter-entry','challenger-002-trend-tilt','challenger-003-momentum-confirm','automaticPromotion: false','promotionEligible: false']){if(!epoch.includes(marker))fail(`forward-epoch.js missing frozen provenance marker: ${marker}`)}
+const forwardRunner=fs.readFileSync(path.join(root,'src/research/forward-demo-runner.js'),'utf8');
+for(const marker of ['FORWARD_DEMO_VERSION','getPostFreezeBarIndexes','runProspectiveForwardSnapshot','entryTimestampStrictlyAfterFreeze: true','preFreezeBarsUsedForIndicatorsOnly: true','deterministicExpectedCost: true','automaticPromotion: false','promotionEligible: false','usedByLiveDecisionEngine: false','frozen-runtime-version-mismatch']){if(!forwardRunner.includes(marker))fail(`forward-demo-runner.js missing prospective guardrail marker: ${marker}`)}
+const forwardStore=fs.readFileSync(path.join(root,'src/research/forward-evidence-store.js'),'utf8');
+for(const marker of ['FORWARD_EVIDENCE_STORE_VERSION','mergeForwardEvidence','buildResumeAfterByStrategy','detectObservedBarGaps','evidenceKey','observedBarTimes']){if(!forwardStore.includes(marker))fail(`forward-evidence-store.js missing archive marker: ${marker}`)}
+const forwardState=fs.readFileSync(path.join(root,'src/research/forward-demo-state.js'),'utf8');
+for(const marker of ['setLatestForwardDemoEvaluation','getLatestForwardDemoEvaluation']){if(!forwardState.includes(marker))fail(`forward-demo-state.js missing marker: ${marker}`)}
+const forwardUi=fs.readFileSync(path.join(root,'src/research/forward-demo-ui.js'),'utf8');
+for(const marker of ['Prospective Forward Demo','凍結後に来た新しい足だけでも残る？','2026-08-16 23:27 JST','ForwardEvidenceStore','runProspectiveForwardSnapshot','setLatestForwardDemoEvaluation','自動昇格']){if(!forwardUi.includes(marker))fail(`forward-demo-ui.js missing v0.9 UI/safety marker: ${marker}`)}
 const researchExport=fs.readFileSync(path.join(root,'src/research/research-export.js'),'utf8');
-for(const marker of ['research-export-0.4','researchEventsToCsv','buildResearchJson','strategyRegistry','challengerEvaluation','walkForwardEvaluation','getLatestWalkForwardEvaluation','holdout diagnostic','nullMarketEvaluation','Null95','not IID']){if(!researchExport.includes(marker))fail(`research-export.js missing v0.8 export marker: ${marker}`)}
+for(const marker of ['research-export-0.5','researchEventsToCsv','buildResearchJson','strategyRegistry','challengerEvaluation','walkForwardEvaluation','getLatestWalkForwardEvaluation','forwardDemoEvaluation','getLatestForwardDemoEvaluation','forward-001','Null95','not IID']){if(!researchExport.includes(marker))fail(`research-export.js missing v0.9 export marker: ${marker}`)}
 const researchUi=fs.readFileSync(path.join(root,'src/research/research-evaluation-ui.js'),'utf8');
 for(const marker of ['Championは単純戦略より強い？','固定ChampionとChallenger Shadow','存在しないedgeまで発見していない？','runChallengerShadow','getStrategyRegistrySnapshot','自動昇格','runNullMarketControls','正式なp値']){if(!researchUi.includes(marker))fail(`research-evaluation-ui.js missing v0.7 UI/safety marker: ${marker}`)}
 const researchCss=fs.readFileSync(path.join(root,'research-evaluation.css'),'utf8');
 for(const marker of ['.research-evaluation-card','.baseline-row.champion','.research-export-btn','.challenger-section','.challenger-row.champion','.challenger-status.research-only','.null-control-section','.null-control-row','.null-diagnostic.clean','@media (max-width:760px)']){if(!researchCss.includes(marker))fail(`research-evaluation.css missing v0.7 layout marker: ${marker}`)}
 const walkCss=fs.readFileSync(path.join(root,'walk-forward.css'),'utf8');
 for(const marker of ['.walk-forward-section','.walk-forward-row.champion','.walk-forward-status.diagnostic','.walk-forward-folds','@media (max-width:760px)']){if(!walkCss.includes(marker))fail(`walk-forward.css missing v0.8 layout marker: ${marker}`)}
-if(!process.exitCode)console.log('PWA v0.8 chronological holdout / walk-forward integrity validation passed.');
+const forwardCss=fs.readFileSync(path.join(root,'forward-demo.css'),'utf8');
+for(const marker of ['.forward-demo-section','.forward-demo-row.champion','.forward-demo-status.collecting','.forward-epoch-strip','.continuity-warning','@media (max-width:760px)']){if(!forwardCss.includes(marker))fail(`forward-demo.css missing v0.9 layout marker: ${marker}`)}
+if(!process.exitCode)console.log('PWA v0.9 prospective Forward Demo epoch integrity validation passed.');

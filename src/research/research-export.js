@@ -1,6 +1,7 @@
 import { getLatestWalkForwardEvaluation } from './walk-forward-state.js';
+import { getLatestForwardDemoEvaluation } from './forward-demo-state.js';
 
-export const RESEARCH_EXPORT_VERSION = 'research-export-0.4';
+export const RESEARCH_EXPORT_VERSION = 'research-export-0.5';
 
 const round = (value, digits = 4) => {
   if (value === null || value === undefined || value === '') return '';
@@ -92,12 +93,16 @@ export function buildResearchJson({
   strategyRegistry = null,
   challengerEvaluation = null,
   walkForwardEvaluation = undefined,
+  forwardDemoEvaluation = undefined,
   nullMarketEvaluation = null,
   dataMeta = null,
 } = {}) {
   const resolvedWalkForward = walkForwardEvaluation === undefined
     ? getLatestWalkForwardEvaluation()
     : walkForwardEvaluation;
+  const resolvedForwardDemo = forwardDemoEvaluation === undefined
+    ? getLatestForwardDemoEvaluation()
+    : forwardDemoEvaluation;
   return JSON.stringify({
     exportVersion: RESEARCH_EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
@@ -107,9 +112,11 @@ export function buildResearchJson({
       'Baseline evaluation is a descriptive same-series comparator and is not proof of a reproducible edge.',
       'Strategy Registry Challenger results are same-series Shadow diagnostics only and cannot automatically promote or mutate the frozen Champion.',
       'Chronological walk-forward uses frozen strategies, three ordered test folds, and a 3-bar embargo with no fitting; because this historical series has already been inspected by same-series research views, it is a holdout diagnostic rather than pristine untouched OOS proof.',
-      'Future Champion promotion still requires negative-control review, genuinely forward demo observation, and human approval.',
+      'Prospective Forward Demo epoch forward-001 is frozen at 2026-08-16T14:27:00Z; only fully closed 4H candles whose open timestamp is strictly after that boundary may contribute Forward P&L evidence.',
+      'Forward evidence is stored locally in this browser and deduplicated by epoch/strategy/entry/exit key. Clearing site storage can remove the local archive, so JSON exports should be retained for durable evidence.',
+      'Forward Demo evidence is necessary but not sufficient for future Champion promotion; negative-control review and human approval remain required.',
       'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values or proof of statistical significance.',
-      'Null-transformed series, Challenger outputs, walk-forward diagnostics, and signal-shift outcomes are never inputs to the live/demo decision engine.',
+      'Null-transformed series, Challenger outputs, walk-forward diagnostics, Forward Demo diagnostics, and signal-shift outcomes are never inputs to the live/demo decision engine.',
       'Synthetic market data is not research eligible.',
     ],
     dataMeta,
@@ -117,6 +124,7 @@ export function buildResearchJson({
     strategyRegistry,
     challengerEvaluation,
     walkForwardEvaluation: resolvedWalkForward,
+    forwardDemoEvaluation: resolvedForwardDemo,
     nullMarketEvaluation,
     decisionEvents: events,
   }, null, 2);
