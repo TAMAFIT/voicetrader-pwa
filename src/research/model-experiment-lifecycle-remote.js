@@ -1,0 +1,19 @@
+import { auditModelExperimentLifecycleDocument, MODEL_EXPERIMENT_LIFECYCLE_DATA_BRANCH, MODEL_EXPERIMENT_LIFECYCLE_DATA_PATH, MODEL_EXPERIMENT_LIFECYCLE_VERSION } from './model-experiment-lifecycle.js';
+
+export const MODEL_EXPERIMENT_LIFECYCLE_REMOTE_VERSION='model-experiment-lifecycle-remote-0.1';
+export const MODEL_EXPERIMENT_LIFECYCLE_RAW_URL=`https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/${MODEL_EXPERIMENT_LIFECYCLE_DATA_BRANCH}/${MODEL_EXPERIMENT_LIFECYCLE_DATA_PATH}`;
+
+export async function fetchModelExperimentLifecycleDocument({fetchImpl=fetch,url=MODEL_EXPERIMENT_LIFECYCLE_RAW_URL,timeoutMs=5000}={}){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const response=await fetchImpl(url,{method:'GET',headers:{Accept:'application/json'},cache:'no-store',signal:controller.signal});
+    if(!response.ok)throw new Error(`model experiment lifecycle remote HTTP ${response.status}`);
+    const document=await response.json();
+    if(document?.schemaVersion!==MODEL_EXPERIMENT_LIFECYCLE_VERSION)throw new Error(`model experiment lifecycle schema mismatch: ${document?.schemaVersion||'missing'}`);
+    const audit=auditModelExperimentLifecycleDocument(document);
+    if(!audit.pass)throw new Error(`model experiment lifecycle audit failed: ${audit.errorCodes.join(',')}`);
+    if(document?.audit?.pass!==true)throw new Error(`model experiment lifecycle persisted audit not pass: ${document?.audit?.status||'missing'}`);
+    return {document:{...document,audit},error:null};
+  }catch(error){return {document:null,error:String(error?.message||error)};}
+  finally{clearTimeout(timer);}
+}
