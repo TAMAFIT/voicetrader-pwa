@@ -11,6 +11,7 @@ import { setupChampionPromotionUI } from './research/champion-promotion-ui.js';
 import { setupProspectiveObservatoryUI } from './research/prospective-observatory-ui.js';
 import { setupEthForwardUI } from './research/eth-forward-ui.js';
 import { setupProspectiveExperienceUI } from './research/prospective-experience-ui.js';
+import { setupLearningReadinessUI } from './research/learning-readiness-ui.js';
 import { setupWalkForwardUI } from './research/walk-forward-ui.js';
 import { setupForwardDemoUI } from './research/forward-demo-ui.js';
 import { setupLiveForwardTradingUI } from './live/live-forward-ui.js';
@@ -36,6 +37,7 @@ export function setupPWA() {
   setupProspectiveObservatoryUI();
   setupEthForwardUI();
   setupProspectiveExperienceUI();
+  setupLearningReadinessUI();
   setupWalkForwardUI();
   setupForwardDemoUI();
   setupLiveForwardTradingUI();
