@@ -1,0 +1,4 @@
+let latestKnowledgeForwardReplayAudit=null;
+
+export function setLatestKnowledgeForwardReplayAudit(value){latestKnowledgeForwardReplayAudit=value||null;return latestKnowledgeForwardReplayAudit;}
+export function getLatestKnowledgeForwardReplayAudit(){return latestKnowledgeForwardReplayAudit;}

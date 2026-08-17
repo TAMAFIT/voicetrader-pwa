@@ -1,6 +1,7 @@
 import { runKnowledgeForwardSnapshot } from './knowledge-forward-runner.js';
 import { mergeKnowledgeForwardArchive } from './knowledge-forward-store.js';
 import { KNOWLEDGE_FORWARD_EPOCH_ID } from './knowledge-forward-epoch.js';
+import { auditKnowledgeForwardRemoteDocument, KNOWLEDGE_FORWARD_REPLAY_AUDIT_VERSION } from './knowledge-forward-replay-audit.js';
 import {
   FROZEN_KNOWLEDGE_EVALUATOR_COMMIT,
   KRAKEN_SPOT_BTCUSD_4H_URL,
@@ -11,7 +12,8 @@ import {
   normalizeKrakenSpot4H,
 } from './knowledge-forward-remote.js';
 
-export const AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.1';
+export const AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.2-replay-audit';
+export const PREVIOUS_AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.1';
 
 function marketSignature(bars = []) {
   if (!bars.length) return 'kraken-spot-btcusd-4h-v1:empty';
@@ -33,12 +35,8 @@ export async function collectKnowledgeForwardAutonomously({
   workflowRunId=null,
   workflowRunAttempt=null,
 } = {}) {
-  if (existingDocument?.epochId && existingDocument.epochId !== KNOWLEDGE_FORWARD_EPOCH_ID) {
-    throw new Error('collector existing archive epoch mismatch');
-  }
-  if (existingDocument?.frozenEvaluatorCommit && existingDocument.frozenEvaluatorCommit !== FROZEN_KNOWLEDGE_EVALUATOR_COMMIT) {
-    throw new Error('collector existing archive evaluator mismatch');
-  }
+  if (existingDocument?.epochId && existingDocument.epochId !== KNOWLEDGE_FORWARD_EPOCH_ID) throw new Error('collector existing archive epoch mismatch');
+  if (existingDocument?.frozenEvaluatorCommit && existingDocument.frozenEvaluatorCommit !== FROZEN_KNOWLEDGE_EVALUATOR_COMMIT) throw new Error('collector existing archive evaluator mismatch');
   const normalizedExisting = normalizeKnowledgeForwardRemoteDocument(existingDocument);
   if (normalizedExisting.frozenEvaluatorCommit !== FROZEN_KNOWLEDGE_EVALUATOR_COMMIT) throw new Error('collector existing archive evaluator mismatch');
 
@@ -86,7 +84,16 @@ export async function collectKnowledgeForwardAutonomously({
       archivedEvidenceRecords:mergedEvidence.evidence.length,
       browserRequired:false,
       paidApiRequired:false,
+      replayAuditRequiredOnceProspectiveBarsExist:true,
     },
   };
-  return { document,prospective,marketMerge };
+  let replayAudit;
+  if ((mergedEvidence.observedBarTimes||[]).length) {
+    replayAudit=auditKnowledgeForwardRemoteDocument(document);
+    if (!replayAudit.pass) throw new Error(`knowledge-forward-replay-audit:${replayAudit.errorCodes.join(',')}`);
+  } else {
+    replayAudit={version:KNOWLEDGE_FORWARD_REPLAY_AUDIT_VERSION,status:'waiting',pass:false,errorCount:0,errorCodes:[],reason:'no-post-freeze-closed-bar-yet',checked:{marketBars:marketBars.length,observedBars:0,decisionRecords:0,evidenceRecords:0,sources:5},methodology:{replayRequiredOnceProspectiveBarsExist:true}};
+  }
+  document.audit={...replayAudit,checkedAt:runAtIso};
+  return { document,prospective,marketMerge,replayAudit };
 }
