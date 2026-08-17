@@ -2,7 +2,6 @@ import { runEthForwardSnapshot } from './eth-forward-runner.js';
 import { mergeEthForwardArchive } from './eth-forward-store.js';
 import { auditEthForwardDocument, ETH_FORWARD_REPLAY_AUDIT_VERSION } from './eth-forward-replay-audit.js';
 import {
-  ETH_FORWARD_FROZEN_STRATEGY_COMMIT,
   ETH_FORWARD_KRAKEN_URL,
   detectKnowledgeForwardMarketGaps,
   emptyEthForwardRemoteDocument,
@@ -10,7 +9,7 @@ import {
   normalizeEthForwardRemoteDocument,
   normalizeKrakenSpot4H,
 } from './eth-forward-remote.js';
-import { ETH_FORWARD_EPOCH_ID } from './eth-forward-epoch.js';
+import { ETH_FORWARD_EPOCH_ID, ETH_FORWARD_FROZEN_STRATEGY_COMMIT } from './eth-forward-epoch.js';
 
 export const AUTONOMOUS_ETH_FORWARD_COLLECTOR_VERSION='autonomous-eth-forward-collector-0.1';
 function marketSignature(bars=[]){return bars.length?`kraken-spot-ethusd-4h-v1:${bars[0].t}:${bars.at(-1).t}:${bars.length}`:'kraken-spot-ethusd-4h-v1:empty';}
