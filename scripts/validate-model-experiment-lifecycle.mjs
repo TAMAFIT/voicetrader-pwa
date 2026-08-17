@@ -1,5 +1,8 @@
 import fs from 'node:fs';
 
+await import('../src/research/model-experiment-lifecycle-remote.js');
+await import('../src/research/model-experiment-ui.js');
+
 const files={
   lifecycle:fs.readFileSync('src/research/model-experiment-lifecycle.js','utf8'),
   remote:fs.readFileSync('src/research/model-experiment-lifecycle-remote.js','utf8'),
