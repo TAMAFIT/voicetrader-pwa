@@ -1,0 +1,98 @@
+name: ETH Cross-Market Forward Collector
+
+on:
+  schedule:
+    - cron: '37 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eth-forward-collector.yml'
+      - 'scripts/collect-eth-forward.mjs'
+      - 'src/research/eth-forward-epoch.js'
+      - 'src/research/eth-forward-runner.js'
+      - 'src/research/eth-forward-store.js'
+      - 'src/research/eth-forward-remote.js'
+      - 'src/research/eth-forward-replay-audit.js'
+      - 'src/research/autonomous-eth-forward-collector.js'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eth-cross-market-forward-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout collector code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout generated ETH data branch
+        uses: actions/checkout@v6
+        with:
+          ref: eth-forward-data
+          path: _eth_forward_data
+          fetch-depth: 1
+
+      - name: Pin frozen BTC-developed strategy dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          FROZEN='0d330101f413cb19b8cd47fdd005d2230152e8db'
+          FROZEN_PATHS=(
+            src/config.js
+            src/engine/ai-provider.js
+            src/engine/decision-policy.js
+            src/engine/execution-engine.js
+            src/engine/experts.js
+            src/engine/indicators.js
+            src/engine/shadow-engine.js
+            src/knowledge/expert-library.js
+            src/knowledge/human-knowledge-engine.js
+            src/knowledge/knowledge-indicators.js
+            src/knowledge/knowledge-registry.js
+            src/knowledge/playbook-engine.js
+            src/knowledge/playbook-features.js
+            src/knowledge/playbook-registry.js
+            src/knowledge/higher-timeframe-registry.js
+            src/knowledge/higher-timeframe-features.js
+            src/knowledge/higher-timeframe-engine.js
+            src/research/knowledge-candidate-registry.js
+            src/research/knowledge-candidate-tournament.js
+            src/research/playbook-shadow-runner.js
+            src/research/research-cost-model.js
+          )
+          git checkout "$FROZEN" -- "${FROZEN_PATHS[@]}"
+          git diff --exit-code "$FROZEN" -- "${FROZEN_PATHS[@]}"
+
+      - name: Collect Kraken ETH/USD 4H and update prospective evidence
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: node scripts/collect-eth-forward.mjs --archive _eth_forward_data/data/eth-forward-001.json
+
+      - name: Commit generated ETH evidence only when changed
+        working-directory: _eth_forward_data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader ETH Collector'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/eth-forward-001.json
+          if git diff --cached --quiet; then
+            echo 'No generated ETH data change.'
+            exit 0
+          fi
+          git commit -m 'Update eth-forward-001 evidence'
+          git push origin HEAD:eth-forward-data
