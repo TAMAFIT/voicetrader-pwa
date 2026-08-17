@@ -4,7 +4,7 @@ export const MODEL_EXPERIMENT_LIFECYCLE_VERSION='model-experiment-lifecycle-ledg
 export const MODEL_EXPERIMENT_LIFECYCLE_AUDIT_VERSION='model-experiment-lifecycle-audit-0.1';
 export const MODEL_EXPERIMENT_LIFECYCLE_DATA_BRANCH='model-experiment-lifecycle-data';
 export const MODEL_EXPERIMENT_LIFECYCLE_DATA_PATH='data/model-experiment-lifecycle-v1.json';
-export const MODEL_EXPERIMENT_LIFECYCLE_GOVERNANCE=Object.freeze({appendOnly:true,mutatesFrozenSpecs:false,automaticApproval:false,ledgerLaunchesJobs:false,trainingImplemented:false,usedByDecisionEngine:false});
+export const MODEL_EXPERIMENT_LIFECYCLE_GOVERNANCE=Object.freeze({appendOnly:true,mutatesFrozenSpecs:false,automaticApproval:false,browserWriteAuthority:false,ledgerLaunchesJobs:false,trainingImplemented:false,usedByDecisionEngine:false});
 
 const clone=value=>JSON.parse(JSON.stringify(value));
 const deepFreeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const item of Object.values(value))deepFreeze(item);}return value;};
