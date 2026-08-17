@@ -8,6 +8,7 @@ import { setupKnowledgeCandidateTournamentUI } from './research/knowledge-candid
 import { setupKnowledgeForwardUI } from './research/knowledge-forward-ui.js';
 import { setupKnowledgeForwardReplayAuditUI } from './research/knowledge-forward-replay-audit-ui.js';
 import { setupChampionPromotionUI } from './research/champion-promotion-ui.js';
+import { setupProspectiveObservatoryUI } from './research/prospective-observatory-ui.js';
 import { setupWalkForwardUI } from './research/walk-forward-ui.js';
 import { setupForwardDemoUI } from './research/forward-demo-ui.js';
 import { setupLiveForwardTradingUI } from './live/live-forward-ui.js';
@@ -30,6 +31,7 @@ export function setupPWA() {
   setupKnowledgeForwardUI();
   setupKnowledgeForwardReplayAuditUI();
   setupChampionPromotionUI();
+  setupProspectiveObservatoryUI();
   setupWalkForwardUI();
   setupForwardDemoUI();
   setupLiveForwardTradingUI();
