@@ -13,7 +13,7 @@ const optional=(name)=>String(env[name]||'').trim();
 const action=required('CONTROL_ACTION').toUpperCase();
 const ledgerPath=required('LEDGER_PATH');
 const ledger=readJson(ledgerPath);
-const datasetPath=optional('DATASET_PATH');
+const datasetPath=action==='RETIRE'?'':optional('DATASET_PATH');
 const dataset=datasetPath?readJson(datasetPath):null;
 const actualDatasetCommit=optional('ACTUAL_DATASET_COMMIT');
 const actualCodeCommit=required('ACTUAL_CODE_COMMIT');
