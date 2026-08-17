@@ -4,6 +4,14 @@ on:
   schedule:
     - cron: '23 * * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/knowledge-forward-collector.yml'
+      - 'scripts/collect-knowledge-forward.mjs'
+      - 'src/research/autonomous-knowledge-forward-collector.js'
+      - 'src/research/knowledge-forward-remote.js'
+      - 'src/research/knowledge-forward-replay-audit.js'
 
 permissions:
   contents: write
