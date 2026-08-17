@@ -50,24 +50,23 @@ jobs:
         run: |
           set -euo pipefail
           FROZEN='c8fdedb9b385d1d01f7c69948a2520882388a337'
-          git checkout "$FROZEN" -- \
-            src/config.js \
-            src/engine \
-            src/knowledge/knowledge-indicators.js \
-            src/knowledge/playbook-features.js \
-            src/knowledge/higher-timeframe-registry.js \
-            src/knowledge/higher-timeframe-features.js \
-            src/knowledge/higher-timeframe-engine.js \
+          FROZEN_PATHS=(
+            src/config.js
+            src/engine/ai-provider.js
+            src/engine/decision-policy.js
+            src/engine/execution-engine.js
+            src/engine/experts.js
+            src/engine/indicators.js
+            src/engine/shadow-engine.js
+            src/knowledge/knowledge-indicators.js
+            src/knowledge/playbook-features.js
+            src/knowledge/higher-timeframe-registry.js
+            src/knowledge/higher-timeframe-features.js
+            src/knowledge/higher-timeframe-engine.js
             src/research/research-cost-model.js
-          git diff --exit-code "$FROZEN" -- \
-            src/config.js \
-            src/engine \
-            src/knowledge/knowledge-indicators.js \
-            src/knowledge/playbook-features.js \
-            src/knowledge/higher-timeframe-registry.js \
-            src/knowledge/higher-timeframe-features.js \
-            src/knowledge/higher-timeframe-engine.js \
-            src/research/research-cost-model.js
+          )
+          git checkout "$FROZEN" -- "${FROZEN_PATHS[@]}"
+          git diff --exit-code "$FROZEN" -- "${FROZEN_PATHS[@]}"
 
       - name: Collect Kraken 4H and update HTF prospective evidence
         env:

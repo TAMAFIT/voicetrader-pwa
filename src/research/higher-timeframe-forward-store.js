@@ -5,11 +5,15 @@ export const HIGHER_TIMEFRAME_FORWARD_LOCAL_KEY='voicetrader-htf-forward-evidenc
 const clone=value=>JSON.parse(JSON.stringify(value));
 function stable(value){if(Array.isArray(value))return value.map(stable);if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])]));return value;}
 const canonical=value=>JSON.stringify(stable(value));
+// dataSignature describes the collector/archive snapshot that carried a record. It legitimately
+// changes when later market bars are appended, so it is provenance rather than record semantics.
+function semanticRecord(value){if(!value||typeof value!=='object')return value;const copy=clone(value);delete copy.dataSignature;return copy;}
+const semanticCanonical=value=>canonical(semanticRecord(value));
 
 export function emptyHigherTimeframeForwardArchive(){return {archiveVersion:HIGHER_TIMEFRAME_FORWARD_STORE_VERSION,epochId:HIGHER_TIMEFRAME_FORWARD_EPOCH_ID,observedBarTimes:[],dataSignatures:[],decisions:[],evidence:[],mergeConflicts:[],updatedAt:null};}
 export function normalizeHigherTimeframeForwardArchive(value){const base=emptyHigherTimeframeForwardArchive();if(!value||value.epochId!==HIGHER_TIMEFRAME_FORWARD_EPOCH_ID)return base;return {...base,...clone(value),archiveVersion:HIGHER_TIMEFRAME_FORWARD_STORE_VERSION,epochId:HIGHER_TIMEFRAME_FORWARD_EPOCH_ID,observedBarTimes:[...new Set((value.observedBarTimes||[]).map(Number).filter(Number.isFinite))].sort((a,b)=>a-b),dataSignatures:[...new Set((value.dataSignatures||[]).filter(Boolean))],decisions:Array.isArray(value.decisions)?clone(value.decisions):[],evidence:Array.isArray(value.evidence)?clone(value.evidence):[],mergeConflicts:Array.isArray(value.mergeConflicts)?clone(value.mergeConflicts):[]};}
 
-function mergeKeyed(existing,incoming,keyName,conflicts){const map=new Map();for(const item of existing||[])if(item?.[keyName])map.set(item[keyName],clone(item));for(const item of incoming||[]){const key=item?.[keyName];if(!key)continue;const prior=map.get(key);if(!prior)map.set(key,clone(item));else if(canonical(prior)!==canonical(item))conflicts.push({type:keyName,key,existing:prior,incoming:item});}return [...map.values()];}
+function mergeKeyed(existing,incoming,keyName,conflicts){const map=new Map();for(const item of existing||[])if(item?.[keyName])map.set(item[keyName],clone(item));for(const item of incoming||[]){const key=item?.[keyName];if(!key)continue;const prior=map.get(key);if(!prior)map.set(key,clone(item));else if(semanticCanonical(prior)!==semanticCanonical(item))conflicts.push({type:keyName,key,existing:prior,incoming:item});}return [...map.values()];}
 
 export function mergeHigherTimeframeForwardArchive(existingArchive,snapshot,{updatedAt=new Date().toISOString()}={}){
   const existing=normalizeHigherTimeframeForwardArchive(existingArchive);if(snapshot?.status!=='complete')return existing;const conflicts=[];
