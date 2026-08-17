@@ -6506,28 +6506,39 @@
         "c": 63463,
         "volume": 178.95014809,
         "trades": 5130
+      },
+      {
+        "t": 1786953600,
+        "o": 63463.1,
+        "h": 63707.8,
+        "l": 63225.1,
+        "c": 63561.2,
+        "volume": 230.72339838,
+        "trades": 6274
       }
     ],
     "continuity": {
-      "barCount": 722,
+      "barCount": 723,
       "gapCount": 0,
       "missingBarTimes": []
     },
-    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1786939200:722",
+    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1786953600:723",
     "firstBarTime": 1776556800,
-    "lastBarTime": 1786939200,
-    "closedBarCount": 722
+    "lastBarTime": 1786953600,
+    "closedBarCount": 723
   },
   "evidenceArchive": {
     "archiveVersion": "higher-timeframe-forward-store-0.1",
     "epochId": "htf-forward-001",
     "observedBarTimes": [
-      1786939200
+      1786939200,
+      1786953600
     ],
     "dataSignatures": [
       "kraken-spot-btcusd-4h-v1:1776556800:1786910400:720",
       "kraken-spot-btcusd-4h-v1:1776556800:1786924800:721",
-      "kraken-spot-btcusd-4h-v1:1776556800:1786939200:722"
+      "kraken-spot-btcusd-4h-v1:1776556800:1786939200:722",
+      "kraken-spot-btcusd-4h-v1:1776556800:1786953600:723"
     ],
     "decisions": [
       {
@@ -6570,26 +6581,67 @@
           "dailyDirection": -1,
           "lastDailyBarCloseTime": 1786924800
         }
+      },
+      {
+        "decisionKey": "htf-forward-001:champion-001:1786953600",
+        "epochId": "htf-forward-001",
+        "sourceId": "champion-001",
+        "role": "benchmark",
+        "barIndex": 722,
+        "candleTime": 1786953600,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1786953600:723",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "0.4-fixed-experts-policy",
+          "rawAlphaScore": 16.793096377220657,
+          "decisionScore": 63.98,
+          "confidenceScore": 67
+        }
+      },
+      {
+        "decisionKey": "htf-forward-001:higher-timeframe-wave3-reference:1786953600",
+        "epochId": "htf-forward-001",
+        "sourceId": "higher-timeframe-wave3-reference",
+        "role": "candidate",
+        "barIndex": 722,
+        "candleTime": 1786953600,
+        "decision": "NO_ENTRY",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1786953600:723",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "higher-timeframe-engine-0.1",
+          "registryVersion": "higher-timeframe-registry-0.1",
+          "rawContextScore": 0,
+          "activeAlphaCount": 0,
+          "alphaAgreement": 0,
+          "gateReason": null,
+          "dailyRegime": "range",
+          "dailyDirection": -1,
+          "lastDailyBarCloseTime": 1786924800
+        }
       }
     ],
     "evidence": [],
     "mergeConflicts": [],
-    "updatedAt": "2026-08-17T11:10:36.967Z"
+    "updatedAt": "2026-08-17T12:17:18.706Z"
   },
   "collector": {
     "version": "autonomous-htf-forward-collector-0.1",
     "status": "success",
-    "lastRunAt": "2026-08-17T11:10:36.967Z",
-    "workflowRunId": "32023654277",
+    "lastRunAt": "2026-08-17T12:17:18.706Z",
+    "workflowRunId": "32029089494",
     "workflowRunAttempt": "1",
     "evaluatorCommit": "c8fdedb9b385d1d01f7c69948a2520882388a337",
-    "marketBarsAdded": 0,
+    "marketBarsAdded": 1,
     "marketConflicts": [],
     "incomingClosedBars": 720,
-    "totalMarketBars": 722,
-    "prospectiveDecisionRecords": 2,
+    "totalMarketBars": 723,
+    "prospectiveDecisionRecords": 4,
     "prospectiveEvidenceRecords": 0,
-    "archivedDecisionRecords": 2,
+    "archivedDecisionRecords": 4,
     "archivedEvidenceRecords": 0,
     "browserRequired": false,
     "paidApiRequired": false,
@@ -6600,11 +6652,11 @@
     "status": "pass",
     "pass": true,
     "checked": {
-      "marketBars": 722,
-      "observedBars": 1,
-      "decisions": 2,
+      "marketBars": 723,
+      "observedBars": 2,
+      "decisions": 4,
       "evidence": 0,
-      "expectedDecisions": 2,
+      "expectedDecisions": 4,
       "expectedEvidence": 0
     },
     "errorCount": 0,
@@ -6620,6 +6672,6 @@
       "changesFrozenEngine": false,
       "usedByLiveDecisionEngine": false
     },
-    "checkedAt": "2026-08-17T11:10:36.967Z"
+    "checkedAt": "2026-08-17T12:17:18.706Z"
   }
 }
