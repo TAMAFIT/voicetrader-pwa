@@ -1,0 +1,190 @@
+name: Model Experiment Human Approval
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'PLAN is read-only. Mutations require expected heads/fingerprints and exact confirmation.'
+        required: true
+        type: choice
+        options:
+          - PLAN
+          - REGISTER_DRAFT
+          - FREEZE
+          - RETIRE
+      experiment_id:
+        description: 'Stable experiment id, for example btc-direction-001'
+        required: true
+        type: string
+      template_id:
+        description: 'Frozen registry template used for PLAN/REGISTER'
+        required: true
+        default: 'btc-direction-baseline-template-v1'
+        type: choice
+        options:
+          - btc-direction-baseline-template-v1
+          - btc-return-baseline-template-v1
+      hypothesis:
+        description: 'Required only for REGISTER_DRAFT. Must be specified before the experiment is frozen.'
+        required: false
+        type: string
+      revision:
+        description: 'Optional explicit revision for FREEZE/RETIRE. Empty means the single active revision.'
+        required: false
+        type: string
+      expected_code_commit:
+        description: 'Expected current main SHA. Required for mutations.'
+        required: false
+        type: string
+      expected_dataset_commit:
+        description: 'Expected prospective Experience SHA. REGISTER=current head; FREEZE=registered frozen dataset SHA.'
+        required: false
+        type: string
+      expected_lifecycle_commit:
+        description: 'Expected current lifecycle-data SHA. Required for mutations.'
+        required: false
+        type: string
+      expected_draft_fingerprint:
+        description: 'Required for FREEZE.'
+        required: false
+        type: string
+      expected_semantic_fingerprint:
+        description: 'Required for RETIRE.'
+        required: false
+        type: string
+      retire_reason:
+        description: 'Required for RETIRE.'
+        required: false
+        type: string
+      confirmation:
+        description: 'Mutations require exact REGISTER <id>, FREEZE <id>, or RETIRE <id>.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: model-experiment-human-approval
+  cancel-in-progress: false
+
+jobs:
+  control:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require manual invocation from main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_EVENT_NAME" = 'workflow_dispatch'
+          test "$GITHUB_REF" = 'refs/heads/main' || { echo 'This control workflow must be dispatched from main.'; exit 1; }
+
+      - name: Checkout control code
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout lifecycle source of truth
+        uses: actions/checkout@v6
+        with:
+          ref: model-experiment-lifecycle-data
+          path: _lifecycle
+          fetch-depth: 0
+
+      - name: Checkout prospective Experience source of truth
+        if: ${{ inputs.action != 'RETIRE' }}
+        uses: actions/checkout@v6
+        with:
+          ref: prospective-experience-data
+          path: _experience
+          fetch-depth: 0
+
+      - name: Resolve exact dataset for requested action
+        if: ${{ inputs.action != 'RETIRE' }}
+        shell: bash
+        env:
+          CONTROL_ACTION: ${{ inputs.action }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          REVISION: ${{ inputs.revision }}
+        run: |
+          set -euo pipefail
+          if [ "$CONTROL_ACTION" = 'FREEZE' ]; then
+            DRAFT_DATASET_SHA=$(node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const ledger=JSON.parse(fs.readFileSync('_lifecycle/data/model-experiment-lifecycle-v1.json','utf8'));
+          const revision=process.env.REVISION?Number(process.env.REVISION):null;
+          const states=(ledger.audit?.effectiveStates||[]).filter(state=>state.experimentId===process.env.EXPERIMENT_ID&&state.effectiveStatus==='DRAFT'&&(revision===null||Number(state.revision)===revision));
+          if(states.length!==1)throw new Error(states.length?'ambiguous-active-draft':'active-draft-not-found');
+          const spec=(ledger.draftSpecs||[]).find(item=>item.experimentId===process.env.EXPERIMENT_ID&&Number(item.revision)===Number(states[0].revision));
+          if(!spec)throw new Error('registered-draft-snapshot-not-found');
+          process.stdout.write(spec.dataset.commitSha);
+          NODE
+            )
+            git -C _experience checkout --detach "$DRAFT_DATASET_SHA"
+          fi
+          echo "ACTUAL_DATASET_COMMIT=$(git -C _experience rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Resolve authoritative heads
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ACTUAL_CODE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ACTUAL_LIFECYCLE_COMMIT=$(git -C _lifecycle rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "CONTROL_OCCURRED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+
+      - name: Run controlled experiment gate
+        id: control
+        shell: bash
+        env:
+          CONTROL_ACTION: ${{ inputs.action }}
+          LEDGER_PATH: _lifecycle/data/model-experiment-lifecycle-v1.json
+          LEDGER_OUTPUT_PATH: _lifecycle/data/model-experiment-lifecycle-v1.json
+          DATASET_PATH: ${{ inputs.action == 'RETIRE' && '' || '_experience/data/prospective-experience-v1.json' }}
+          ACTUAL_DATASET_COMMIT: ${{ env.ACTUAL_DATASET_COMMIT }}
+          ACTUAL_CODE_COMMIT: ${{ env.ACTUAL_CODE_COMMIT }}
+          ACTUAL_LIFECYCLE_COMMIT: ${{ env.ACTUAL_LIFECYCLE_COMMIT }}
+          EXPECTED_DATASET_COMMIT: ${{ inputs.expected_dataset_commit }}
+          EXPECTED_CODE_COMMIT: ${{ inputs.expected_code_commit }}
+          EXPECTED_LIFECYCLE_COMMIT: ${{ inputs.expected_lifecycle_commit }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          TEMPLATE_ID: ${{ inputs.template_id }}
+          HYPOTHESIS: ${{ inputs.hypothesis }}
+          REVISION: ${{ inputs.revision }}
+          EXPECTED_DRAFT_FINGERPRINT: ${{ inputs.expected_draft_fingerprint }}
+          EXPECTED_SEMANTIC_FINGERPRINT: ${{ inputs.expected_semantic_fingerprint }}
+          RETIRE_REASON: ${{ inputs.retire_reason }}
+          HUMAN_CONFIRMATION: ${{ inputs.confirmation }}
+          GITHUB_ACTOR_IDENTITY: ${{ github.actor }}
+          OCCURRED_AT: ${{ env.CONTROL_OCCURRED_AT }}
+        run: |
+          set -euo pipefail
+          node scripts/model-experiment-control-cli.mjs | tee /tmp/model-experiment-control-summary.json
+          {
+            echo '### Model Experiment Control Result'
+            echo '```json'
+            cat /tmp/model-experiment-control-summary.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit append-only lifecycle mutation
+        if: ${{ steps.control.outputs.mutation == 'true' }}
+        working-directory: _lifecycle
+        shell: bash
+        env:
+          CONTROL_ACTION: ${{ inputs.action }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+        run: |
+          set -euo pipefail
+          git config user.name "VoiceTrader Human Approval ($GITHUB_ACTOR)"
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/model-experiment-lifecycle-v1.json
+          git diff --cached --quiet && { echo 'Mutation produced no ledger change.'; exit 1; }
+          git commit -m "Model experiment ${CONTROL_ACTION}: ${EXPERIMENT_ID} by ${GITHUB_ACTOR}"
+          git push origin HEAD:model-experiment-lifecycle-data
