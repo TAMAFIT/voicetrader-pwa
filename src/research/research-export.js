@@ -2,13 +2,15 @@ import { getLatestWalkForwardEvaluation } from './walk-forward-state.js';
 import { getLatestForwardDemoEvaluation } from './forward-demo-state.js';
 import { getLatestKnowledgeEvaluation } from './knowledge-state.js';
 import { getLatestPlaybookEvaluation } from './playbook-state.js';
+import { getLatestHigherTimeframeEvaluation } from './higher-timeframe-state.js';
 import { getLatestKnowledgeCandidateTournament } from './knowledge-candidate-state.js';
 import { getLatestKnowledgeForwardEvaluation } from './knowledge-forward-state.js';
 import { getLatestChampionPromotionEvaluation } from './champion-promotion-state.js';
 import { getLatestKnowledgeForwardReplayAudit } from './knowledge-forward-replay-audit-state.js';
 
-export const RESEARCH_EXPORT_VERSION='research-export-0.12';
-export const PREVIOUS_RESEARCH_EXPORT_VERSION='research-export-0.11';
+export const RESEARCH_EXPORT_VERSION='research-export-0.13';
+export const PREVIOUS_RESEARCH_EXPORT_VERSION='research-export-0.12';
+export const LEGACY_RESEARCH_EXPORT_VERSION_V11='research-export-0.11';
 export const LEGACY_RESEARCH_EXPORT_VERSION_V10='research-export-0.10';
 export const LEGACY_RESEARCH_EXPORT_VERSION_V09='research-export-0.9';
 export const LEGACY_RESEARCH_EXPORT_VERSION_V08='research-export-0.8';
@@ -22,14 +24,27 @@ function safeSpreadsheetText(value){const text=value===null||value===undefined?'
 function csvCell(value){return `"${safeSpreadsheetText(value).replaceAll('"','""')}"`;}
 export function flattenDecisionEvent(event){const cf1=counterfactualOutcome(event,1),cf3=counterfactualOutcome(event,3),cf6=counterfactualOutcome(event,6);return {eventId:event?.eventId||'',recordedAt:event?.recordedAt||'',strategyVersion:event?.strategyVersion||'',instrument:event?.instrument||'',timeframeHours:event?.timeframeHours||'',candleTime:event?.candleTime||'',barIndex:event?.barIndex??'',dataSourceId:event?.dataSourceId||'',dataSourceType:event?.dataSourceType||'',dataSignature:event?.dataSignature||'',researchEligible:event?.researchEligible??'',engineVersion:event?.engineVersion||'',expertSetVersion:event?.expertSetVersion||'',regime:event?.regime||'',marketPrice:round(event?.market?.price),fastMA:round(event?.market?.fastMA),slowMA:round(event?.market?.slowMA),rsi:round(event?.market?.rsi),atrPct:round(event?.market?.atrPct),rawAlphaScore:round(event?.scores?.rawAlphaScore),decisionScore:round(event?.scores?.decisionScore),confidenceScore:round(event?.scores?.confidenceScore),timingScore:round(event?.scores?.timingScore),riskScore:round(event?.scores?.riskScore),estimatedRoundTripCostBps:round(event?.costs?.estimatedRoundTripCostBps),entryDecision:event?.entryDecision||'',policyDecision:event?.policyDecision||'',legacyAction:event?.legacyAction||'',trendExpertScore:round(expertScore(event,'trend')),momentumExpertScore:round(expertScore(event,'momentum')),breakoutExpertScore:round(expertScore(event,'breakout')),cfLong1NetBps:round(cf1?.long?.netReturnBps),cfShort1NetBps:round(cf1?.short?.netReturnBps),cfLong3NetBps:round(cf3?.long?.netReturnBps),cfShort3NetBps:round(cf3?.short?.netReturnBps),cfLong6NetBps:round(cf6?.long?.netReturnBps),cfShort6NetBps:round(cf6?.short?.netReturnBps),cfLong3MfeBps:round(cf3?.longMfeBps),cfLong3MaeBps:round(cf3?.longMaeBps),cfShort3MfeBps:round(cf3?.shortMfeBps),cfShort3MaeBps:round(cf3?.shortMaeBps),counterfactualStatus:event?.counterfactual?.status||''};}
 export function researchEventsToCsv(events=[]){const rows=events.map(flattenDecisionEvent),headers=Object.keys(flattenDecisionEvent({})),lines=[headers.map(csvCell).join(',')];for(const row of rows)lines.push(headers.map(h=>csvCell(row[h])).join(','));return `\uFEFF${lines.join('\r\n')}`;}
-export function buildResearchJson({events=[],baselineEvaluation=null,strategyRegistry=null,challengerEvaluation=null,walkForwardEvaluation=undefined,forwardDemoEvaluation=undefined,knowledgeEvaluation=undefined,playbookEvaluation=undefined,knowledgeCandidateTournament=undefined,knowledgeForwardEvaluation=undefined,championPromotionEvaluation=undefined,knowledgeForwardReplayAudit=undefined,nullMarketEvaluation=null,dataMeta=null}={}){const resolvedWalk=walkForwardEvaluation===undefined?getLatestWalkForwardEvaluation():walkForwardEvaluation;const resolvedForward=forwardDemoEvaluation===undefined?getLatestForwardDemoEvaluation():forwardDemoEvaluation;const resolvedKnowledge=knowledgeEvaluation===undefined?getLatestKnowledgeEvaluation():knowledgeEvaluation;const resolvedPlaybook=playbookEvaluation===undefined?getLatestPlaybookEvaluation():playbookEvaluation;const resolvedTournament=knowledgeCandidateTournament===undefined?getLatestKnowledgeCandidateTournament():knowledgeCandidateTournament;const resolvedKnowledgeForward=knowledgeForwardEvaluation===undefined?getLatestKnowledgeForwardEvaluation():knowledgeForwardEvaluation;const resolvedChampionPromotion=championPromotionEvaluation===undefined?getLatestChampionPromotionEvaluation():championPromotionEvaluation;const resolvedKnowledgeForwardReplayAudit=knowledgeForwardReplayAudit===undefined?getLatestKnowledgeForwardReplayAudit():knowledgeForwardReplayAudit;return JSON.stringify({exportVersion:RESEARCH_EXPORT_VERSION,exportedAt:new Date().toISOString(),eventCount:events.length,notes:[
+export function buildResearchJson({events=[],baselineEvaluation=null,strategyRegistry=null,challengerEvaluation=null,walkForwardEvaluation=undefined,forwardDemoEvaluation=undefined,knowledgeEvaluation=undefined,playbookEvaluation=undefined,higherTimeframeEvaluation=undefined,knowledgeCandidateTournament=undefined,knowledgeForwardEvaluation=undefined,championPromotionEvaluation=undefined,knowledgeForwardReplayAudit=undefined,nullMarketEvaluation=null,dataMeta=null}={}){
+  const resolvedWalk=walkForwardEvaluation===undefined?getLatestWalkForwardEvaluation():walkForwardEvaluation;
+  const resolvedForward=forwardDemoEvaluation===undefined?getLatestForwardDemoEvaluation():forwardDemoEvaluation;
+  const resolvedKnowledge=knowledgeEvaluation===undefined?getLatestKnowledgeEvaluation():knowledgeEvaluation;
+  const resolvedPlaybook=playbookEvaluation===undefined?getLatestPlaybookEvaluation():playbookEvaluation;
+  const resolvedHigherTimeframe=higherTimeframeEvaluation===undefined?getLatestHigherTimeframeEvaluation():higherTimeframeEvaluation;
+  const resolvedTournament=knowledgeCandidateTournament===undefined?getLatestKnowledgeCandidateTournament():knowledgeCandidateTournament;
+  const resolvedKnowledgeForward=knowledgeForwardEvaluation===undefined?getLatestKnowledgeForwardEvaluation():knowledgeForwardEvaluation;
+  const resolvedChampionPromotion=championPromotionEvaluation===undefined?getLatestChampionPromotionEvaluation():championPromotionEvaluation;
+  const resolvedKnowledgeForwardReplayAudit=knowledgeForwardReplayAudit===undefined?getLatestKnowledgeForwardReplayAudit():knowledgeForwardReplayAudit;
+  return JSON.stringify({exportVersion:RESEARCH_EXPORT_VERSION,exportedAt:new Date().toISOString(),eventCount:events.length,notes:[
 'DecisionEvent counterfactual outcomes from the same event are clustered observations and are not IID samples.',
 'Baseline evaluation is a descriptive same-series comparator and is not proof of a reproducible edge.',
 'Strategy Registry Challenger results are same-series Shadow diagnostics only and cannot automatically promote or mutate the frozen Champion.',
 'Human Trading Knowledge Engine Wave 1 is research-only. Its score is neither expected return nor a calibrated probability.',
 'Knowledge Attribution leave-one-Expert-out / leave-one-Family-out and Family lag controls are sensitivity/screening diagnostics, not causal attribution or formal p-values.',
 'Human Trading Playbook Engine Wave 2 encodes preregistered multi-condition setups and is inactive outside intended context rather than casting arbitrary opposite votes.',
-'Playbook Shadow, ablation, lag controls and chronological holdout are research diagnostics only; historical data already inspected is not pristine untouched OOS.',
+'Higher-Timeframe Context Wave 3 derives context only from fully closed UTC D1 candles built from six closed 4H bars; a partial current daily candle and future 4H bars are forbidden.',
+'Wave 3 contains exactly four directional alpha setups and two non-directional gates. Its same-series, leave-one-component-out, fixed lag controls and chronological 3-fold results are research diagnostics only, not pristine untouched OOS.',
+'Wave 3 raw setup score is neither expected-return bps nor calibrated probability; deterministic research cost is applied only to simulated realized returns.',
+'Wave 3 is completely separate from the frozen champion-001, Live Forward, forward-001 and knowledge-forward-001 candidate/evidence paths.',
 'Knowledge Candidate Tournament contains exactly four preregistered integration candidates and never generates/searches candidate combinations.',
 'Candidate Tournament rankings, past-decision lag controls and historical holdout cannot automatically select/promote a candidate.',
 'Raw Knowledge/Playbook scores are never treated as basis-point returns; execution cost applies only to simulated realized trade returns.',
@@ -46,7 +61,8 @@ export function buildResearchJson({events=[],baselineEvaluation=null,strategyReg
 'Existing Prospective Forward Demo forward-001 remains separate and unchanged.',
 'No same-series, holdout, qualification, confirmation, or prospective screen automatically promotes a Champion; negative-control review, execution review and human approval remain required.',
 'Null Market / Negative Control results are screening diagnostics only; Null95 and exceedance rates are not formal p-values.',
-'Human Knowledge, Attribution, Playbook, Candidate Tournament, knowledge-forward-001, Evidence Replay Audit, Champion Promotion, Challenger, walk-forward and Null outputs are never inputs to frozen live/demo Champion decisions.',
+'Human Knowledge, Attribution, Playbook, Higher-Timeframe Context, Candidate Tournament, knowledge-forward-001, Evidence Replay Audit, Champion Promotion, Challenger, walk-forward and Null outputs are never inputs to frozen live/demo Champion decisions.',
 'Synthetic market data is not research eligible.'
-],dataMeta,baselineEvaluation,strategyRegistry,challengerEvaluation,knowledgeEvaluation:resolvedKnowledge,playbookEvaluation:resolvedPlaybook,knowledgeCandidateTournament:resolvedTournament,knowledgeForwardEvaluation:resolvedKnowledgeForward,knowledgeForwardReplayAudit:resolvedKnowledgeForwardReplayAudit,championPromotionEvaluation:resolvedChampionPromotion,walkForwardEvaluation:resolvedWalk,forwardDemoEvaluation:resolvedForward,nullMarketEvaluation,decisionEvents:events},null,2);}
+],dataMeta,baselineEvaluation,strategyRegistry,challengerEvaluation,knowledgeEvaluation:resolvedKnowledge,playbookEvaluation:resolvedPlaybook,higherTimeframeEvaluation:resolvedHigherTimeframe,knowledgeCandidateTournament:resolvedTournament,knowledgeForwardEvaluation:resolvedKnowledgeForward,knowledgeForwardReplayAudit:resolvedKnowledgeForwardReplayAudit,championPromotionEvaluation:resolvedChampionPromotion,walkForwardEvaluation:resolvedWalk,forwardDemoEvaluation:resolvedForward,nullMarketEvaluation,decisionEvents:events},null,2);
+}
 export function downloadResearchText({filename,text,mimeType}){const blob=new Blob([text],{type:mimeType}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
