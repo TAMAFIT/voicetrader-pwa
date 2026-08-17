@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import { PROSPECTIVE_EVIDENCE_REGISTRY, PROSPECTIVE_EVIDENCE_STREAMS, assertProspectiveEvidenceRegistry } from '../src/research/prospective-evidence-registry.js';
+import { buildProspectiveEvidenceHealth } from '../src/research/prospective-evidence-health.js';
+import { emptyKnowledgeForwardRemoteDocument } from '../src/research/knowledge-forward-remote.js';
+import { emptyHigherTimeframeForwardRemoteDocument } from '../src/research/higher-timeframe-forward-remote.js';
+
+assert.equal(assertProspectiveEvidenceRegistry(),true);
+assert.equal(PROSPECTIVE_EVIDENCE_STREAMS.length,3);
+assert.deepEqual(PROSPECTIVE_EVIDENCE_STREAMS.map(item=>item.epochId),['forward-001','knowledge-forward-001','htf-forward-001']);
+assert.equal(new Set(PROSPECTIVE_EVIDENCE_STREAMS.map(item=>item.epochId)).size,3);
+const remotes=PROSPECTIVE_EVIDENCE_STREAMS.filter(item=>item.generatedDataBranch);
+assert.equal(remotes.length,2);
+assert.equal(new Set(remotes.map(item=>item.generatedDataBranch)).size,2);
+assert.equal(new Set(remotes.map(item=>`${item.generatedDataBranch}:${item.generatedDataPath}`)).size,2);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.inventoryOnly,true);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.ranking,false);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.winnerSelection,false);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.scoreAggregation,false);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.crossStreamPnlAggregation,false);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.usedByLiveDecisionEngine,false);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.usedByAnyProspectiveDecisionEngine,false);
+assert.equal(PROSPECTIVE_EVIDENCE_REGISTRY.governance.automaticPromotion,false);
+
+const knowledge=emptyKnowledgeForwardRemoteDocument();
+knowledge.collector.status='success';knowledge.collector.lastRunAt='2026-08-17T00:23:00Z';knowledge.market.closedBarCount=720;knowledge.audit={status:'waiting',pass:false,errorCount:0};knowledge.evidenceArchive.observedBarTimes=[1786939200];knowledge.evidenceArchive.decisions=[{decisionKey:'k1'},{decisionKey:'k2'}];knowledge.evidenceArchive.evidence=[];
+const htf=emptyHigherTimeframeForwardRemoteDocument();
+htf.collector.status='success';htf.collector.lastRunAt='2026-08-17T00:47:00Z';htf.market.closedBarCount=720;htf.audit={status:'waiting',pass:false,errorCount:0};htf.evidenceArchive.observedBarTimes=[];
+const forwardDemo={summary:{observedBars:7,decisionCount:28,evidenceCount:4},archive:{observedBarTimes:new Array(7).fill(0),decisions:new Array(28).fill({}),evidence:new Array(4).fill({})}};
+const health=buildProspectiveEvidenceHealth({forwardDemoEvaluation:forwardDemo,knowledgeRemote:knowledge,higherTimeframeRemote:htf});
+assert.equal(health.streamCount,3);assert.equal(health.durableRemoteStreamCount,2);assert.equal(health.autonomousCollectorCount,2);
+assert.equal(health.governance.inventoryOnly,true);assert.equal(health.governance.ranking,false);assert.equal(health.governance.winnerSelection,false);assert.equal(health.governance.crossStreamPnlAggregation,false);assert.equal(health.governance.usedByAnyProspectiveDecisionEngine,false);
+const legacy=health.streams.find(item=>item.epochId==='forward-001');assert.equal(legacy.healthStatus,'local-only');assert.equal(legacy.evidenceCount,4);assert.ok(legacy.healthWarnings.includes('browser-local-not-server-durable'));
+const k=health.streams.find(item=>item.epochId==='knowledge-forward-001');assert.equal(k.availability,'remote-loaded');assert.equal(k.collectorStatus,'success');assert.equal(k.marketBars,720);assert.equal(k.observedBars,1);assert.equal(k.decisionCount,2);
+const h=health.streams.find(item=>item.epochId==='htf-forward-001');assert.equal(h.availability,'remote-loaded');assert.equal(h.collectorStatus,'success');assert.equal(h.marketBars,720);assert.equal(h.observedBars,0);
+const unavailable=buildProspectiveEvidenceHealth({knowledgeRemoteError:'network-fail',higherTimeframeRemoteError:'network-fail'});assert.equal(unavailable.streams.find(item=>item.epochId==='knowledge-forward-001').healthStatus,'unavailable');assert.equal(unavailable.streams.find(item=>item.epochId==='htf-forward-001').healthStatus,'unavailable');
+console.log('Prospective Evidence Registry v0.21 regression tests passed.');
