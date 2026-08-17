@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "eth-forward-remote-0.1",
+  "epochId": "eth-forward-001",
+  "generatedDataBranch": "eth-forward-data",
+  "frozenStrategyCommit": "0d330101f413cb19b8cd47fdd005d2230152e8db",
+  "market": {
+    "provider": "Kraken public OHLC",
+    "sourceId": "kraken-spot-ethusd-4h-v1",
+    "instrument": "ETHUSD",
+    "timeframeHours": 4,
+    "intervalSeconds": 14400,
+    "bars": [],
+    "continuity": {"barCount": 0, "gapCount": 0, "missingBarTimes": []},
+    "signature": "kraken-spot-ethusd-4h-v1:empty"
+  },
+  "evidenceArchive": {
+    "archiveVersion": "eth-forward-store-0.1",
+    "epochId": "eth-forward-001",
+    "epoch": {
+      "version": "eth-forward-epoch-0.1",
+      "id": "eth-forward-001",
+      "instrument": "ETHUSD",
+      "market": "Kraken Spot",
+      "timeframeHours": 4,
+      "frozenAtLocal": "2026-08-17 21:49:13 JST",
+      "frozenAtUtc": "2026-08-17T12:49:13Z",
+      "freezeUnix": 1786970953,
+      "frozenStrategyCommit": "0d330101f413cb19b8cd47fdd005d2230152e8db",
+      "horizonBars": 3,
+      "sources": ["champion-001","candidate-wave1-reference","candidate-playbook-reference","candidate-consensus","candidate-playbook-wave1-veto","higher-timeframe-wave3-reference"],
+      "purpose": "prospective-cross-market-validation-without-eth-specific-tuning",
+      "promotionEligible": false
+    },
+    "observedBarTimes": [],
+    "dataSignatures": [],
+    "decisions": [],
+    "evidence": [],
+    "mergeConflicts": [],
+    "updatedAt": null
+  },
+  "collector": {
+    "version": "autonomous-eth-forward-collector-0.1",
+    "status": "initialized",
+    "lastRunAt": null,
+    "workflowRunId": null,
+    "workflowRunAttempt": null,
+    "strategyCommit": "0d330101f413cb19b8cd47fdd005d2230152e8db",
+    "marketConflicts": [],
+    "browserRequired": false,
+    "paidApiRequired": false
+  },
+  "audit": null
+}
