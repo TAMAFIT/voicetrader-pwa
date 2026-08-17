@@ -1,0 +1,41 @@
+name: VoiceTrader v0.21 Branch Integration
+
+on:
+  push:
+    branches: [agent/v021-prospective-evidence-registry]
+    paths:
+      - '.github/workflows/v021-branch-integration.yml'
+      - 'scripts/apply-v021-integration.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v021-prospective-evidence-registry-integration
+  cancel-in-progress: false
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: agent/v021-prospective-evidence-registry
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Apply v0.21 integration
+        run: node scripts/apply-v021-integration.mjs
+      - name: Remove one-shot integration machinery
+        run: rm -f scripts/apply-v021-integration.mjs .github/workflows/v021-branch-integration.yml
+      - name: Commit integrated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader Integration'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'Integrate v0.21 Prospective Evidence Registry'
+          git push origin HEAD:agent/v021-prospective-evidence-registry
