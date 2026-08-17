@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "higher-timeframe-forward-remote-0.1",
+  "epochId": "htf-forward-001",
+  "generatedDataBranch": "higher-timeframe-forward-data",
+  "frozenEvaluatorCommit": "c8fdedb9b385d1d01f7c69948a2520882388a337",
+  "market": {
+    "provider": "Kraken public OHLC",
+    "sourceId": "kraken-spot-btcusd-4h-v1",
+    "instrument": "BTCUSD",
+    "timeframeHours": 4,
+    "bars": [],
+    "continuity": {"barCount": 0, "gapCount": 0, "missingBarTimes": []},
+    "signature": "kraken-spot-btcusd-4h-v1:empty"
+  },
+  "evidenceArchive": {
+    "archiveVersion": "higher-timeframe-forward-store-0.1",
+    "epochId": "htf-forward-001",
+    "observedBarTimes": [],
+    "dataSignatures": [],
+    "decisions": [],
+    "evidence": [],
+    "mergeConflicts": [],
+    "updatedAt": null
+  },
+  "collector": {
+    "version": "autonomous-htf-forward-collector-0.1",
+    "status": "initialized",
+    "lastRunAt": null,
+    "workflowRunId": null,
+    "workflowRunAttempt": null,
+    "evaluatorCommit": "c8fdedb9b385d1d01f7c69948a2520882388a337",
+    "marketConflicts": [],
+    "browserRequired": false,
+    "paidApiRequired": false
+  },
+  "audit": null
+}
