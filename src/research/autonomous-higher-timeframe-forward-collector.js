@@ -1,11 +1,8 @@
 import { runHigherTimeframeForwardSnapshot } from './higher-timeframe-forward-runner.js';
 import { mergeHigherTimeframeForwardArchive } from './higher-timeframe-forward-store.js';
 import { auditHigherTimeframeForwardDocument, HIGHER_TIMEFRAME_FORWARD_REPLAY_AUDIT_VERSION } from './higher-timeframe-forward-replay-audit.js';
-import {
-  buildHigherTimeframeProspectiveAttributionSnapshot,
-  mergeProspectiveAttributionLedger,
-  auditProspectiveAttributionLedger,
-} from './prospective-attribution-ledger.js';
+import { buildHigherTimeframeProspectiveAttributionSnapshot } from './higher-timeframe-prospective-attribution.js';
+import { mergeProspectiveAttributionLedger, auditProspectiveAttributionLedger } from './prospective-attribution-ledger.js';
 import {
   HIGHER_TIMEFRAME_FORWARD_FROZEN_COMMIT,
   HIGHER_TIMEFRAME_FORWARD_KRAKEN_URL,
