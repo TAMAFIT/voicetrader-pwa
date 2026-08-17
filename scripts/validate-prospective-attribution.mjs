@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+
+const read=path=>fs.readFileSync(path,'utf8');
+const ledger=read('src/research/prospective-attribution-ledger.js');const knowledgeBuilder=read('src/research/knowledge-prospective-attribution.js');const htfBuilder=read('src/research/higher-timeframe-prospective-attribution.js');const knowledge=read('src/research/autonomous-knowledge-forward-collector.js');const htf=read('src/research/autonomous-higher-timeframe-forward-collector.js');const pkg=JSON.parse(read('package.json'));
+assert.equal(pkg.version,'0.22.0');
+for(const marker of ['prospective-attribution-ledger-0.1','descriptiveProvenanceOnly:true','causalAttribution:false','futureOutcomeUsed:false','automaticPruning:false','automaticPromotion:false','usedByLiveDecisionEngine:false','auditProspectiveAttributionLedger'])assert.ok(ledger.includes(marker),`missing ledger marker ${marker}`);
+assert.ok(knowledgeBuilder.includes('buildKnowledgeProspectiveAttributionSnapshot'));assert.ok(knowledgeBuilder.includes("from '../knowledge/human-knowledge-engine.js'"));assert.ok(knowledgeBuilder.includes("from '../knowledge/playbook-engine.js'"));assert.ok(!knowledgeBuilder.includes('higher-timeframe-engine'));
+assert.ok(htfBuilder.includes('buildHigherTimeframeProspectiveAttributionSnapshot'));assert.ok(htfBuilder.includes("from '../knowledge/higher-timeframe-engine.js'"));assert.ok(!htfBuilder.includes('human-knowledge-engine'));assert.ok(!htfBuilder.includes('playbook-engine'));
+assert.ok(knowledge.includes("from './knowledge-prospective-attribution.js'"));assert.ok(htf.includes("from './higher-timeframe-prospective-attribution.js'"));
+for(const [name,text] of [['knowledge',knowledge],['htf',htf]]){assert.ok(text.includes("from './prospective-attribution-ledger.js'"),`${name} collector missing ledger core import`);assert.ok(text.includes('attributionLedgerRequired:true'),`${name} collector missing attribution guardrail`);assert.ok(text.includes('attributionAudit'),`${name} collector missing attribution audit`);}
+assert.ok(pkg.scripts.test.includes('validate-prospective-attribution.mjs'));assert.ok(pkg.scripts.test.includes('test-prospective-attribution-ledger.mjs'));assert.ok(pkg.scripts.test.includes('node --check src/research/prospective-attribution-ledger.js'));assert.ok(pkg.scripts.test.includes('node --check src/research/knowledge-prospective-attribution.js'));assert.ok(pkg.scripts.test.includes('node --check src/research/higher-timeframe-prospective-attribution.js'));
+for(const forbidden of ['src/live/live-forward-paper.js','src/engine/shadow-engine.js']){const text=read(forbidden);assert.ok(!text.includes('prospective-attribution'),`${forbidden} must not depend on prospective attribution`);}
+console.log('Prospective Attribution Ledger v0.22 integrity validation passed.');
