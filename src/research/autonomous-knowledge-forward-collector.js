@@ -2,11 +2,8 @@ import { runKnowledgeForwardSnapshot } from './knowledge-forward-runner.js';
 import { mergeKnowledgeForwardArchive } from './knowledge-forward-store.js';
 import { KNOWLEDGE_FORWARD_EPOCH_ID } from './knowledge-forward-epoch.js';
 import { auditKnowledgeForwardRemoteDocument, KNOWLEDGE_FORWARD_REPLAY_AUDIT_VERSION } from './knowledge-forward-replay-audit.js';
-import {
-  buildKnowledgeProspectiveAttributionSnapshot,
-  mergeProspectiveAttributionLedger,
-  auditProspectiveAttributionLedger,
-} from './prospective-attribution-ledger.js';
+import { buildKnowledgeProspectiveAttributionSnapshot } from './knowledge-prospective-attribution.js';
+import { mergeProspectiveAttributionLedger, auditProspectiveAttributionLedger } from './prospective-attribution-ledger.js';
 import {
   FROZEN_KNOWLEDGE_EVALUATOR_COMMIT,
   KRAKEN_SPOT_BTCUSD_4H_URL,
