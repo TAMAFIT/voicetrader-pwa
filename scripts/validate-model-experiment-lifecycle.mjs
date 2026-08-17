@@ -20,6 +20,7 @@ need(files.lifecycle.includes("MODEL_EXPERIMENT_LIFECYCLE_VERSION='model-experim
 need(files.lifecycle.includes('appendOnly:true'),'append-only-guard-missing');
 need(files.lifecycle.includes('mutatesFrozenSpecs:false'),'frozen-mutation-guard-missing');
 need(files.lifecycle.includes('automaticApproval:false'),'automatic-approval-guard-missing');
+need(files.lifecycle.includes('browserWriteAuthority:false'),'browser-write-authority-guard-missing');
 need(files.lifecycle.includes('ledgerLaunchesJobs:false'),'job-launch-guard-missing');
 need(files.lifecycle.includes('trainingImplemented:false'),'training-guard-missing');
 need(files.lifecycle.includes("type:'RETIRED'"),'retire-event-missing');
