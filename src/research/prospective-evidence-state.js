@@ -1,0 +1,3 @@
+let latestProspectiveEvidenceHealth=null;
+export function setLatestProspectiveEvidenceHealth(value){latestProspectiveEvidenceHealth=value||null;return latestProspectiveEvidenceHealth;}
+export function getLatestProspectiveEvidenceHealth(){return latestProspectiveEvidenceHealth;}
