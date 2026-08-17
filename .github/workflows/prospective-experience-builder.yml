@@ -1,0 +1,86 @@
+name: Prospective Experience Builder
+
+on:
+  schedule:
+    - cron: '57 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/prospective-experience-builder.yml'
+      - 'scripts/build-prospective-experience.mjs'
+      - 'src/research/prospective-experience-dataset.js'
+      - 'src/research/prospective-experience-remote.js'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prospective-experience-builder
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout builder code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout Knowledge source archive
+        uses: actions/checkout@v6
+        with:
+          ref: knowledge-forward-data
+          path: _knowledge
+          fetch-depth: 1
+
+      - name: Checkout Higher-Timeframe source archive
+        uses: actions/checkout@v6
+        with:
+          ref: higher-timeframe-forward-data
+          path: _htf
+          fetch-depth: 1
+
+      - name: Checkout ETH source archive
+        uses: actions/checkout@v6
+        with:
+          ref: eth-forward-data
+          path: _eth
+          fetch-depth: 1
+
+      - name: Checkout generated Experience dataset
+        uses: actions/checkout@v6
+        with:
+          ref: prospective-experience-data
+          path: _experience
+          fetch-depth: 1
+
+      - name: Build and audit prospective experience dataset
+        run: |
+          node scripts/build-prospective-experience.mjs \
+            --knowledge _knowledge/data/knowledge-forward-001.json \
+            --htf _htf/data/htf-forward-001.json \
+            --eth _eth/data/eth-forward-001.json \
+            --output _experience/data/prospective-experience-v1.json
+
+      - name: Commit generated Experience dataset only when changed
+        working-directory: _experience
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader Experience Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/prospective-experience-v1.json
+          if git diff --cached --quiet; then
+            echo 'No prospective experience data change.'
+            exit 0
+          fi
+          git commit -m 'Update prospective experience dataset'
+          git push origin HEAD:prospective-experience-data
