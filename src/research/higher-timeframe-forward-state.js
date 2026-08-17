@@ -1,0 +1,3 @@
+let latestHigherTimeframeForwardEvaluation=null;
+export function setLatestHigherTimeframeForwardEvaluation(value){latestHigherTimeframeForwardEvaluation=value||null;return latestHigherTimeframeForwardEvaluation;}
+export function getLatestHigherTimeframeForwardEvaluation(){return latestHigherTimeframeForwardEvaluation;}
