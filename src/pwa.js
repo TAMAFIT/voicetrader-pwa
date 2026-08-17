@@ -12,6 +12,7 @@ import { setupProspectiveObservatoryUI } from './research/prospective-observator
 import { setupEthForwardUI } from './research/eth-forward-ui.js';
 import { setupProspectiveExperienceUI } from './research/prospective-experience-ui.js';
 import { setupLearningReadinessUI } from './research/learning-readiness-ui.js';
+import { setupModelExperimentUI } from './research/model-experiment-ui.js';
 import { setupWalkForwardUI } from './research/walk-forward-ui.js';
 import { setupForwardDemoUI } from './research/forward-demo-ui.js';
 import { setupLiveForwardTradingUI } from './live/live-forward-ui.js';
@@ -38,6 +39,7 @@ export function setupPWA() {
   setupEthForwardUI();
   setupProspectiveExperienceUI();
   setupLearningReadinessUI();
+  setupModelExperimentUI();
   setupWalkForwardUI();
   setupForwardDemoUI();
   setupLiveForwardTradingUI();
