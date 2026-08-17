@@ -3,6 +3,11 @@ import { mergeKnowledgeForwardArchive } from './knowledge-forward-store.js';
 import { KNOWLEDGE_FORWARD_EPOCH_ID } from './knowledge-forward-epoch.js';
 import { auditKnowledgeForwardRemoteDocument, KNOWLEDGE_FORWARD_REPLAY_AUDIT_VERSION } from './knowledge-forward-replay-audit.js';
 import {
+  buildKnowledgeProspectiveAttributionSnapshot,
+  mergeProspectiveAttributionLedger,
+  auditProspectiveAttributionLedger,
+} from './prospective-attribution-ledger.js';
+import {
   FROZEN_KNOWLEDGE_EVALUATOR_COMMIT,
   KRAKEN_SPOT_BTCUSD_4H_URL,
   detectKnowledgeForwardMarketGaps,
@@ -12,8 +17,8 @@ import {
   normalizeKrakenSpot4H,
 } from './knowledge-forward-remote.js';
 
-export const AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.2-replay-audit';
-export const PREVIOUS_AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.1';
+export const AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.3-attribution';
+export const PREVIOUS_AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.2-replay-audit';
 
 function marketSignature(bars = []) {
   if (!bars.length) return 'kraken-spot-btcusd-4h-v1:empty';
@@ -52,6 +57,13 @@ export async function collectKnowledgeForwardAutonomously({
   const prospective = runKnowledgeForwardSnapshot({series:marketBars,endIndex:marketBars.length-1,dataSignature:signature});
   if (prospective.status !== 'complete') throw new Error(`knowledge-forward-evaluator:${prospective.reason || prospective.status}`);
   const mergedEvidence = mergeKnowledgeForwardArchive(normalizedExisting.evidenceArchive,prospective,{updatedAt:runAtIso});
+
+  const attributionSnapshot=buildKnowledgeProspectiveAttributionSnapshot({series:marketBars,observedBarTimes:prospective.observedBarTimes});
+  const attributionLedger=mergeProspectiveAttributionLedger(normalizedExisting.attributionLedger,attributionSnapshot,{epochId:KNOWLEDGE_FORWARD_EPOCH_ID,updatedAt:runAtIso});
+  if ((attributionLedger.mergeConflicts||[]).length) throw new Error(`knowledge-forward-attribution-conflict:${attributionLedger.mergeConflicts.length}`);
+  const attributionAudit=auditProspectiveAttributionLedger({ledger:attributionLedger,epochId:KNOWLEDGE_FORWARD_EPOCH_ID,observedBarTimes:prospective.observedBarTimes});
+  if (!attributionAudit.pass) throw new Error(`knowledge-forward-attribution-audit:${attributionAudit.errorCodes.join(',')}`);
+
   const continuity = detectKnowledgeForwardMarketGaps(marketBars);
   const document = {
     ...normalizedExisting,
@@ -66,6 +78,8 @@ export async function collectKnowledgeForwardAutonomously({
       signature,
     },
     evidenceArchive:mergedEvidence,
+    attributionLedger,
+    attributionAudit:{...attributionAudit,checkedAt:runAtIso},
     collector:{
       version:AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION,
       status:continuity.gapCount ? 'warning-market-gap' : 'success',
@@ -82,9 +96,11 @@ export async function collectKnowledgeForwardAutonomously({
       prospectiveEvidenceRecords:prospective.evidence.length,
       archivedDecisionRecords:mergedEvidence.decisions.length,
       archivedEvidenceRecords:mergedEvidence.evidence.length,
+      archivedAttributionRecords:attributionLedger.records.length,
       browserRequired:false,
       paidApiRequired:false,
       replayAuditRequiredOnceProspectiveBarsExist:true,
+      attributionLedgerRequired:true,
     },
   };
   let replayAudit;
@@ -95,5 +111,5 @@ export async function collectKnowledgeForwardAutonomously({
     replayAudit={version:KNOWLEDGE_FORWARD_REPLAY_AUDIT_VERSION,status:'waiting',pass:false,errorCount:0,errorCodes:[],reason:'no-post-freeze-closed-bar-yet',checked:{marketBars:marketBars.length,observedBars:0,decisionRecords:0,evidenceRecords:0,sources:5},methodology:{replayRequiredOnceProspectiveBarsExist:true}};
   }
   document.audit={...replayAudit,checkedAt:runAtIso};
-  return { document,prospective,marketMerge,replayAudit };
+  return { document,prospective,marketMerge,replayAudit,attributionLedger,attributionAudit };
 }
