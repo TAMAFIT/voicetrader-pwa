@@ -1,3 +1,4 @@
+import './test-model-experiment-lifecycle.mjs';
 import assert from 'node:assert/strict';
 import { MODEL_EXPERIMENT_REGISTRY, MODEL_FEATURE_SET_REGISTRY, MODEL_EXPERIMENT_TEMPLATES } from '../src/research/model-experiment-registry.js';
 import {
