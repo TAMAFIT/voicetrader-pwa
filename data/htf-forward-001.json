@@ -6488,41 +6488,51 @@
         "c": 62819.1,
         "volume": 192.82167063,
         "trades": 6387
+      },
+      {
+        "t": 1786924800,
+        "o": 62819.1,
+        "h": 63434.1,
+        "l": 62683.4,
+        "c": 63362.2,
+        "volume": 363.50981455,
+        "trades": 10130
       }
     ],
     "continuity": {
-      "barCount": 720,
+      "barCount": 721,
       "gapCount": 0,
       "missingBarTimes": []
     },
-    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1786910400:720",
+    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1786924800:721",
     "firstBarTime": 1776556800,
-    "lastBarTime": 1786910400,
-    "closedBarCount": 720
+    "lastBarTime": 1786924800,
+    "closedBarCount": 721
   },
   "evidenceArchive": {
     "archiveVersion": "higher-timeframe-forward-store-0.1",
     "epochId": "htf-forward-001",
     "observedBarTimes": [],
     "dataSignatures": [
-      "kraken-spot-btcusd-4h-v1:1776556800:1786910400:720"
+      "kraken-spot-btcusd-4h-v1:1776556800:1786910400:720",
+      "kraken-spot-btcusd-4h-v1:1776556800:1786924800:721"
     ],
     "decisions": [],
     "evidence": [],
     "mergeConflicts": [],
-    "updatedAt": "2026-08-17T03:35:14.987Z"
+    "updatedAt": "2026-08-17T04:26:44.245Z"
   },
   "collector": {
     "version": "autonomous-htf-forward-collector-0.1",
     "status": "success",
-    "lastRunAt": "2026-08-17T03:35:14.987Z",
-    "workflowRunId": "31991621481",
+    "lastRunAt": "2026-08-17T04:26:44.245Z",
+    "workflowRunId": "31994490479",
     "workflowRunAttempt": "1",
     "evaluatorCommit": "c8fdedb9b385d1d01f7c69948a2520882388a337",
-    "marketBarsAdded": 0,
+    "marketBarsAdded": 1,
     "marketConflicts": [],
     "incomingClosedBars": 720,
-    "totalMarketBars": 720,
+    "totalMarketBars": 721,
     "prospectiveDecisionRecords": 0,
     "prospectiveEvidenceRecords": 0,
     "archivedDecisionRecords": 0,
@@ -6539,11 +6549,11 @@
     "errorCount": 0,
     "errorCodes": [],
     "checked": {
-      "marketBars": 720,
+      "marketBars": 721,
       "observedBars": 0,
       "decisions": 0,
       "evidence": 0
     },
-    "checkedAt": "2026-08-17T03:35:14.987Z"
+    "checkedAt": "2026-08-17T04:26:44.245Z"
   }
 }
