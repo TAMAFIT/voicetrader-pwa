@@ -15,6 +15,7 @@ import {
 import { HIGHER_TIMEFRAME_FORWARD_EPOCH_ID } from './higher-timeframe-forward-epoch.js';
 
 export const AUTONOMOUS_HIGHER_TIMEFRAME_FORWARD_COLLECTOR_VERSION='autonomous-htf-forward-collector-0.2-attribution';
+export const LEGACY_AUTONOMOUS_HIGHER_TIMEFRAME_FORWARD_COLLECTOR_VERSION='autonomous-htf-forward-collector-0.1';
 function marketSignature(bars=[]){return bars.length?`kraken-spot-btcusd-4h-v1:${bars[0].t}:${bars.at(-1).t}:${bars.length}`:'kraken-spot-btcusd-4h-v1:empty';}
 export async function fetchHigherTimeframeForwardKraken({fetchImpl=fetch,nowSeconds=Math.floor(Date.now()/1000)}={}){const response=await fetchImpl(HIGHER_TIMEFRAME_FORWARD_KRAKEN_URL,{method:'GET',headers:{Accept:'application/json'}});if(!response.ok)throw new Error(`Kraken OHLC HTTP ${response.status}`);return normalizeKrakenSpot4H(await response.json(),nowSeconds);}
 
