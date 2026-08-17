@@ -2,6 +2,7 @@ import { setupResearchEvaluationUI } from './research/research-evaluation-ui.js'
 import { setupHumanKnowledgeUI } from './research/knowledge-ui.js';
 import { setupKnowledgeAttributionUI } from './research/knowledge-attribution-ui.js';
 import { setupHumanPlaybookUI } from './research/playbook-ui.js';
+import { setupHigherTimeframeUI } from './research/higher-timeframe-ui.js';
 import { setupKnowledgeCandidateTournamentUI } from './research/knowledge-candidate-ui.js';
 import { setupKnowledgeForwardUI } from './research/knowledge-forward-ui.js';
 import { setupKnowledgeForwardReplayAuditUI } from './research/knowledge-forward-replay-audit-ui.js';
@@ -22,6 +23,7 @@ export function setupPWA() {
   setupHumanKnowledgeUI();
   setupKnowledgeAttributionUI();
   setupHumanPlaybookUI();
+  setupHigherTimeframeUI();
   setupKnowledgeCandidateTournamentUI();
   setupKnowledgeForwardUI();
   setupKnowledgeForwardReplayAuditUI();
