@@ -6,11 +6,13 @@ const files={
   ui:fs.readFileSync('src/research/model-experiment-ui.js','utf8'),
   sw:fs.readFileSync('sw.js','utf8'),
   pkg:JSON.parse(fs.readFileSync('package.json','utf8')),
+  parentValidator:fs.readFileSync('scripts/validate-model-experiment-spec.mjs','utf8'),
+  parentTest:fs.readFileSync('scripts/test-model-experiment-spec.mjs','utf8'),
 };
 const errors=[];const need=(condition,code)=>{if(!condition)errors.push(code);};
 need(files.pkg.version==='0.28.0','package-version-not-0.28.0');
-need(String(files.pkg.scripts?.test||'').includes('validate-model-experiment-lifecycle.mjs'),'lifecycle-validator-not-wired');
-need(String(files.pkg.scripts?.test||'').includes('test-model-experiment-lifecycle.mjs'),'lifecycle-test-not-wired');
+need(files.parentValidator.includes("import './validate-model-experiment-lifecycle.mjs';"),'lifecycle-validator-not-wired');
+need(files.parentTest.includes("import './test-model-experiment-lifecycle.mjs';"),'lifecycle-test-not-wired');
 need(files.lifecycle.includes("MODEL_EXPERIMENT_LIFECYCLE_VERSION='model-experiment-lifecycle-ledger-0.1'"),'lifecycle-version-missing');
 need(files.lifecycle.includes('appendOnly:true'),'append-only-guard-missing');
 need(files.lifecycle.includes('mutatesFrozenSpecs:false'),'frozen-mutation-guard-missing');
