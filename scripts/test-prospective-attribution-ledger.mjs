@@ -3,9 +3,9 @@ import { KNOWLEDGE_FORWARD_FREEZE_UNIX } from '../src/research/knowledge-forward
 import { HIGHER_TIMEFRAME_FORWARD_FREEZE_UNIX } from '../src/research/higher-timeframe-forward-epoch.js';
 import { runKnowledgeForwardSnapshot } from '../src/research/knowledge-forward-runner.js';
 import { runHigherTimeframeForwardSnapshot } from '../src/research/higher-timeframe-forward-runner.js';
+import { buildKnowledgeProspectiveAttributionSnapshot } from '../src/research/knowledge-prospective-attribution.js';
+import { buildHigherTimeframeProspectiveAttributionSnapshot } from '../src/research/higher-timeframe-prospective-attribution.js';
 import {
-  buildKnowledgeProspectiveAttributionSnapshot,
-  buildHigherTimeframeProspectiveAttributionSnapshot,
   emptyProspectiveAttributionLedger,
   mergeProspectiveAttributionLedger,
   auditProspectiveAttributionLedger,
