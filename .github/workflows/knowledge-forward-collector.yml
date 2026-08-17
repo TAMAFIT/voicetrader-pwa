@@ -47,26 +47,31 @@ jobs:
         run: |
           set -euo pipefail
           FROZEN='1af623dfa7df53618733050ff9edab5e3595a3d0'
-          git checkout "$FROZEN" -- \
-            src/config.js \
-            src/engine \
-            src/knowledge \
-            src/research/knowledge-candidate-registry.js \
-            src/research/knowledge-candidate-tournament.js \
-            src/research/research-cost-model.js \
-            src/research/knowledge-forward-epoch.js \
-            src/research/knowledge-forward-runner.js \
+          FROZEN_PATHS=(
+            src/config.js
+            src/engine/ai-provider.js
+            src/engine/decision-policy.js
+            src/engine/execution-engine.js
+            src/engine/experts.js
+            src/engine/indicators.js
+            src/engine/shadow-engine.js
+            src/knowledge/expert-library.js
+            src/knowledge/human-knowledge-engine.js
+            src/knowledge/knowledge-indicators.js
+            src/knowledge/knowledge-registry.js
+            src/knowledge/playbook-engine.js
+            src/knowledge/playbook-features.js
+            src/knowledge/playbook-registry.js
+            src/research/knowledge-candidate-registry.js
+            src/research/knowledge-candidate-tournament.js
+            src/research/playbook-shadow-runner.js
+            src/research/research-cost-model.js
+            src/research/knowledge-forward-epoch.js
+            src/research/knowledge-forward-runner.js
             src/research/knowledge-forward-store.js
-          git diff --exit-code "$FROZEN" -- \
-            src/config.js \
-            src/engine \
-            src/knowledge \
-            src/research/knowledge-candidate-registry.js \
-            src/research/knowledge-candidate-tournament.js \
-            src/research/research-cost-model.js \
-            src/research/knowledge-forward-epoch.js \
-            src/research/knowledge-forward-runner.js \
-            src/research/knowledge-forward-store.js
+          )
+          git checkout "$FROZEN" -- "${FROZEN_PATHS[@]}"
+          git diff --exit-code "$FROZEN" -- "${FROZEN_PATHS[@]}"
 
       - name: Collect Kraken 4H and update prospective evidence
         env:
