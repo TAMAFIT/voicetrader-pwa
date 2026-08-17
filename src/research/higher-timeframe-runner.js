@@ -45,7 +45,12 @@ function runWave3Path({series,analyses,startIndex,endIndex,disabledComponentIds=
 function runChampionPath({series,startIndex,endIndex}){
   const engine=new ShadowEngine({seriesProvider:()=>series});const trades=[];const decisions={ENTER_LONG:0,ENTER_SHORT:0,NO_ENTRY:0};let nextFree=startIndex;
   for(let idx=startIndex;idx+HIGHER_TIMEFRAME_HORIZON_BARS<=endIndex;idx++){
-    if(idx<nextFree)continue;const analysis=engine.analyze('BTCUSD',idx);const decision=analysis.entryDecision||analysis.action==='BUY'?'ENTER_LONG':analysis.action==='SELL'?'ENTER_SHORT':'NO_ENTRY';decisions[decision]=(decisions[decision]||0)+1;
+    if(idx<nextFree)continue;
+    const analysis=engine.analyze('BTCUSD',idx);
+    const decision=analysis.entryDecision==='ENTER_LONG'||analysis.entryDecision==='ENTER_SHORT'||analysis.entryDecision==='NO_ENTRY'
+      ? analysis.entryDecision
+      : analysis.action==='BUY'?'ENTER_LONG':analysis.action==='SELL'?'ENTER_SHORT':'NO_ENTRY';
+    decisions[decision]=(decisions[decision]||0)+1;
     const trade=tradeFromDecision(series,idx,decision,{context:{dailyRegime:'benchmark'},rawContextScore:analysis.rawAlphaScore,components:[]});if(!trade)continue;trades.push(trade);nextFree=trade.exitIndex+1;
   }
   return {trades,decisionCounts:decisions,summary:summarizePlaybookTrades(trades,startIndex,endIndex,HIGHER_TIMEFRAME_HORIZON_BARS)};
@@ -66,11 +71,11 @@ function runLagControls({series,analyses,startIndex,endIndex}){
 }
 
 function buildFolds(startIndex,endIndex,count=HIGHER_TIMEFRAME_FOLDS){
-  const lastEntry=endIndex-HIGHER_TIMEFRAME_HORIZON_BARS;const length=Math.max(0,lastEntry-startIndex+1);if(length<count)return [];
-  const base=Math.floor(length/count);const folds=[];let cursor=startIndex;
+  const totalBars=endIndex-startIndex+1;if(totalBars<count*(HIGHER_TIMEFRAME_HORIZON_BARS+1))return [];
+  const base=Math.floor(totalBars/count);const folds=[];let cursor=startIndex;
   for(let fold=1;fold<=count;fold++){
-    const entryEnd=fold===count?lastEntry:cursor+base-1;
-    folds.push({fold,startIndex:cursor,entryEndIndex:entryEnd,endIndex:Math.min(endIndex,entryEnd+HIGHER_TIMEFRAME_HORIZON_BARS)});cursor=entryEnd+1;
+    const foldEnd=fold===count?endIndex:cursor+base-1;
+    folds.push({fold,startIndex:cursor,endIndex:foldEnd,entryEndIndex:foldEnd-HIGHER_TIMEFRAME_HORIZON_BARS});cursor=foldEnd+1;
   }
   return folds;
 }
@@ -79,7 +84,7 @@ function runFolds({series,analyses,startIndex,endIndex}){
   return buildFolds(startIndex,endIndex).map(fold=>{
     const wave3=runWave3Path({series,analyses,startIndex:fold.startIndex,endIndex:fold.endIndex});
     const champion=runChampionPath({series,startIndex:fold.startIndex,endIndex:fold.endIndex});
-    return {...fold,wave3:wave3.summary,champion:champion.summary,deltaAvgNetBps:round(wave3.summary.avgNetBps-champion.summary.avgNetBps),wave3Positive:wave3.summary.returnPct>0,beatsChampionAvgNet:wave3.summary.avgNetBps>champion.summary.avgNetBps};
+    return {...fold,wave3:wave3.summary,champion:champion.summary,deltaAvgNetBps:round(wave3.summary.avgNetBps-champion.summary.avgNetBps),wave3Positive:wave3.summary.returnPct>0,beatsChampionAvgNet:wave3.summary.avgNetBps>champion.summary.avgNetBps,exitCrossesFoldBoundary:false};
   });
 }
 
@@ -104,6 +109,6 @@ export function runHigherTimeframeWave3({series,endIndex,dataSignature='unknown'
     latestAnalysis:analyses.get(Math.max(...analyses.keys())),wave3,benchmark:{id:'champion-001',...champion},activationCounts,ablations,lagControls,folds,
     comparison:{deltaAvgNetBps:round(wave3.summary.avgNetBps-champion.summary.avgNetBps),deltaReturnPct:round(wave3.summary.returnPct-champion.summary.returnPct)},
     promotionEligible:false,
-    methodology:{purpose:'research-only-higher-timeframe-context-wave3',sameSeriesDiagnosticOnly:true,fullyClosedDailyContextOnly:true,partialDailyBarForbidden:true,futureFourHourBarsForbidden:true,fixedHorizonBars:HIGHER_TIMEFRAME_HORIZON_BARS,nonOverlappingTrades:true,perEntryDeterministicResearchCost:true,leaveOneComponentOut:true,pastDecisionLagControls:[...HIGHER_TIMEFRAME_LAG_CONTROLS],chronologicalFolds:HIGHER_TIMEFRAME_FOLDS,pristineUntouchedOOS:false,noFittingPerformed:true,rawScoreMinusCost:false,optimizer:false,parameterSweep:false,adaptiveWeights:false,selfLearning:false,automaticPruning:false,automaticPromotion:false,championMutation:false,usedByLiveDecisionEngine:false,usedByForward001:false,usedByKnowledgeForward001:false},
+    methodology:{purpose:'research-only-higher-timeframe-context-wave3',sameSeriesDiagnosticOnly:true,fullyClosedDailyContextOnly:true,partialDailyBarForbidden:true,futureFourHourBarsForbidden:true,fixedHorizonBars:HIGHER_TIMEFRAME_HORIZON_BARS,nonOverlappingTrades:true,perEntryDeterministicResearchCost:true,leaveOneComponentOut:true,pastDecisionLagControls:[...HIGHER_TIMEFRAME_LAG_CONTROLS],chronologicalFolds:HIGHER_TIMEFRAME_FOLDS,foldOutcomeOverlap:false,pristineUntouchedOOS:false,noFittingPerformed:true,rawScoreMinusCost:false,optimizer:false,parameterSweep:false,adaptiveWeights:false,selfLearning:false,automaticPruning:false,automaticPromotion:false,championMutation:false,usedByLiveDecisionEngine:false,usedByForward001:false,usedByKnowledgeForward001:false},
   };
 }
