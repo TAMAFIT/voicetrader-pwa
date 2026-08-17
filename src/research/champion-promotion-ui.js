@@ -1,0 +1,33 @@
+import { KNOWLEDGE_CANDIDATE_REGISTRY } from './knowledge-candidate-registry.js';
+import { fetchKnowledgeForwardRemoteDocument } from './knowledge-forward-remote.js';
+import { CHAMPION_PROMOTION_PROTOCOL, CHAMPION_PROMOTION_STAGE_A } from './champion-promotion-protocol.js';
+import { evaluateChampionPromotionQualification } from './champion-promotion-evaluator.js';
+import { setLatestChampionPromotionEvaluation } from './champion-promotion-state.js';
+
+let initialized=false;
+const escapeHtml=value=>String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+const fmt=(value,suffix='',signed=false)=>{const n=Number(value);if(!Number.isFinite(n))return '—';return `${signed&&n>0?'+':''}${n.toFixed(Math.abs(n)>=100?0:2)}${suffix}`;};
+function ensureStylesheet(){if(document.querySelector('link[data-champion-promotion-style]'))return;const link=document.createElement('link');link.rel='stylesheet';link.href='./champion-promotion.css';link.dataset.championPromotionStyle='true';document.head.appendChild(link);}
+
+function template(){return `<div id="championPromotionSection" class="champion-promotion-section" aria-labelledby="championPromotionTitle">
+<div class="champion-promotion-head"><div><div class="section-kicker">Champion-002 Promotion Protocol</div><h4 id="championPromotionTitle">Stage Aは「確認試験へ進めるか」だけを判定</h4><p id="championPromotionMeta" class="champion-promotion-meta">${escapeHtml(CHAMPION_PROMOTION_PROTOCOL.version)} / qualification ${escapeHtml(CHAMPION_PROMOTION_PROTOCOL.qualificationEpochId)} → confirmation ${escapeHtml(CHAMPION_PROMOTION_PROTOCOL.confirmationEpochId)}</p></div><span id="championPromotionStatus" class="champion-promotion-status">WAITING</span></div>
+<div id="championPromotionStrip" class="champion-promotion-strip"></div>
+<div class="champion-promotion-table"><div class="champion-promotion-row header"><span>Candidate</span><span>Trades</span><span>Avg net</span><span>Δ vs Champ</span><span>Folds</span><span>Lag Null</span></div><div id="championPromotionRows"></div></div>
+<div id="championPromotionBlockers" class="champion-promotion-blockers"></div>
+<div class="research-evaluation-note champion-promotion-note">このStage AはChampion-002への昇格判定ではありません。条件を満たしても最大1候補を人間が確認し、その後に新しい未来区間 <b>knowledge-confirm-001</b> を別途凍結します。Stage Aで候補選択に使ったデータをStage Bの最終確認には再利用しません。自動選択・自動昇格・Champion書換えは常に無効です。</div>
+</div>`;}
+
+function insertSection(){const host=document.getElementById('knowledgeForwardSection');if(!host||document.getElementById('championPromotionSection'))return Boolean(host);const wrap=document.createElement('div');wrap.innerHTML=template().trim();const note=host.querySelector('.knowledge-forward-note');if(note)host.insertBefore(wrap.firstElementChild,note);else host.appendChild(wrap.firstElementChild);return true;}
+
+function renderUnavailable(message){setLatestChampionPromotionEvaluation(null);const status=document.getElementById('championPromotionStatus');const blockers=document.getElementById('championPromotionBlockers');if(status){status.className='champion-promotion-status warning';status.textContent='REMOTE REQUIRED';}if(blockers)blockers.textContent=message;}
+
+function render(evaluation){setLatestChampionPromotionEvaluation(evaluation);const status=document.getElementById('championPromotionStatus');const meta=document.getElementById('championPromotionMeta');const strip=document.getElementById('championPromotionStrip');const rows=document.getElementById('championPromotionRows');const blockers=document.getElementById('championPromotionBlockers');if(!status||!meta||!strip||!rows||!blockers)return;
+const ready=evaluation.readyCandidateIds?.length||0;status.className=`champion-promotion-status ${ready?'ready':''}`;status.textContent=ready?'CONFIRMATION REVIEW READY':'QUALIFYING';meta.textContent=`${evaluation.protocolVersion} / Remote Archive only / Stage A direct promotion forbidden`;
+strip.innerHTML=`<span><small>Elapsed</small><b>${fmt(evaluation.elapsedCalendarDays,'d')} / ${CHAMPION_PROMOTION_STAGE_A.minElapsedCalendarDays}d</b></span><span><small>Observed 4H bars</small><b>${evaluation.observedBars} / ${CHAMPION_PROMOTION_STAGE_A.minObservedBars}</b></span><span><small>Champion trades</small><b>${evaluation.benchmarkSummary.trades} / ${CHAMPION_PROMOTION_STAGE_A.minBenchmarkTrades}</b></span><span><small>Archive integrity</small><b>${evaluation.integrity.clean?'CLEAN':'BLOCKED'}</b></span>`;
+const labels=new Map(KNOWLEDGE_CANDIDATE_REGISTRY.candidates.map(item=>[item.id,item.label]));rows.innerHTML=evaluation.candidates.map(item=>{const foldText=`${item.folds.positiveCandidateFolds}/${item.folds.benchmarkBeatFolds}`;const nullText=item.lagControl.screening==='above-null95'?'ABOVE 95':'WAIT';const state=item.confirmationReviewReady?'READY':'BLOCKED';return `<div class="champion-promotion-row"><span><b>${escapeHtml(labels.get(item.sourceId)||item.sourceId)}</b><small>${escapeHtml(item.sourceId)} · <span class="${item.confirmationReviewReady?'champion-promotion-ready':'champion-promotion-blocked'}">${state}</span></small></span><span>${item.summary.trades}</span><span>${fmt(item.summary.avgNetBps,'bp',true)}</span><span>${fmt(item.deltaVsChampion.avgNetBps,'bp',true)}</span><span>${foldText}</span><span>${nullText}</span></div>`;}).join('');
+const first=evaluation.candidates[0];const globalProblems=evaluation.integrity.reasons||[];const candidateWait=evaluation.candidates.map(item=>`${labels.get(item.sourceId)||item.sourceId}: ${item.blockers.slice(0,4).join(', ')||'Stage A ready'}`);blockers.innerHTML=`<b>Protocol:</b> qualification-only / promotionEligible=false / next epoch=${escapeHtml(CHAMPION_PROMOTION_PROTOCOL.confirmationEpochId)}${globalProblems.length?`<br><b>Integrity blockers:</b> ${escapeHtml(globalProblems.join(', '))}`:''}<br><b>Current blockers:</b> ${candidateWait.map(escapeHtml).join(' | ')}`;
+}
+
+async function evaluate(){const remote=await fetchKnowledgeForwardRemoteDocument({timeoutMs:6000});if(!remote.document){renderUnavailable(`GitHub Remote Archiveが必要です: ${remote.error||'unavailable'}`);return;}const evaluation=evaluateChampionPromotionQualification(remote.document);if(evaluation.status!=='complete'){renderUnavailable(`Promotion Protocol停止: ${evaluation.reason||evaluation.status}`);return;}render(evaluation);}
+
+export function setupChampionPromotionUI(){if(initialized)return;initialized=true;ensureStylesheet();if(!insertSection()){setTimeout(()=>{if(insertSection())evaluate();},0);return;}evaluate();}
