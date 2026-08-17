@@ -6497,45 +6497,99 @@
         "c": 63362.2,
         "volume": 363.50981455,
         "trades": 10130
+      },
+      {
+        "t": 1786939200,
+        "o": 63364.5,
+        "h": 63630,
+        "l": 63364.5,
+        "c": 63463,
+        "volume": 178.95014809,
+        "trades": 5130
       }
     ],
     "continuity": {
-      "barCount": 721,
+      "barCount": 722,
       "gapCount": 0,
       "missingBarTimes": []
     },
-    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1786924800:721",
+    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1786939200:722",
     "firstBarTime": 1776556800,
-    "lastBarTime": 1786924800,
-    "closedBarCount": 721
+    "lastBarTime": 1786939200,
+    "closedBarCount": 722
   },
   "evidenceArchive": {
     "archiveVersion": "higher-timeframe-forward-store-0.1",
     "epochId": "htf-forward-001",
-    "observedBarTimes": [],
+    "observedBarTimes": [
+      1786939200
+    ],
     "dataSignatures": [
       "kraken-spot-btcusd-4h-v1:1776556800:1786910400:720",
-      "kraken-spot-btcusd-4h-v1:1776556800:1786924800:721"
+      "kraken-spot-btcusd-4h-v1:1776556800:1786924800:721",
+      "kraken-spot-btcusd-4h-v1:1776556800:1786939200:722"
     ],
-    "decisions": [],
+    "decisions": [
+      {
+        "decisionKey": "htf-forward-001:champion-001:1786939200",
+        "epochId": "htf-forward-001",
+        "sourceId": "champion-001",
+        "role": "benchmark",
+        "barIndex": 721,
+        "candleTime": 1786939200,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1786939200:722",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "0.4-fixed-experts-policy",
+          "rawAlphaScore": 14.571110454753493,
+          "decisionScore": 62.96,
+          "confidenceScore": 65
+        }
+      },
+      {
+        "decisionKey": "htf-forward-001:higher-timeframe-wave3-reference:1786939200",
+        "epochId": "htf-forward-001",
+        "sourceId": "higher-timeframe-wave3-reference",
+        "role": "candidate",
+        "barIndex": 721,
+        "candleTime": 1786939200,
+        "decision": "ENTER_SHORT",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1786939200:722",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "higher-timeframe-engine-0.1",
+          "registryVersion": "higher-timeframe-registry-0.1",
+          "rawContextScore": -84.11,
+          "activeAlphaCount": 1,
+          "alphaAgreement": 1,
+          "gateReason": null,
+          "dailyRegime": "range",
+          "dailyDirection": -1,
+          "lastDailyBarCloseTime": 1786924800
+        }
+      }
+    ],
     "evidence": [],
     "mergeConflicts": [],
-    "updatedAt": "2026-08-17T07:40:01.017Z"
+    "updatedAt": "2026-08-17T08:26:03.458Z"
   },
   "collector": {
     "version": "autonomous-htf-forward-collector-0.1",
     "status": "success",
-    "lastRunAt": "2026-08-17T07:40:01.017Z",
-    "workflowRunId": "32006801838",
+    "lastRunAt": "2026-08-17T08:26:03.458Z",
+    "workflowRunId": "32010339559",
     "workflowRunAttempt": "1",
     "evaluatorCommit": "c8fdedb9b385d1d01f7c69948a2520882388a337",
-    "marketBarsAdded": 0,
+    "marketBarsAdded": 1,
     "marketConflicts": [],
     "incomingClosedBars": 720,
-    "totalMarketBars": 721,
-    "prospectiveDecisionRecords": 0,
+    "totalMarketBars": 722,
+    "prospectiveDecisionRecords": 2,
     "prospectiveEvidenceRecords": 0,
-    "archivedDecisionRecords": 0,
+    "archivedDecisionRecords": 2,
     "archivedEvidenceRecords": 0,
     "browserRequired": false,
     "paidApiRequired": false,
@@ -6543,17 +6597,29 @@
   },
   "audit": {
     "version": "higher-timeframe-forward-replay-audit-0.1",
-    "status": "waiting",
-    "pass": false,
-    "reason": "no-post-freeze-closed-bar-yet",
+    "status": "pass",
+    "pass": true,
+    "checked": {
+      "marketBars": 722,
+      "observedBars": 1,
+      "decisions": 2,
+      "evidence": 0,
+      "expectedDecisions": 2,
+      "expectedEvidence": 0
+    },
     "errorCount": 0,
     "errorCodes": [],
-    "checked": {
-      "marketBars": 721,
-      "observedBars": 0,
-      "decisions": 0,
-      "evidence": 0
+    "errors": [],
+    "methodology": {
+      "fullFrozenRunnerReplay": true,
+      "keySetEqualityRequired": true,
+      "tradeEconomicsRecomputed": true,
+      "fullyClosedDailyContextRecomputed": true,
+      "futureFourHourUseForbidden": true,
+      "downstreamAuditOnly": true,
+      "changesFrozenEngine": false,
+      "usedByLiveDecisionEngine": false
     },
-    "checkedAt": "2026-08-17T07:40:01.017Z"
+    "checkedAt": "2026-08-17T08:26:03.458Z"
   }
 }
