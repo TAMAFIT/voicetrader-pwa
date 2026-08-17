@@ -13,6 +13,7 @@ import {
 } from './knowledge-forward-remote.js';
 
 export const AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.2-replay-audit';
+export const PREVIOUS_AUTONOMOUS_KNOWLEDGE_FORWARD_COLLECTOR_VERSION = 'autonomous-knowledge-forward-collector-0.1';
 
 function marketSignature(bars = []) {
   if (!bars.length) return 'kraken-spot-btcusd-4h-v1:empty';
