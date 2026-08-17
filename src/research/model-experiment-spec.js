@@ -10,7 +10,9 @@ import {
 } from './model-experiment-registry.js';
 
 export const MODEL_EXPERIMENT_SPEC_CONTRACT_VERSION='model-experiment-spec-contract-0.1';
+export const MODEL_EXPERIMENT_FROZEN_INPUT_GUARD='frozen-input-deep-freeze-v1';
 const clone=value=>JSON.parse(JSON.stringify(value));
+const deepFreeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const item of Object.values(value))deepFreeze(item);}return value;};
 function stable(value){if(Array.isArray(value))return value.map(stable);if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])]));return value;}
 const canonical=value=>JSON.stringify(stable(value));
 const SHA40=/^[0-9a-f]{40}$/i;
@@ -64,7 +66,7 @@ export function validateModelExperimentSpec(spec,{requireFrozen=false}={}){
 }
 
 export function freezeModelExperimentSpec(draft,{actor,approvedAt=new Date().toISOString()}={}){
-  const pre=validateModelExperimentSpec(draft);if(!pre.pass)throw new Error(`invalid-model-experiment-draft:${pre.errorCodes.join(',')}`);if(draft.status!=='DRAFT')throw new Error('only-draft-spec-can-freeze');const frozen={...clone(draft),status:'FROZEN',frozenAt:approvedAt,approval:{humanApproved:true,actor:String(actor||''),approvedAt},semanticFingerprint:null};if(!frozen.approval.actor.trim())throw new Error('human-approval-actor-required');frozen.semanticFingerprint=fingerprintModelExperimentSpec(frozen);const validation=validateModelExperimentSpec(frozen,{requireFrozen:true});if(!validation.pass)throw new Error(`frozen-spec-validation-failed:${validation.errorCodes.join(',')}`);return Object.freeze(frozen);}
+  const pre=validateModelExperimentSpec(draft);if(!pre.pass)throw new Error(`invalid-model-experiment-draft:${pre.errorCodes.join(',')}`);if(draft.status!=='DRAFT')throw new Error('only-draft-spec-can-freeze');const frozen={...clone(draft),status:'FROZEN',frozenAt:approvedAt,approval:{humanApproved:true,actor:String(actor||''),approvedAt},semanticFingerprint:null};if(!frozen.approval.actor.trim())throw new Error('human-approval-actor-required');frozen.semanticFingerprint=fingerprintModelExperimentSpec(frozen);const validation=validateModelExperimentSpec(frozen,{requireFrozen:true});if(!validation.pass)throw new Error(`frozen-spec-validation-failed:${validation.errorCodes.join(',')}`);return deepFreeze(frozen);}
 
 export function compareFrozenModelExperimentSpecs(existing,incoming){const a=validateModelExperimentSpec(existing,{requireFrozen:true}),b=validateModelExperimentSpec(incoming,{requireFrozen:true});if(!a.pass||!b.pass)return {same:false,status:'invalid',errors:[...a.errorCodes,...b.errorCodes]};const same=existing.experimentId===incoming.experimentId&&existing.revision===incoming.revision&&existing.semanticFingerprint===incoming.semanticFingerprint&&canonical(semanticSpec(existing))===canonical(semanticSpec(incoming));return {same,status:same?'identical':'mutation-detected',existingFingerprint:existing.semanticFingerprint,incomingFingerprint:incoming.semanticFingerprint};}
 
