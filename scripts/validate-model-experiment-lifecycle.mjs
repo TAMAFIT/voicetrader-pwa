@@ -17,6 +17,10 @@ need(files.pkg.version==='0.28.0','package-version-not-0.28.0');
 need(files.parentValidator.includes("import './validate-model-experiment-lifecycle.mjs';"),'lifecycle-validator-not-wired');
 need(files.parentTest.includes("import './test-model-experiment-lifecycle.mjs';"),'lifecycle-test-not-wired');
 need(files.lifecycle.includes("MODEL_EXPERIMENT_LIFECYCLE_VERSION='model-experiment-lifecycle-ledger-0.1'"),'lifecycle-version-missing');
+need(files.lifecycle.includes("MODEL_EXPERIMENT_LIFECYCLE_DATA_BRANCH='model-experiment-lifecycle-data'"),'lifecycle-data-branch-missing');
+need(files.lifecycle.includes("MODEL_EXPERIMENT_LIFECYCLE_DATA_PATH='data/model-experiment-lifecycle-v1.json'"),'lifecycle-data-path-missing');
+need(files.remote.includes('MODEL_EXPERIMENT_LIFECYCLE_DATA_BRANCH'),'remote-data-branch-binding-missing');
+need(files.remote.includes('MODEL_EXPERIMENT_LIFECYCLE_DATA_PATH'),'remote-data-path-binding-missing');
 need(files.lifecycle.includes('appendOnly:true'),'append-only-guard-missing');
 need(files.lifecycle.includes('mutatesFrozenSpecs:false'),'frozen-mutation-guard-missing');
 need(files.lifecycle.includes('automaticApproval:false'),'automatic-approval-guard-missing');
@@ -25,7 +29,6 @@ need(files.lifecycle.includes('ledgerLaunchesJobs:false'),'job-launch-guard-miss
 need(files.lifecycle.includes('trainingImplemented:false'),'training-guard-missing');
 need(files.lifecycle.includes("type:'RETIRED'"),'retire-event-missing');
 need(files.lifecycle.includes("status!=='FROZEN'"),'frozen-status-immutability-check-missing');
-need(files.remote.includes('model-experiment-lifecycle-data'),'remote-data-branch-missing');
 need(files.remote.includes("cache:'no-store'"),'remote-no-store-missing');
 need(files.ui.includes('fetchModelExperimentLifecycleDocument'),'ui-lifecycle-remote-missing');
 need(files.sw.includes('v0.28-model-experiment-lifecycle'),'sw-v0.28-cache-version-missing');
