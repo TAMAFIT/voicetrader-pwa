@@ -1,0 +1,42 @@
+name: v0.34 Adapter Environment Contract CI
+
+on:
+  pull_request:
+    paths:
+      - 'src/research/model-adapter-environment-lock.js'
+      - 'scripts/model-adapter-preparation-cli.mjs'
+      - 'scripts/model_adapter_environment_probe.py'
+      - 'scripts/test-model-adapter-environment-lock.mjs'
+      - 'scripts/validate-model-adapter-environment-lock.mjs'
+      - '.github/workflows/model-adapter-environment-plan.yml'
+      - '.github/workflows/v034-adapter-environment-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Validate v0.34 adapter/environment contract
+        run: node scripts/validate-model-adapter-environment-lock.mjs
+      - name: Run v0.34 adapter/environment regression tests
+        run: node scripts/test-model-adapter-environment-lock.mjs
+      - name: Assert no model dependency installation or execution authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -nE 'pip[[:space:]]+install|npm[[:space:]]+install|executionAuthorized:[[:space:]]*true|modelAdapterInstalled:[[:space:]]*true|modelFitImplemented:[[:space:]]*true' \
+            src/research/model-adapter-environment-lock.js \
+            scripts/model-adapter-preparation-cli.mjs \
+            scripts/model_adapter_environment_probe.py \
+            .github/workflows/model-adapter-environment-plan.yml
