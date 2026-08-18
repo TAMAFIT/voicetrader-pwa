@@ -1,0 +1,114 @@
+name: Prospective Collection Health Sentinel
+
+on:
+  schedule:
+    - cron: '17 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prospective-collection-health-sentinel
+  cancel-in-progress: false
+
+jobs:
+  sentinel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout sentinel code
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout Experience Source of Truth
+        uses: actions/checkout@v6
+        with:
+          ref: prospective-experience-data
+          path: _experience
+          fetch-depth: 1
+
+      - name: Checkout Knowledge collector archive
+        uses: actions/checkout@v6
+        with:
+          ref: knowledge-forward-data
+          path: _knowledge
+          fetch-depth: 1
+
+      - name: Checkout Higher-Timeframe collector archive
+        uses: actions/checkout@v6
+        with:
+          ref: higher-timeframe-forward-data
+          path: _htf
+          fetch-depth: 1
+
+      - name: Checkout ETH collector archive
+        uses: actions/checkout@v6
+        with:
+          ref: eth-forward-data
+          path: _eth
+          fetch-depth: 1
+
+      - name: Build read-only source branch metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const sources=[['prospective-experience-data','_experience'],['knowledge-forward-data','_knowledge'],['higher-timeframe-forward-data','_htf'],['eth-forward-data','_eth']];
+          const data=sources.map(([name,dir])=>({name,commitSha:execFileSync('git',['-C',dir,'rev-parse','HEAD'],{encoding:'utf8'}).trim(),committedAt:execFileSync('git',['-C',dir,'log','-1','--format=%cI'],{encoding:'utf8'}).trim()}));
+          fs.writeFileSync('/tmp/source-branches.json',JSON.stringify(data,null,2));
+          NODE
+
+      - name: Evaluate collection health and readiness
+        id: health
+        shell: bash
+        env:
+          DATASET_PATH: _experience/data/prospective-experience-v1.json
+          SOURCE_BRANCHES_PATH: /tmp/source-branches.json
+        run: |
+          set -euo pipefail
+          node scripts/prospective-collection-health-cli.mjs | tee /tmp/prospective-collection-health.json
+          {
+            echo '### Prospective Collection Health'
+            echo '```json'
+            cat /tmp/prospective-collection-health.json
+            echo '```'
+            echo ''
+            echo 'Sentinel is read-only. STALE is a freshness warning, not data corruption. READY never starts training; it only requires explicit human review/register/freeze.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Surface sentinel state
+        shell: bash
+        env:
+          STATE: ${{ steps.health.outputs.state }}
+          NEXT_ACTION: ${{ steps.health.outputs.next_action }}
+        run: |
+          set -euo pipefail
+          case "$STATE" in
+            DATA_INTEGRITY_BLOCKED)
+              echo "::error title=Prospective data integrity blocked::$NEXT_ACTION"
+              exit 1
+              ;;
+            STALE)
+              echo "::warning title=Prospective collection stale::$NEXT_ACTION"
+              ;;
+            READY_HUMAN_ACTION_REQUIRED)
+              echo "::notice title=Learning Readiness READY::Human review is required. No training or execution starts automatically."
+              ;;
+            COLLECTING)
+              echo "::notice title=Prospective collection healthy::Continue collecting future evidence."
+              ;;
+            *)
+              echo "Unknown sentinel state: $STATE"
+              exit 1
+              ;;
+          esac
