@@ -1,0 +1,53 @@
+import { fingerprintModelWorkerHandoffManifest, MODEL_WORKER_HANDOFF_MANIFEST_VERSION } from './model-experiment-worker-handoff.js';
+
+export const MODEL_FEATURE_MATRIX_RUNTIME_VERSION='model-feature-matrix-runtime-0.1';
+export const MODEL_FEATURE_MATRIX_BUNDLE_VERSION='model-feature-matrix-bundle-0.1';
+export const MODEL_FEATURE_MATRIX_GOVERNANCE=Object.freeze({
+  referenceImplementation:true,
+  readOnly:true,
+  fitTrainOnly:true,
+  fitValidation:false,
+  fitInternalTest:false,
+  targetAwarePreprocessing:false,
+  outcomeAwarePreprocessing:false,
+  modelFitImplemented:false,
+  modelPredictImplemented:false,
+  executionAuthorized:false,
+  launchesTrainingJobs:false,
+  browserExecutionAuthority:false,
+  writesProspectiveExperience:false,
+  writesLifecycle:false,
+  futureWorkerMustMatchBundleFingerprint:true,
+});
+
+const SHA40=/^[0-9a-f]{40}$/i;
+const clone=value=>JSON.parse(JSON.stringify(value));
+const deepFreeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.freeze(value);for(const item of Object.values(value))deepFreeze(item);}return value;};
+function stable(value){if(Array.isArray(value))return value.map(stable);if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])]));return value;}
+const canonical=value=>JSON.stringify(stable(value));
+function fnv1a64(text){let hash=0xcbf29ce484222325n;const prime=0x100000001b3n;for(let i=0;i<text.length;i++){hash^=BigInt(text.charCodeAt(i));hash=BigInt.asUintN(64,hash*prime);}return hash.toString(16).padStart(16,'0');}
+const fingerprint=value=>`fnv1a64:${fnv1a64(canonical(value))}`;
+const readPath=(object,path)=>String(path||'').split('.').reduce((value,key)=>value==null?undefined:value[key],object);
+const roundFixed=(value,decimals)=>{const rounded=Number(Number(value).toFixed(Number(decimals)));return Object.is(rounded,-0)?0:rounded;};
+
+function verifyManifest(manifest){const errors=[];if(manifest?.version!==MODEL_WORKER_HANDOFF_MANIFEST_VERSION)errors.push('manifest-version-mismatch');if(manifest?.manifestFingerprint!==fingerprintModelWorkerHandoffManifest(manifest))errors.push('manifest-fingerprint-mismatch');if(manifest?.status!=='REPRODUCIBILITY_READY_EXECUTION_BLOCKED')errors.push('manifest-status-invalid');if(manifest?.execution?.executionAuthorized!==false)errors.push('manifest-execution-authority-drift');if(manifest?.governance?.trainingImplemented!==false||manifest?.governance?.launchesTrainingJobs!==false)errors.push('manifest-training-governance-drift');const p=manifest?.preprocessing||{},n=p.numeric||{};if(p.id!=='fixed-tabular-standardize-v2')errors.push('preprocessing-version-mismatch');if(p.featureOrder!=='feature-set-path-order'||p.partitionRowOrder!=='instrument-lexicographic-then-frozen-split-order')errors.push('preprocessing-order-contract-drift');if(n.transform!=='standard-score'||n.fitPartition!=='train-only'||n.arithmetic!=='ieee754-binary64'||n.accumulationOrder!=='frozen-train-row-order'||n.statisticComputation!=='sequential-two-pass'||n.varianceDefinition!=='population'||n.varianceCenter!=='unrounded-train-mean'||n.ddof!==0||n.statisticRoundDecimals!==12||n.transformUses!=='rounded-mean-and-std'||n.transformRoundDecimals!==12||n.zeroVariancePolicy!=='emit-zero')errors.push('numeric-preprocessing-contract-drift');if(p.categorical?.encoding!=='fixed-one-hot'||p.categorical?.fitCategories!==false||p.categorical?.values?.off!==0||p.categorical?.values?.on!==1)errors.push('categorical-preprocessing-contract-drift');if(p.missingValuePolicy!=='reject'||p.unknownCategoryPolicy!=='reject')errors.push('preprocessing-fail-closed-contract-drift');return {pass:errors.length===0,errorCodes:[...new Set(errors)]};}
+function verifyDataset(dataset,datasetCommit,manifest){const errors=[];if(dataset?.schemaVersion!=='prospective-experience-dataset-0.1'||dataset?.audit?.pass!==true||(dataset?.mergeConflicts||[]).length)errors.push('prospective-dataset-audit-not-pass');if(!SHA40.test(String(datasetCommit||'')))errors.push('dataset-commit-invalid');else if(String(datasetCommit).toLowerCase()!==String(manifest?.source?.dataset?.commitSha||'').toLowerCase())errors.push('dataset-commit-manifest-mismatch');return {pass:errors.length===0,errorCodes:errors};}
+function partitionKeys(manifest,partition){const keys=[];for(const instrument of Object.keys(manifest?.split?.instruments||{}).sort()){const split=manifest.split.instruments[instrument],items=split?.partitions?.[partition]?.experienceKeys;if(!Array.isArray(items))throw new Error(`manifest-partition-missing:${instrument}:${partition}`);for(const key of items)keys.push(key);}return keys;}
+function outputColumns(manifest){const categories=manifest.preprocessing.categorical.categories||{},columns=[];for(const path of manifest.featureSet.paths){if(categories[path])for(const category of categories[path])columns.push(`${path}==${category}`);else columns.push(path);}return columns;}
+function requireRow(rowsByKey,key){const row=rowsByKey.get(key);if(!row)throw new Error(`matrix-row-missing:${key}`);return row;}
+function requireNumeric(row,key,path){const value=readPath(row,path);if(typeof value!=='number'||!Number.isFinite(value))throw new Error(`matrix-numeric-feature-invalid:${key}:${path}`);return value;}
+function requireCategory(row,key,path,categories){const value=readPath(row,path);if(typeof value!=='string'||!categories.includes(value))throw new Error(`matrix-categorical-feature-invalid:${key}:${path}`);return value;}
+
+export function fitModelFeatureTrainStatistics({dataset,manifest}={}){
+  const manifestCheck=verifyManifest(manifest);if(!manifestCheck.pass)throw new Error(`matrix-manifest-invalid:${manifestCheck.errorCodes.join(',')}`);const rowsByKey=new Map((dataset?.rows||[]).map(row=>[row.experienceKey,row])),trainKeys=partitionKeys(manifest,'train'),categories=manifest.preprocessing.categorical.categories||{},numericPaths=manifest.featureSet.paths.filter(path=>!categories[path]),decimals=manifest.preprocessing.numeric.statisticRoundDecimals;if(!trainKeys.length)throw new Error('matrix-train-partition-empty');const statistics=[];
+  for(const path of numericPaths){let sum=0;for(const key of trainKeys)sum+=requireNumeric(requireRow(rowsByKey,key),key,path);const meanRaw=sum/trainKeys.length;let squared=0;for(const key of trainKeys){const value=requireNumeric(requireRow(rowsByKey,key),key,path),delta=value-meanRaw;squared+=delta*delta;}const varianceRaw=squared/trainKeys.length,stdRaw=Math.sqrt(varianceRaw),mean=roundFixed(meanRaw,decimals),std=roundFixed(stdRaw,decimals),zeroVariance=varianceRaw===0||std===0;statistics.push({path,count:trainKeys.length,mean,std:zeroVariance?0:std,zeroVariance});}
+  const result={version:'model-feature-train-statistics-0.1',sourceManifestFingerprint:manifest.manifestFingerprint,rowKeys:[...trainKeys],numericPaths:[...numericPaths],statistics,statisticsFingerprint:null};const semantic=clone(result);delete semantic.statisticsFingerprint;result.statisticsFingerprint=fingerprint(semantic);return deepFreeze(result);
+}
+
+function transformTarget(row,key,target){const value=readPath(row,target.labelPath);if(target.task==='classification'){if(!target.classes.includes(value))throw new Error(`matrix-target-class-invalid:${key}`);return value;}if(typeof value!=='number'||!Number.isFinite(value))throw new Error(`matrix-target-value-invalid:${key}`);return roundFixed(value,target.numericRoundDecimals??12);}
+function transformPartition({dataset,manifest,statistics,partition}){const rowsByKey=new Map((dataset?.rows||[]).map(row=>[row.experienceKey,row])),rowKeys=partitionKeys(manifest,partition),categories=manifest.preprocessing.categorical.categories||{},statsByPath=new Map(statistics.statistics.map(item=>[item.path,item])),off=manifest.preprocessing.categorical.values.off,on=manifest.preprocessing.categorical.values.on,decimals=manifest.preprocessing.numeric.transformRoundDecimals,X=[],y=[];for(const key of rowKeys){const row=requireRow(rowsByKey,key),vector=[];for(const path of manifest.featureSet.paths){const allowed=categories[path];if(allowed){const value=requireCategory(row,key,path,allowed);for(const category of allowed)vector.push(value===category?on:off);}else{const value=requireNumeric(row,key,path),stat=statsByPath.get(path);if(!stat)throw new Error(`matrix-statistic-missing:${path}`);vector.push(stat.zeroVariance?0:roundFixed((value-stat.mean)/stat.std,decimals));}}X.push(vector);y.push(transformTarget(row,key,manifest.target));}const result={partition,rowKeys,X,y,rowCount:rowKeys.length,columnCount:outputColumns(manifest).length,partitionFingerprint:null};const semantic=clone(result);delete semantic.partitionFingerprint;result.partitionFingerprint=fingerprint(semantic);return result;}
+
+export function buildModelFeatureMatrixBundle({dataset,datasetCommit,manifest}={}){
+  const manifestCheck=verifyManifest(manifest);if(!manifestCheck.pass)throw new Error(`matrix-manifest-invalid:${manifestCheck.errorCodes.join(',')}`);const datasetCheck=verifyDataset(dataset,datasetCommit,manifest);if(!datasetCheck.pass)throw new Error(`matrix-dataset-invalid:${datasetCheck.errorCodes.join(',')}`);const statistics=fitModelFeatureTrainStatistics({dataset,manifest}),columns=outputColumns(manifest),partitions={};for(const partition of ['train','validation','internalTest'])partitions[partition]=transformPartition({dataset,manifest,statistics,partition});const bundle={version:MODEL_FEATURE_MATRIX_BUNDLE_VERSION,status:'DETERMINISTIC_MATRIX_READY_MODEL_EXECUTION_BLOCKED',source:{manifestFingerprint:manifest.manifestFingerprint,datasetCommit:String(datasetCommit).toLowerCase(),experimentId:manifest.experiment.experimentId,revision:manifest.experiment.revision,semanticFingerprint:manifest.experiment.semanticFingerprint},contract:{runtimeVersion:MODEL_FEATURE_MATRIX_RUNTIME_VERSION,preprocessing:clone(manifest.preprocessing),featurePaths:[...manifest.featureSet.paths],outputColumns:columns,target:clone(manifest.target),classOrder:manifest.target.task==='classification'?[...manifest.target.classes]:null},trainStatistics:clone(statistics),partitions,governance:{...MODEL_FEATURE_MATRIX_GOVERNANCE},bundleFingerprint:null};const semantic=clone(bundle);delete semantic.bundleFingerprint;bundle.bundleFingerprint=fingerprint(semantic);return deepFreeze(bundle);}
+
+export function fingerprintModelFeatureMatrixBundle(bundle){const semantic=clone(bundle||{});delete semantic.bundleFingerprint;return fingerprint(semantic);}
