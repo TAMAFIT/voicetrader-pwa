@@ -13236,7 +13236,7 @@
   "sourceSnapshots": {
     "knowledge": {
       "epochId": "knowledge-forward-001",
-      "lastRunAt": "2026-08-18T19:03:25.851Z",
+      "lastRunAt": "2026-08-18T19:45:56.060Z",
       "collectorVersion": "autonomous-knowledge-forward-collector-0.3-attribution",
       "marketSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787054400:730",
       "marketBars": 730,
@@ -13248,11 +13248,11 @@
     },
     "htf": {
       "epochId": "htf-forward-001",
-      "lastRunAt": "2026-08-18T19:17:13.365Z",
+      "lastRunAt": "2026-08-18T20:00:58.267Z",
       "collectorVersion": "autonomous-htf-forward-collector-0.2-attribution",
-      "marketSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787054400:730",
-      "marketBars": 730,
-      "observedBars": 9,
+      "marketSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731",
+      "marketBars": 731,
+      "observedBars": 10,
       "replayAuditStatus": "pass",
       "replayAuditPass": true,
       "attributionAuditStatus": "pass",
@@ -13260,7 +13260,7 @@
     },
     "eth": {
       "epochId": "eth-forward-001",
-      "lastRunAt": "2026-08-18T19:08:07.003Z",
+      "lastRunAt": "2026-08-18T19:50:18.606Z",
       "collectorVersion": "autonomous-eth-forward-collector-0.1",
       "marketSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787054400:727",
       "marketBars": 727,
@@ -13271,8 +13271,14 @@
       "attributionAuditPass": false
     }
   },
-  "deferred": [],
-  "updatedAt": "2026-08-18T19:18:28.761Z",
+  "deferred": [
+    {
+      "instrument": "BTCUSD",
+      "candleTime": 1787068800,
+      "reason": "eligible-stream-not-yet-observed"
+    }
+  ],
+  "updatedAt": "2026-08-18T20:08:30.605Z",
   "audit": {
     "version": "prospective-experience-audit-0.1",
     "status": "pass",
