@@ -3,6 +3,7 @@ name: v0.37 Collection Health Sentinel CI
 on:
   pull_request:
     paths:
+      - 'package.json'
       - 'src/research/prospective-collection-health.js'
       - 'scripts/prospective-collection-health-cli.mjs'
       - 'scripts/test-prospective-collection-health.mjs'
