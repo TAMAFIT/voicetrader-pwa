@@ -3,6 +3,7 @@ name: v0.34 Adapter Environment Contract CI
 on:
   pull_request:
     paths:
+      - 'package.json'
       - 'src/research/model-adapter-environment-lock.js'
       - 'scripts/model-adapter-preparation-cli.mjs'
       - 'scripts/model_adapter_environment_probe.py'

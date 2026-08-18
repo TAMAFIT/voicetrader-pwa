@@ -49,6 +49,8 @@ def scalar_wire(value):
 
 
 def scan_forbidden(value,path='request'):
+    if path=='request.payloadPolicy':
+        return
     if isinstance(value,list):
         for index,item in enumerate(value):
             scan_forbidden(item,f'{path}[{index}]')

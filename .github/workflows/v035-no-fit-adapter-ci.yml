@@ -3,6 +3,7 @@ name: v0.35 No-Fit Adapter Handshake CI
 on:
   pull_request:
     paths:
+      - 'package.json'
       - 'src/research/model-adapter-dry-run-*.js'
       - 'scripts/model_adapter_dry_run*.py'
       - 'scripts/model_adapter_environment_probe.py'

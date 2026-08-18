@@ -3,10 +3,13 @@ name: v0.39 History Immutability CI
 on:
   pull_request:
     paths:
+      - 'package.json'
       - 'src/research/prospective-experience-history-audit.js'
       - 'scripts/prospective-experience-history-audit-cli.mjs'
       - 'scripts/test-prospective-experience-history-audit.mjs'
       - 'scripts/validate-prospective-experience-history-audit.mjs'
+      - 'scripts/validate-v039-release-integrity.mjs'
+      - 'scripts/run-v033-v039-release-gates.mjs'
       - '.github/workflows/prospective-experience-history-audit.yml'
       - '.github/workflows/v039-history-immutability-ci.yml'
   workflow_dispatch:
@@ -17,16 +20,21 @@ permissions:
 jobs:
   history:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
       - name: Validate v0.39 history audit
         run: node scripts/validate-prospective-experience-history-audit.mjs
       - name: Run v0.39 history regression tests
         run: node scripts/test-prospective-experience-history-audit.mjs
+      - name: Validate integrated v0.39 release integrity
+        run: node scripts/validate-v039-release-integrity.mjs
       - name: Assert read-only immutable-evidence posture
         shell: bash
         run: |
