@@ -38,9 +38,12 @@ export const MODEL_PREPROCESSING_REGISTRY=Object.freeze({
       fitPartition:'train-only',
       arithmetic:'ieee754-binary64',
       accumulationOrder:'frozen-train-row-order',
+      statisticComputation:'sequential-two-pass',
       varianceDefinition:'population',
+      varianceCenter:'unrounded-train-mean',
       ddof:0,
       statisticRoundDecimals:12,
+      transformUses:'rounded-mean-and-std',
       transformRoundDecimals:12,
       zeroVariancePolicy:'emit-zero',
     }),
@@ -59,7 +62,7 @@ export const MODEL_PREPROCESSING_REGISTRY=Object.freeze({
 
 export const MODEL_TARGET_REGISTRY=Object.freeze({
   'direction-3bar-v1':Object.freeze({id:'direction-3bar-v1',task:'classification',horizonBars:LEARNING_PRIMARY_HORIZON_BARS,labelPath:'labels.3.direction',classes:['UP','DOWN','FLAT'],probabilityCalibrationRequiredForProbabilityClaims:true}),
-  'return-bps-3bar-v1':Object.freeze({id:'return-bps-3bar-v1',task:'regression',horizonBars:LEARNING_PRIMARY_HORIZON_BARS,labelPath:'labels.3.forwardReturnBps'}),
+  'return-bps-3bar-v1':Object.freeze({id:'return-bps-3bar-v1',task:'regression',horizonBars:LEARNING_PRIMARY_HORIZON_BARS,labelPath:'labels.3.forwardReturnBps',numericRoundDecimals:12}),
 });
 
 export const MODEL_ALGORITHM_CONTRACT_REGISTRY=Object.freeze({
