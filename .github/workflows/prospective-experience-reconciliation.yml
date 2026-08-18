@@ -1,0 +1,132 @@
+name: Prospective Experience Reconciliation
+
+on:
+  schedule:
+    - cron: '27 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prospective-experience-reconciliation
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout reconciliation code
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout Knowledge source archive
+        uses: actions/checkout@v6
+        with:
+          ref: knowledge-forward-data
+          path: _knowledge
+          fetch-depth: 1
+
+      - name: Checkout Higher-Timeframe source archive
+        uses: actions/checkout@v6
+        with:
+          ref: higher-timeframe-forward-data
+          path: _htf
+          fetch-depth: 1
+
+      - name: Checkout ETH source archive
+        uses: actions/checkout@v6
+        with:
+          ref: eth-forward-data
+          path: _eth
+          fetch-depth: 1
+
+      - name: Checkout current Experience Source of Truth
+        uses: actions/checkout@v6
+        with:
+          ref: prospective-experience-data
+          path: _experience
+          fetch-depth: 1
+
+      - name: Rebuild expected Experience document in temporary storage only
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp _experience/data/prospective-experience-v1.json /tmp/rebuilt-prospective-experience.json
+          node scripts/build-prospective-experience.mjs \
+            --knowledge _knowledge/data/knowledge-forward-001.json \
+            --htf _htf/data/htf-forward-001.json \
+            --eth _eth/data/eth-forward-001.json \
+            --output /tmp/rebuilt-prospective-experience.json
+
+      - name: Resolve source timing metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPERIENCE_COMMITTED_AT=$(git -C _experience log -1 --format=%cI)
+          LATEST_SOURCE_COMMITTED_AT=$(printf '%s\n' \
+            "$(git -C _knowledge log -1 --format=%cI)" \
+            "$(git -C _htf log -1 --format=%cI)" \
+            "$(git -C _eth log -1 --format=%cI)" | sort | tail -1)
+          echo "EXPERIENCE_COMMITTED_AT=$EXPERIENCE_COMMITTED_AT" >> "$GITHUB_ENV"
+          echo "LATEST_SOURCE_COMMITTED_AT=$LATEST_SOURCE_COMMITTED_AT" >> "$GITHUB_ENV"
+
+      - name: Compare current vs canonical read-only rebuild
+        id: reconcile
+        shell: bash
+        env:
+          CURRENT_DATASET_PATH: _experience/data/prospective-experience-v1.json
+          REBUILT_DATASET_PATH: /tmp/rebuilt-prospective-experience.json
+          EXPERIENCE_COMMITTED_AT: ${{ env.EXPERIENCE_COMMITTED_AT }}
+          LATEST_SOURCE_COMMITTED_AT: ${{ env.LATEST_SOURCE_COMMITTED_AT }}
+        run: |
+          set -euo pipefail
+          node scripts/prospective-experience-reconciliation-cli.mjs | tee /tmp/prospective-experience-reconciliation.json
+          {
+            echo '### Prospective Experience Reconciliation'
+            echo '```json'
+            cat /tmp/prospective-experience-reconciliation.json
+            echo '```'
+            echo ''
+            echo 'This job rebuilt into /tmp only. It never writes or pushes the Experience Source-of-Truth branch.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Surface reconciliation state
+        shell: bash
+        env:
+          STATE: ${{ steps.reconcile.outputs.state }}
+          NEXT_ACTION: ${{ steps.reconcile.outputs.next_action }}
+          ROW_CATCHUP: ${{ steps.reconcile.outputs.row_catchup }}
+          LABEL_CATCHUP: ${{ steps.reconcile.outputs.label_catchup }}
+        run: |
+          set -euo pipefail
+          case "$STATE" in
+            DATA_DIVERGENCE_BLOCKED)
+              echo "::error title=Experience divergence blocked::$NEXT_ACTION"
+              exit 1
+              ;;
+            CATCHUP_OVERDUE)
+              echo "::warning title=Experience catch-up overdue::rows=$ROW_CATCHUP labels=$LABEL_CATCHUP — $NEXT_ACTION"
+              ;;
+            EXPECTED_PIPELINE_LAG)
+              echo "::notice title=Normal Experience pipeline lag::rows=$ROW_CATCHUP labels=$LABEL_CATCHUP"
+              ;;
+            ROW_CATCHUP_AVAILABLE|LABEL_CATCHUP_AVAILABLE)
+              echo "::warning title=Experience catch-up available::rows=$ROW_CATCHUP labels=$LABEL_CATCHUP — $NEXT_ACTION"
+              ;;
+            IN_SYNC)
+              echo "::notice title=Experience reconciliation clean::Current Source of Truth matches canonical rebuild."
+              ;;
+            *)
+              echo "Unknown reconciliation state: $STATE"
+              exit 1
+              ;;
+          esac

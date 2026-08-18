@@ -1,0 +1,37 @@
+name: v0.38 Experience Reconciliation CI
+
+on:
+  pull_request:
+    paths:
+      - 'src/research/prospective-experience-reconciliation.js'
+      - 'scripts/prospective-experience-reconciliation-cli.mjs'
+      - 'scripts/test-prospective-experience-reconciliation.mjs'
+      - 'scripts/validate-prospective-experience-reconciliation.mjs'
+      - '.github/workflows/prospective-experience-reconciliation.yml'
+      - '.github/workflows/v038-experience-reconciliation-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Validate v0.38 reconciliation contract
+        run: node scripts/validate-prospective-experience-reconciliation.mjs
+      - name: Run v0.38 reconciliation regression tests
+        run: node scripts/test-prospective-experience-reconciliation.mjs
+      - name: Assert no Source-of-Truth write or model authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -nE 'contents:[[:space:]]+write|git push|automaticRepair:[[:space:]]*true|executionAuthorized:[[:space:]]*true|automaticTraining:[[:space:]]*true|automaticPromotion:[[:space:]]*true' \
+            src/research/prospective-experience-reconciliation.js \
+            scripts/prospective-experience-reconciliation-cli.mjs \
+            .github/workflows/prospective-experience-reconciliation.yml
