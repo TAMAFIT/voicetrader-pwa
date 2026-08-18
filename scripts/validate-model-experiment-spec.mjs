@@ -1,3 +1,4 @@
+import './validate-model-execution-evidence-contract.mjs';
 import './validate-model-feature-matrix-conformance.mjs';
 import './validate-model-feature-matrix-runtime.mjs';
 import './validate-model-worker-handoff.mjs';
