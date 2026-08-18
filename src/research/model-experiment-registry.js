@@ -1,7 +1,7 @@
 import { LEARNING_PRIMARY_HORIZON_BARS, LEARNING_SPLIT_EMBARGO_BARS, LEARNING_SPLIT_RATIOS } from './learning-readiness-protocol.js';
 
-export const MODEL_EXPERIMENT_REGISTRY_VERSION='model-experiment-registry-0.2';
-export const MODEL_EXPERIMENT_SPEC_VERSION='model-experiment-spec-0.2';
+export const MODEL_EXPERIMENT_REGISTRY_VERSION='model-experiment-registry-0.3';
+export const MODEL_EXPERIMENT_SPEC_VERSION='model-experiment-spec-0.3';
 export const MODEL_EXPERIMENT_DATA_BRANCH='prospective-experience-data';
 export const MODEL_EXPERIMENT_DATA_PATH='data/prospective-experience-v1.json';
 
@@ -27,15 +27,30 @@ export const MODEL_FEATURE_SET_REGISTRY=Object.freeze({
 });
 
 export const MODEL_PREPROCESSING_REGISTRY=Object.freeze({
-  'fixed-tabular-standardize-v1':Object.freeze({
-    id:'fixed-tabular-standardize-v1',
+  'fixed-tabular-standardize-v2':Object.freeze({
+    id:'fixed-tabular-standardize-v2',
     featureOrder:'feature-set-path-order',
+    partitionRowOrder:'instrument-lexicographic-then-frozen-split-order',
     missingValuePolicy:'reject',
     unknownCategoryPolicy:'reject',
-    numeric:Object.freeze({transform:'standard-score',fitPartition:'train-only',zeroVariancePolicy:'emit-zero'}),
+    numeric:Object.freeze({
+      transform:'standard-score',
+      fitPartition:'train-only',
+      arithmetic:'ieee754-binary64',
+      accumulationOrder:'frozen-train-row-order',
+      statisticComputation:'sequential-two-pass',
+      varianceDefinition:'population',
+      varianceCenter:'unrounded-train-mean',
+      ddof:0,
+      statisticRoundDecimals:12,
+      transformUses:'rounded-mean-and-std',
+      transformRoundDecimals:12,
+      zeroVariancePolicy:'emit-zero',
+    }),
     categorical:Object.freeze({
       encoding:'fixed-one-hot',
       fitCategories:false,
+      values:Object.freeze({off:0,on:1}),
       categories:Object.freeze({
         [HTF_CANDIDATE_DIRECTION]:Object.freeze(['DOWN','NEUTRAL','UP']),
         [HTF_DAILY_DIRECTION]:Object.freeze(['DOWN','NEUTRAL','UP']),
@@ -47,7 +62,7 @@ export const MODEL_PREPROCESSING_REGISTRY=Object.freeze({
 
 export const MODEL_TARGET_REGISTRY=Object.freeze({
   'direction-3bar-v1':Object.freeze({id:'direction-3bar-v1',task:'classification',horizonBars:LEARNING_PRIMARY_HORIZON_BARS,labelPath:'labels.3.direction',classes:['UP','DOWN','FLAT'],probabilityCalibrationRequiredForProbabilityClaims:true}),
-  'return-bps-3bar-v1':Object.freeze({id:'return-bps-3bar-v1',task:'regression',horizonBars:LEARNING_PRIMARY_HORIZON_BARS,labelPath:'labels.3.forwardReturnBps'}),
+  'return-bps-3bar-v1':Object.freeze({id:'return-bps-3bar-v1',task:'regression',horizonBars:LEARNING_PRIMARY_HORIZON_BARS,labelPath:'labels.3.forwardReturnBps',numericRoundDecimals:12}),
 });
 
 export const MODEL_ALGORITHM_CONTRACT_REGISTRY=Object.freeze({
@@ -56,8 +71,8 @@ export const MODEL_ALGORITHM_CONTRACT_REGISTRY=Object.freeze({
 });
 
 export const MODEL_EXPERIMENT_TEMPLATES=Object.freeze([
-  Object.freeze({templateId:'btc-direction-baseline-template-v1',label:'BTC 3-bar Direction — fixed baseline model',instrumentScope:['BTCUSD'],targetId:'direction-3bar-v1',featureSetId:'btc-combined-core-v1',preprocessingId:'fixed-tabular-standardize-v1',algorithmId:'sklearn-logistic-regression-l2',defaultHyperparameters:Object.freeze({C:1,max_iter:1000,class_weight:null,random_state:20260817}),mandatoryBaselines:Object.freeze(['majority-class','prior-3bar-direction']),mandatoryNulls:Object.freeze(['label-shift-screen']),metrics:Object.freeze(['balanced-accuracy','macro-f1','brier-score']),executable:false}),
-  Object.freeze({templateId:'btc-return-baseline-template-v1',label:'BTC 3-bar Return — fixed baseline model',instrumentScope:['BTCUSD'],targetId:'return-bps-3bar-v1',featureSetId:'btc-combined-core-v1',preprocessingId:'fixed-tabular-standardize-v1',algorithmId:'sklearn-ridge-regression',defaultHyperparameters:Object.freeze({alpha:1,fit_intercept:true,random_state:20260817}),mandatoryBaselines:Object.freeze(['zero-return','historical-train-mean']),mandatoryNulls:Object.freeze(['label-shift-screen']),metrics:Object.freeze(['mae-bps','median-absolute-error-bps','spearman-correlation']),executable:false}),
+  Object.freeze({templateId:'btc-direction-baseline-template-v1',label:'BTC 3-bar Direction — fixed baseline model',instrumentScope:['BTCUSD'],targetId:'direction-3bar-v1',featureSetId:'btc-combined-core-v1',preprocessingId:'fixed-tabular-standardize-v2',algorithmId:'sklearn-logistic-regression-l2',defaultHyperparameters:Object.freeze({C:1,max_iter:1000,class_weight:null,random_state:20260817}),mandatoryBaselines:Object.freeze(['majority-class','prior-3bar-direction']),mandatoryNulls:Object.freeze(['label-shift-screen']),metrics:Object.freeze(['balanced-accuracy','macro-f1','brier-score']),executable:false}),
+  Object.freeze({templateId:'btc-return-baseline-template-v1',label:'BTC 3-bar Return — fixed baseline model',instrumentScope:['BTCUSD'],targetId:'return-bps-3bar-v1',featureSetId:'btc-combined-core-v1',preprocessingId:'fixed-tabular-standardize-v2',algorithmId:'sklearn-ridge-regression',defaultHyperparameters:Object.freeze({alpha:1,fit_intercept:true,random_state:20260817}),mandatoryBaselines:Object.freeze(['zero-return','historical-train-mean']),mandatoryNulls:Object.freeze(['label-shift-screen']),metrics:Object.freeze(['mae-bps','median-absolute-error-bps','spearman-correlation']),executable:false}),
 ]);
 
 export const MODEL_EXPERIMENT_REGISTRY=Object.freeze({
