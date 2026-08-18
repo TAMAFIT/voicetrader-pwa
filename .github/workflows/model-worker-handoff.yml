@@ -1,0 +1,134 @@
+name: Model Worker Handoff Plan
+
+on:
+  workflow_dispatch:
+    inputs:
+      experiment_id:
+        description: 'Human-approved active FROZEN experiment id'
+        required: true
+        type: string
+      revision:
+        description: 'Optional explicit FROZEN revision'
+        required: false
+        type: string
+      expected_semantic_fingerprint:
+        description: 'Exact FROZEN semantic fingerprint'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: model-worker-handoff-plan
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require manual invocation from main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_EVENT_NAME" = 'workflow_dispatch'
+          test "$GITHUB_REF" = 'refs/heads/main' || { echo 'Worker handoff planning must be dispatched from main.'; exit 1; }
+
+      - name: Checkout current orchestration code
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout lifecycle source of truth
+        uses: actions/checkout@v6
+        with:
+          ref: model-experiment-lifecycle-data
+          path: _lifecycle
+          fetch-depth: 1
+
+      - name: Resolve exact FROZEN source identity
+        shell: bash
+        env:
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          REVISION: ${{ inputs.revision }}
+          EXPECTED_SEMANTIC_FINGERPRINT: ${{ inputs.expected_semantic_fingerprint }}
+        run: |
+          set -euo pipefail
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const ledger=JSON.parse(fs.readFileSync('_lifecycle/data/model-experiment-lifecycle-v1.json','utf8'));
+          if(ledger.audit?.pass!==true)throw new Error('persisted-lifecycle-audit-not-pass');
+          const revision=process.env.REVISION?Number(process.env.REVISION):null;
+          const states=(ledger.audit.effectiveStates||[]).filter(state=>state.experimentId===process.env.EXPERIMENT_ID&&state.effectiveStatus==='FROZEN'&&(revision===null||Number(state.revision)===revision));
+          if(states.length!==1)throw new Error(states.length?'ambiguous-active-frozen':'active-frozen-spec-not-found');
+          const spec=(ledger.frozenSpecs||[]).find(item=>item.experimentId===process.env.EXPERIMENT_ID&&Number(item.revision)===Number(states[0].revision));
+          if(!spec)throw new Error('frozen-spec-snapshot-missing');
+          if(spec.semanticFingerprint!==process.env.EXPECTED_SEMANTIC_FINGERPRINT)throw new Error('expected-semantic-fingerprint-mismatch');
+          const lines=[`FROZEN_DATASET_SHA=${spec.dataset.commitSha}`,`FROZEN_CODE_SHA=${spec.environment.codeCommit}`,`FROZEN_REVISION=${spec.revision}`,`FROZEN_SEMANTIC_FINGERPRINT=${spec.semanticFingerprint}`];
+          fs.appendFileSync(process.env.GITHUB_ENV,`${lines.join('\n')}\n`);
+          NODE
+
+      - name: Checkout exact frozen Experience dataset
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.FROZEN_DATASET_SHA }}
+          path: _experience
+          fetch-depth: 1
+
+      - name: Switch worker contract code to exact frozen code commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout --detach "$FROZEN_CODE_SHA"
+          test -f scripts/model-worker-handoff-cli.mjs || { echo 'Frozen code commit predates Worker Handoff contract.'; exit 1; }
+
+      - name: Resolve exact heads
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ACTUAL_CODE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ACTUAL_DATASET_COMMIT=$(git -C _experience rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ACTUAL_LIFECYCLE_COMMIT=$(git -C _lifecycle rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Build deterministic reproducibility manifest
+        id: handoff
+        shell: bash
+        env:
+          LEDGER_PATH: _lifecycle/data/model-experiment-lifecycle-v1.json
+          DATASET_PATH: _experience/data/prospective-experience-v1.json
+          ACTUAL_DATASET_COMMIT: ${{ env.ACTUAL_DATASET_COMMIT }}
+          ACTUAL_CODE_COMMIT: ${{ env.ACTUAL_CODE_COMMIT }}
+          ACTUAL_LIFECYCLE_COMMIT: ${{ env.ACTUAL_LIFECYCLE_COMMIT }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          REVISION: ${{ env.FROZEN_REVISION }}
+          EXPECTED_SEMANTIC_FINGERPRINT: ${{ env.FROZEN_SEMANTIC_FINGERPRINT }}
+          HANDOFF_OUTPUT_PATH: /tmp/model-worker-handoff-manifest.json
+        run: |
+          set -euo pipefail
+          node scripts/model-worker-handoff-cli.mjs >/dev/null
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const manifest=JSON.parse(fs.readFileSync('/tmp/model-worker-handoff-manifest.json','utf8'));
+          const lines=[
+            '### Model Worker Handoff — Reproducibility Manifest',
+            '',
+            `- Experiment: ${manifest.experiment.experimentId} r${manifest.experiment.revision}`,
+            `- Manifest fingerprint: \`${manifest.manifestFingerprint}\``,
+            `- Dataset commit: \`${manifest.source.dataset.commitSha}\``,
+            `- Code commit: \`${manifest.source.codeCommit}\``,
+            `- Lifecycle commit: \`${manifest.source.lifecycleCommit}\``,
+            `- Worker adapter installed: **${manifest.execution.workerAdapterReady}**`,
+            `- Execution authorized: **${manifest.execution.executionAuthorized}**`,
+            `- Status: **${manifest.status}**`,
+            '',
+            'This workflow is read-only and cannot launch model training.'
+          ];
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,`${lines.join('\n')}\n`);
+          NODE
