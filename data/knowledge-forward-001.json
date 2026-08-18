@@ -6579,17 +6579,26 @@
         "c": 64803,
         "volume": 505.82895224,
         "trades": 11265
+      },
+      {
+        "t": 1787068800,
+        "o": 64803.6,
+        "h": 64847.2,
+        "l": 64617.2,
+        "c": 64617.2,
+        "volume": 254.26108263,
+        "trades": 7754
       }
     ],
     "continuity": {
-      "barCount": 730,
+      "barCount": 731,
       "gapCount": 0,
       "missingBarTimes": []
     },
     "firstBarTime": 1776556800,
-    "lastBarTime": 1787054400,
-    "closedBarCount": 730,
-    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1787054400:730"
+    "lastBarTime": 1787068800,
+    "closedBarCount": 731,
+    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731"
   },
   "evidenceArchive": {
     "archiveVersion": "knowledge-forward-store-0.1",
@@ -6655,7 +6664,8 @@
       1787011200,
       1787025600,
       1787040000,
-      1787054400
+      1787054400,
+      1787068800
     ],
     "dataSignatures": [
       "kraken-spot-btcusd-4h-v1:1776556800:1786910400:720",
@@ -6666,7 +6676,8 @@
       "kraken-spot-btcusd-4h-v1:1776556800:1787011200:727",
       "kraken-spot-btcusd-4h-v1:1776556800:1787025600:728",
       "kraken-spot-btcusd-4h-v1:1776556800:1787040000:729",
-      "kraken-spot-btcusd-4h-v1:1776556800:1787054400:730"
+      "kraken-spot-btcusd-4h-v1:1776556800:1787054400:730",
+      "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731"
     ],
     "decisions": [
       {
@@ -7908,6 +7919,130 @@
           "decisionScore": 89.69999999999999,
           "confidenceScore": 87
         }
+      },
+      {
+        "decisionKey": "knowledge-forward-001:candidate-consensus:1787068800",
+        "epochId": "knowledge-forward-001",
+        "sourceId": "candidate-consensus",
+        "role": "candidate",
+        "barIndex": 730,
+        "candleTime": 1787068800,
+        "decision": "NO_ENTRY",
+        "regime": "trend",
+        "riskGate": "OPEN",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-consensus",
+          "decision": "NO_ENTRY",
+          "wave1Decision": "NO_ENTRY",
+          "wave1KnowledgeScore": 19.53,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 75.39,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "trend",
+          "riskGate": "OPEN"
+        }
+      },
+      {
+        "decisionKey": "knowledge-forward-001:candidate-playbook-reference:1787068800",
+        "epochId": "knowledge-forward-001",
+        "sourceId": "candidate-playbook-reference",
+        "role": "candidate",
+        "barIndex": 730,
+        "candleTime": 1787068800,
+        "decision": "ENTER_LONG",
+        "regime": "trend",
+        "riskGate": "OPEN",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-playbook-reference",
+          "decision": "ENTER_LONG",
+          "wave1Decision": "NO_ENTRY",
+          "wave1KnowledgeScore": 19.53,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 75.39,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "trend",
+          "riskGate": "OPEN"
+        }
+      },
+      {
+        "decisionKey": "knowledge-forward-001:candidate-playbook-wave1-veto:1787068800",
+        "epochId": "knowledge-forward-001",
+        "sourceId": "candidate-playbook-wave1-veto",
+        "role": "candidate",
+        "barIndex": 730,
+        "candleTime": 1787068800,
+        "decision": "ENTER_LONG",
+        "regime": "trend",
+        "riskGate": "OPEN",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-playbook-wave1-veto",
+          "decision": "ENTER_LONG",
+          "wave1Decision": "NO_ENTRY",
+          "wave1KnowledgeScore": 19.53,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 75.39,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "trend",
+          "riskGate": "OPEN"
+        }
+      },
+      {
+        "decisionKey": "knowledge-forward-001:candidate-wave1-reference:1787068800",
+        "epochId": "knowledge-forward-001",
+        "sourceId": "candidate-wave1-reference",
+        "role": "candidate",
+        "barIndex": 730,
+        "candleTime": 1787068800,
+        "decision": "NO_ENTRY",
+        "regime": "trend",
+        "riskGate": "OPEN",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-wave1-reference",
+          "decision": "NO_ENTRY",
+          "wave1Decision": "NO_ENTRY",
+          "wave1KnowledgeScore": 19.53,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 75.39,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "trend",
+          "riskGate": "OPEN"
+        }
+      },
+      {
+        "decisionKey": "knowledge-forward-001:champion-001:1787068800",
+        "epochId": "knowledge-forward-001",
+        "sourceId": "champion-001",
+        "role": "benchmark",
+        "barIndex": 730,
+        "candleTime": 1787068800,
+        "decision": "ENTER_LONG",
+        "regime": "trend",
+        "riskGate": "OPEN",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "championVersion": "0.4-fixed-experts-policy",
+          "rawAlphaScore": 28.204693438496395,
+          "decisionScore": 72.78,
+          "confidenceScore": 78
+        }
       }
     ],
     "evidence": [
@@ -8196,25 +8331,25 @@
         "netReturnBps": 89.02
       }
     ],
-    "updatedAt": "2026-08-18T19:45:56.060Z"
+    "updatedAt": "2026-08-18T20:44:22.714Z"
   },
   "collector": {
     "version": "autonomous-knowledge-forward-collector-0.3-attribution",
     "status": "success",
-    "lastRunAt": "2026-08-18T19:45:56.060Z",
-    "sourceFetchedAt": "2026-08-18T19:45:56.060Z",
-    "workflowRunId": "32178446236",
+    "lastRunAt": "2026-08-18T20:44:22.714Z",
+    "sourceFetchedAt": "2026-08-18T20:44:22.714Z",
+    "workflowRunId": "32183931566",
     "workflowRunAttempt": "1",
     "evaluatorCommit": "1af623dfa7df53618733050ff9edab5e3595a3d0",
-    "marketBarsAdded": 0,
+    "marketBarsAdded": 1,
     "marketConflicts": [],
     "incomingClosedBars": 720,
-    "totalMarketBars": 730,
-    "prospectiveDecisionRecords": 50,
+    "totalMarketBars": 731,
+    "prospectiveDecisionRecords": 55,
     "prospectiveEvidenceRecords": 8,
-    "archivedDecisionRecords": 50,
+    "archivedDecisionRecords": 55,
     "archivedEvidenceRecords": 8,
-    "archivedAttributionRecords": 10,
+    "archivedAttributionRecords": 11,
     "browserRequired": false,
     "paidApiRequired": false,
     "replayAuditRequiredOnceProspectiveBarsExist": true,
@@ -8228,9 +8363,9 @@
     "frozenEvaluatorCommit": "1af623dfa7df53618733050ff9edab5e3595a3d0",
     "researchCostModelVersion": "research-cost-v0.1",
     "checked": {
-      "marketBars": 730,
-      "observedBars": 10,
-      "decisionRecords": 50,
+      "marketBars": 731,
+      "observedBars": 11,
+      "decisionRecords": 55,
       "evidenceRecords": 8,
       "sources": 5
     },
@@ -8254,7 +8389,7 @@
       "fitting": false,
       "usedByLiveDecisionEngine": false
     },
-    "checkedAt": "2026-08-18T19:45:56.060Z"
+    "checkedAt": "2026-08-18T20:44:22.714Z"
   },
   "attributionLedger": {
     "version": "prospective-attribution-ledger-0.1",
@@ -13839,10 +13974,568 @@
           "automaticLearning": false,
           "usedByLiveDecisionEngine": false
         }
+      },
+      {
+        "attributionKey": "knowledge-forward-001:1787068800",
+        "epochId": "knowledge-forward-001",
+        "candleTime": 1787068800,
+        "barIndex": 730,
+        "observedProspectively": true,
+        "futureOutcomeUsed": false,
+        "wave1": {
+          "version": "human-knowledge-wave1-0.1",
+          "entryDecision": "NO_ENTRY",
+          "knowledgeScore": 19.53,
+          "familyAgreement": 0.8,
+          "direction": "UP",
+          "context": {
+            "version": "regime-risk-context-0.1",
+            "regime": "trend",
+            "riskScore": 44.28,
+            "riskGate": "OPEN",
+            "diagnostics": {
+              "adx": 28.97,
+              "atrPercentile": 63,
+              "realizedVolPercentile": 45,
+              "bbWidthPercentile": 96,
+              "volumeZScore": 0.49,
+              "volatilityRisk": 54,
+              "lowParticipationPenalty": 0
+            },
+            "directionalVote": false,
+            "registryVersion": "human-knowledge-registry-0.1"
+          },
+          "features": {
+            "rsi14": 75.84,
+            "atr14Pct": 0.72,
+            "roc24Pct": 2.75,
+            "stochastic14": 83.81,
+            "adx": 28.97,
+            "bbZ": 1.56,
+            "bbWidthPercentile": 96,
+            "realizedVolPercentile": 45,
+            "volumeZScore": 0.49
+          },
+          "families": {
+            "trend": {
+              "score": 28.21,
+              "memberCount": 4,
+              "memberIds": [
+                "TREND_MA_ALIGNMENT_001",
+                "TREND_MA_SLOPE_001",
+                "TREND_MACD_001",
+                "TREND_DMI_ADX_001"
+              ]
+            },
+            "momentum": {
+              "score": 58.85,
+              "memberCount": 3,
+              "memberIds": [
+                "MOM_ROC_001",
+                "MOM_RSI_002",
+                "MOM_STOCH_001"
+              ]
+            },
+            "meanReversion": {
+              "score": -44.67,
+              "memberCount": 3,
+              "memberIds": [
+                "MR_BOLLINGER_Z_001",
+                "MR_RSI_EXTREME_001",
+                "MR_STOCH_EXTREME_001"
+              ]
+            },
+            "structure": {
+              "score": 20.73,
+              "memberCount": 3,
+              "memberIds": [
+                "STRUCT_DONCHIAN_001",
+                "STRUCT_HHHL_001",
+                "STRUCT_RANGE_LOCATION_001"
+              ]
+            },
+            "volume": {
+              "score": 34.53,
+              "memberCount": 2,
+              "memberIds": [
+                "VOL_OBV_CONFIRM_001",
+                "VOL_SPIKE_CONFIRM_001"
+              ]
+            }
+          },
+          "experts": [
+            {
+              "id": "TREND_MA_ALIGNMENT_001",
+              "label": "MA Alignment",
+              "family": "trend",
+              "score": 38.77,
+              "active": true
+            },
+            {
+              "id": "TREND_MA_SLOPE_001",
+              "label": "MA Slope",
+              "family": "trend",
+              "score": 21.73,
+              "active": true
+            },
+            {
+              "id": "TREND_MACD_001",
+              "label": "MACD Histogram",
+              "family": "trend",
+              "score": 23.14,
+              "active": true
+            },
+            {
+              "id": "TREND_DMI_ADX_001",
+              "label": "DMI + ADX",
+              "family": "trend",
+              "score": 29.18,
+              "active": true
+            },
+            {
+              "id": "MOM_ROC_001",
+              "label": "Rate of Change",
+              "family": "momentum",
+              "score": 33.01,
+              "active": true
+            },
+            {
+              "id": "MOM_RSI_002",
+              "label": "RSI Momentum",
+              "family": "momentum",
+              "score": 82.68,
+              "active": true
+            },
+            {
+              "id": "MOM_STOCH_001",
+              "label": "Stochastic Momentum",
+              "family": "momentum",
+              "score": 60.86,
+              "active": true
+            },
+            {
+              "id": "MR_BOLLINGER_Z_001",
+              "label": "Bollinger Z Reversion",
+              "family": "meanReversion",
+              "score": -59.14,
+              "active": true
+            },
+            {
+              "id": "MR_RSI_EXTREME_001",
+              "label": "RSI Extreme Reversion",
+              "family": "meanReversion",
+              "score": -59.61,
+              "active": true
+            },
+            {
+              "id": "MR_STOCH_EXTREME_001",
+              "label": "Stochastic Extreme Reversion",
+              "family": "meanReversion",
+              "score": -15.25,
+              "active": true
+            },
+            {
+              "id": "STRUCT_DONCHIAN_001",
+              "label": "Donchian Breakout",
+              "family": "structure",
+              "score": 0,
+              "active": true
+            },
+            {
+              "id": "STRUCT_HHHL_001",
+              "label": "HH / HL Structure",
+              "family": "structure",
+              "score": 25,
+              "active": true
+            },
+            {
+              "id": "STRUCT_RANGE_LOCATION_001",
+              "label": "Range Location",
+              "family": "structure",
+              "score": 37.19,
+              "active": true
+            },
+            {
+              "id": "VOL_OBV_CONFIRM_001",
+              "label": "OBV Confirmation",
+              "family": "volume",
+              "score": 69.06,
+              "active": true
+            },
+            {
+              "id": "VOL_SPIKE_CONFIRM_001",
+              "label": "Volume Spike Confirmation",
+              "family": "volume",
+              "score": 0,
+              "active": true
+            }
+          ],
+          "topSupport": [
+            {
+              "id": "MOM_RSI_002",
+              "label": "RSI Momentum",
+              "family": "momentum",
+              "score": 82.68
+            },
+            {
+              "id": "VOL_OBV_CONFIRM_001",
+              "label": "OBV Confirmation",
+              "family": "volume",
+              "score": 69.06
+            },
+            {
+              "id": "MOM_STOCH_001",
+              "label": "Stochastic Momentum",
+              "family": "momentum",
+              "score": 60.86
+            },
+            {
+              "id": "TREND_MA_ALIGNMENT_001",
+              "label": "MA Alignment",
+              "family": "trend",
+              "score": 38.77
+            },
+            {
+              "id": "STRUCT_RANGE_LOCATION_001",
+              "label": "Range Location",
+              "family": "structure",
+              "score": 37.19
+            }
+          ],
+          "topOpposition": [
+            {
+              "id": "MR_RSI_EXTREME_001",
+              "label": "RSI Extreme Reversion",
+              "family": "meanReversion",
+              "score": -59.61
+            },
+            {
+              "id": "MR_BOLLINGER_Z_001",
+              "label": "Bollinger Z Reversion",
+              "family": "meanReversion",
+              "score": -59.14
+            },
+            {
+              "id": "MR_STOCH_EXTREME_001",
+              "label": "Stochastic Extreme Reversion",
+              "family": "meanReversion",
+              "score": -15.25
+            },
+            {
+              "id": "STRUCT_DONCHIAN_001",
+              "label": "Donchian Breakout",
+              "family": "structure",
+              "score": 0
+            },
+            {
+              "id": "VOL_SPIKE_CONFIRM_001",
+              "label": "Volume Spike Confirmation",
+              "family": "volume",
+              "score": 0
+            }
+          ]
+        },
+        "wave2": {
+          "version": "human-playbook-wave2-0.1",
+          "registryVersion": "human-playbook-registry-0.1",
+          "entryDecision": "ENTER_LONG",
+          "playbookScore": 75.39,
+          "archetypeAgreement": 1,
+          "activePlaybookCount": 3,
+          "activeArchetypeCount": 1,
+          "maxSetupStrength": 82.15,
+          "gateReason": null,
+          "archetypes": {
+            "continuation": {
+              "score": 75.39,
+              "memberCount": 3,
+              "memberIds": [
+                "PB_STRUCTURE_CONTINUATION_001",
+                "PB_OBV_TREND_CONFIRM_001",
+                "PB_TREND_QUALITY_001"
+              ]
+            },
+            "breakout": {
+              "score": 0,
+              "memberCount": 0,
+              "memberIds": []
+            },
+            "reversion": {
+              "score": 0,
+              "memberCount": 0,
+              "memberIds": []
+            },
+            "reversal": {
+              "score": 0,
+              "memberCount": 0,
+              "memberIds": []
+            }
+          },
+          "playbooks": [
+            {
+              "id": "PB_TREND_PULLBACK_001",
+              "label": "Trend Pullback Continuation",
+              "archetype": "continuation",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "Trend-regime retracement toward fast MA with recovery confirmation",
+              "inputs": {
+                "maSign": 1,
+                "pullbackDistance": 1.3177401349240903,
+                "rsi": 75.83900815341853,
+                "roc6": 0.5522678148774496,
+                "closeLoc": 0,
+                "efficiency": 0.4647840067104709
+              }
+            },
+            {
+              "id": "PB_TREND_BREAKOUT_001",
+              "label": "Trend Breakout Continuation",
+              "archetype": "breakout",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "Fresh Donchian break aligned with trend/ADX/structure",
+              "inputs": {
+                "breakoutSign": 0,
+                "maSign": 1,
+                "adx": 28.96962909239364,
+                "structure": 0.25,
+                "efficiency": 0.4647840067104709
+              }
+            },
+            {
+              "id": "PB_VOLUME_BREAKOUT_001",
+              "label": "Volume-confirmed Breakout",
+              "archetype": "breakout",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "Breakout confirmed by abnormal participation and OBV",
+              "inputs": {
+                "breakoutSign": 0,
+                "volumeZ": 0.4902126292932147,
+                "obv": 0.6906097065042436,
+                "roc6": 0.5522678148774496
+              }
+            },
+            {
+              "id": "PB_SQUEEZE_EXPANSION_001",
+              "label": "Volatility Squeeze Expansion",
+              "archetype": "breakout",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "Recent compression followed by width expansion and aligned momentum",
+              "inputs": {
+                "priorBbWidthPercentile": 74,
+                "bbWidthExpansionRatio": 1.2227983375504607,
+                "roc6": 0.5522678148774496,
+                "macdHist": 153.95711626759828
+              }
+            },
+            {
+              "id": "PB_RANGE_MEAN_REVERSION_001",
+              "label": "Range Mean Reversion",
+              "archetype": "reversion",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "Range-regime distribution stretch and oscillator extreme",
+              "inputs": {
+                "bbZ": 1.556231103582212,
+                "rsi": 75.83900815341853,
+                "stochastic": 83.81294964028775,
+                "channelPos": 0.8381294964028775
+              }
+            },
+            {
+              "id": "PB_FAILED_BREAKOUT_REVERSAL_001",
+              "label": "Failed Breakout Reversal",
+              "archetype": "reversal",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "Prior channel escape rejected back inside the range",
+              "inputs": {
+                "priorBreak": 1,
+                "currentInsideChannel": true,
+                "closeLoc": 0,
+                "rejectionWick": 0.18956521739129803
+              }
+            },
+            {
+              "id": "PB_STRUCTURE_CONTINUATION_001",
+              "label": "Structure Continuation",
+              "archetype": "continuation",
+              "role": "alpha",
+              "active": true,
+              "score": 68.64,
+              "direction": "UP",
+              "blockedDirectionSign": 0,
+              "reason": "HH/HL or LH/LL structure aligns with trend",
+              "inputs": {
+                "structure": 0.25,
+                "maSign": 1,
+                "roc6": 0.5522678148774496,
+                "adx": 28.96962909239364,
+                "efficiency": 0.4647840067104709
+              }
+            },
+            {
+              "id": "PB_MOMENTUM_CONTINUATION_001",
+              "label": "Multi-horizon Momentum Continuation",
+              "archetype": "continuation",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "ROC6/ROC24/MACD directional agreement without severe oscillator extension",
+              "inputs": {
+                "roc6": 0.5522678148774496,
+                "roc24": 2.750793880481428,
+                "macdHist": 153.95711626759828,
+                "rsi": 75.83900815341853,
+                "efficiency": 0.4647840067104709
+              }
+            },
+            {
+              "id": "PB_OBV_TREND_CONFIRM_001",
+              "label": "OBV-confirmed Trend",
+              "archetype": "continuation",
+              "role": "alpha",
+              "active": true,
+              "score": 82.15,
+              "direction": "UP",
+              "blockedDirectionSign": 0,
+              "reason": "Price trend confirmed by OBV and acceptable participation",
+              "inputs": {
+                "maSign": 1,
+                "obv": 0.6906097065042436,
+                "volumeZ": 0.4902126292932147,
+                "adx": 28.96962909239364
+              }
+            },
+            {
+              "id": "PB_VOL_EXPANSION_MOMENTUM_001",
+              "label": "Volatility Expansion Momentum",
+              "archetype": "continuation",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "Elevated volatility with directional momentum and directional close",
+              "inputs": {
+                "atrPctile": 63,
+                "rvPctile": 45,
+                "roc6": 0.5522678148774496,
+                "macdHist": 153.95711626759828,
+                "closeLoc": 0,
+                "riskGate": "OPEN"
+              }
+            },
+            {
+              "id": "PB_EXHAUSTION_REVERSAL_001",
+              "label": "Volatility Exhaustion Reversal",
+              "archetype": "reversion",
+              "role": "alpha",
+              "active": false,
+              "score": 0,
+              "direction": "NEUTRAL",
+              "blockedDirectionSign": 0,
+              "reason": "High-volatility distribution stretch with rejection wick",
+              "inputs": {
+                "bbZ": 1.556231103582212,
+                "rsi": 75.83900815341853,
+                "atrPctile": 63,
+                "rvPctile": 45,
+                "exhaustionWick": 0.18956521739129803
+              }
+            },
+            {
+              "id": "PB_TREND_QUALITY_001",
+              "label": "Efficient Trend Continuation",
+              "archetype": "continuation",
+              "role": "alpha",
+              "active": true,
+              "score": 75.37,
+              "direction": "UP",
+              "blockedDirectionSign": 0,
+              "reason": "High path efficiency filters trend continuation",
+              "inputs": {
+                "efficiency": 0.4647840067104709,
+                "adx": 28.96962909239364,
+                "maSign": 1,
+                "roc24": 2.750793880481428,
+                "fastSlopePct": 0.7614934423455066
+              }
+            }
+          ],
+          "gates": [
+            {
+              "id": "PB_LOW_QUALITY_BREAKOUT_GATE_001",
+              "label": "Low-quality Breakout Chase Gate",
+              "archetype": null,
+              "role": "gate",
+              "active": false,
+              "score": null,
+              "direction": null,
+              "blockedDirectionSign": 0,
+              "reason": "Suppress same-direction chase when breakout lacks participation/path quality",
+              "inputs": {
+                "breakoutSign": 0,
+                "volumeZ": 0.4902126292932147,
+                "efficiency": 0.4647840067104709,
+                "bbWidthPercentile": 96,
+                "adx": 28.96962909239364
+              }
+            }
+          ],
+          "features": {
+            "efficiencyRatio20": 0.465,
+            "priceToFastAtr": 1.32,
+            "closeLocation": 0,
+            "upperWickPct": 0.19,
+            "lowerWickPct": 0,
+            "bbWidthExpansionRatio": 1.223,
+            "priorBbWidthPercentile": 74,
+            "donchianBreakSign": 0,
+            "previousBreakSign": 1
+          }
+        },
+        "champion": {
+          "engineVersion": "0.4-fixed-experts-policy",
+          "entryDecision": "ENTER_LONG",
+          "rawAlphaScore": 28.2047,
+          "decisionScore": 72.78,
+          "confidenceScore": 78
+        },
+        "governance": {
+          "researchOnly": true,
+          "changesFrozenDecision": false,
+          "causalAttribution": false,
+          "automaticLearning": false,
+          "usedByLiveDecisionEngine": false
+        }
       }
     ],
     "mergeConflicts": [],
-    "updatedAt": "2026-08-18T19:45:56.060Z",
+    "updatedAt": "2026-08-18T20:44:22.714Z",
     "methodology": {
       "descriptiveProvenanceOnly": true,
       "causalAttribution": false,
@@ -13861,8 +14554,8 @@
     "errorCount": 0,
     "errorCodes": [],
     "checked": {
-      "expectedBars": 10,
-      "records": 10
+      "expectedBars": 11,
+      "records": 11
     },
     "methodology": {
       "exactObservedBarCoverage": true,
@@ -13870,6 +14563,6 @@
       "futureOutcomeForbidden": true,
       "descriptiveOnly": true
     },
-    "checkedAt": "2026-08-18T19:45:56.060Z"
+    "checkedAt": "2026-08-18T20:44:22.714Z"
   }
 }
