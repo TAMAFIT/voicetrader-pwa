@@ -1,3 +1,4 @@
+import './test-model-execution-evidence-contract.mjs';
 import './test-model-feature-matrix-conformance.mjs';
 import './test-model-feature-matrix-runtime.mjs';
 import './test-model-worker-handoff.mjs';
