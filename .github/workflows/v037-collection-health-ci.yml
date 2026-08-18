@@ -1,0 +1,37 @@
+name: v0.37 Collection Health Sentinel CI
+
+on:
+  pull_request:
+    paths:
+      - 'src/research/prospective-collection-health.js'
+      - 'scripts/prospective-collection-health-cli.mjs'
+      - 'scripts/test-prospective-collection-health.mjs'
+      - 'scripts/validate-prospective-collection-health.mjs'
+      - '.github/workflows/prospective-collection-health.yml'
+      - '.github/workflows/v037-collection-health-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sentinel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Validate v0.37 collection health sentinel
+        run: node scripts/validate-prospective-collection-health.mjs
+      - name: Run v0.37 collection health regression tests
+        run: node scripts/test-prospective-collection-health.mjs
+      - name: Assert read-only no-model authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -nE 'contents:[[:space:]]+write|git push|executionAuthorized:[[:space:]]*true|automaticTraining:[[:space:]]*true|automaticApproval:[[:space:]]*true|automaticPromotion:[[:space:]]*true' \
+            src/research/prospective-collection-health.js \
+            scripts/prospective-collection-health-cli.mjs \
+            .github/workflows/prospective-collection-health.yml
