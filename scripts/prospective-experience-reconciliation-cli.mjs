@@ -1,0 +1,5 @@
+import fs from 'node:fs';
+import { reconcileProspectiveExperience } from '../src/research/prospective-experience-reconciliation.js';
+const env=process.env;const required=name=>{const value=String(env[name]||'').trim();if(!value)throw new Error(`missing-env:${name}`);return value;};const optional=name=>String(env[name]||'').trim();const readJson=file=>JSON.parse(fs.readFileSync(file,'utf8'));
+const result=reconcileProspectiveExperience({currentDocument:readJson(required('CURRENT_DATASET_PATH')),rebuiltDocument:readJson(required('REBUILT_DATASET_PATH')),experienceCommittedAt:optional('EXPERIENCE_COMMITTED_AT')||null,latestSourceCommittedAt:optional('LATEST_SOURCE_COMMITTED_AT')||null});
+console.log(JSON.stringify(result,null,2));if(env.GITHUB_OUTPUT){fs.appendFileSync(env.GITHUB_OUTPUT,`state=${result.state}\npass=${result.pass?'true':'false'}\nin_sync=${result.inSync?'true':'false'}\nrow_catchup=${result.counts.rowCatchup}\nlabel_catchup=${result.counts.labelCatchup}\nexecution_authorized=false\nnext_action=${result.nextAction}\n`);}
