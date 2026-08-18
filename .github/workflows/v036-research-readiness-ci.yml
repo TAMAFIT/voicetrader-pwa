@@ -3,6 +3,7 @@ name: v0.36 Research Readiness Orchestrator CI
 on:
   pull_request:
     paths:
+      - 'package.json'
       - 'src/research/model-research-readiness-orchestrator.js'
       - 'scripts/model-research-readiness-cli.mjs'
       - 'scripts/test-model-research-readiness-orchestrator.mjs'
