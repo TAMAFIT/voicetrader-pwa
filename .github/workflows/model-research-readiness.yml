@@ -1,0 +1,88 @@
+name: Model Research Readiness Diagnostic
+
+on:
+  workflow_dispatch:
+    inputs:
+      experiment_id:
+        description: 'Optional active FROZEN experiment id. Leave empty while data is still collecting.'
+        required: false
+        type: string
+      expected_semantic_fingerprint:
+        description: 'Optional exact FROZEN semantic fingerprint.'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: model-research-readiness-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require manual invocation from main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_EVENT_NAME" = 'workflow_dispatch'
+          test "$GITHUB_REF" = 'refs/heads/main' || { echo 'Research readiness diagnostic must be dispatched from main.'; exit 1; }
+
+      - name: Checkout diagnostic code
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout Experience Source of Truth
+        uses: actions/checkout@v6
+        with:
+          ref: prospective-experience-data
+          path: _experience
+          fetch-depth: 1
+
+      - name: Checkout Lifecycle Source of Truth
+        uses: actions/checkout@v6
+        with:
+          ref: model-experiment-lifecycle-data
+          path: _lifecycle
+          fetch-depth: 1
+
+      - name: Resolve exact source heads
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ACTUAL_DATASET_COMMIT=$(git -C _experience rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ACTUAL_LIFECYCLE_COMMIT=$(git -C _lifecycle rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ACTUAL_CODE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Run unified readiness diagnostic
+        id: readiness
+        shell: bash
+        env:
+          DATASET_PATH: _experience/data/prospective-experience-v1.json
+          LEDGER_PATH: _lifecycle/data/model-experiment-lifecycle-v1.json
+          ACTUAL_DATASET_COMMIT: ${{ env.ACTUAL_DATASET_COMMIT }}
+          ACTUAL_CODE_COMMIT: ${{ env.ACTUAL_CODE_COMMIT }}
+          ACTUAL_LIFECYCLE_COMMIT: ${{ env.ACTUAL_LIFECYCLE_COMMIT }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          EXPECTED_SEMANTIC_FINGERPRINT: ${{ inputs.expected_semantic_fingerprint }}
+        run: |
+          set -euo pipefail
+          node scripts/model-research-readiness-cli.mjs | tee /tmp/model-research-readiness.json
+          {
+            echo '### VoiceTrader Research Execution Readiness'
+            echo '```json'
+            cat /tmp/model-research-readiness.json
+            echo '```'
+            echo ''
+            echo 'Diagnostic is read-only. executionAuthorized remains false and this workflow cannot install dependencies, fit/predict models, create result evidence, or write Source-of-Truth branches.'
+          } >> "$GITHUB_STEP_SUMMARY"

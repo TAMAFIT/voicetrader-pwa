@@ -1,0 +1,40 @@
+name: v0.36 Research Readiness Orchestrator CI
+
+on:
+  pull_request:
+    paths:
+      - 'src/research/model-research-readiness-orchestrator.js'
+      - 'scripts/model-research-readiness-cli.mjs'
+      - 'scripts/test-model-research-readiness-orchestrator.mjs'
+      - 'scripts/validate-model-research-readiness-orchestrator.mjs'
+      - '.github/workflows/model-research-readiness.yml'
+      - '.github/workflows/v036-research-readiness-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Validate v0.36 readiness orchestrator
+        run: node scripts/validate-model-research-readiness-orchestrator.mjs
+      - name: Run v0.36 readiness regression tests
+        run: node scripts/test-model-research-readiness-orchestrator.mjs
+      - name: Assert read-only no-model authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -nE 'pip[[:space:]]+install|npm[[:space:]]+install|executionAuthorized:[[:space:]]*true|mayFitModel:[[:space:]]*true|mayPredict:[[:space:]]*true|mayAuthorizeExecution:[[:space:]]*true|mayProduceResultEvidence:[[:space:]]*true' \
+            src/research/model-research-readiness-orchestrator.js \
+            scripts/model-research-readiness-cli.mjs \
+            .github/workflows/model-research-readiness.yml
