@@ -3,6 +3,7 @@ name: v0.38 Experience Reconciliation CI
 on:
   pull_request:
     paths:
+      - 'package.json'
       - 'src/research/prospective-experience-reconciliation.js'
       - 'scripts/prospective-experience-reconciliation-cli.mjs'
       - 'scripts/test-prospective-experience-reconciliation.mjs'
