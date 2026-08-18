@@ -1,0 +1,42 @@
+name: v0.35 No-Fit Adapter Handshake CI
+
+on:
+  pull_request:
+    paths:
+      - 'src/research/model-adapter-dry-run-*.js'
+      - 'scripts/model_adapter_dry_run*.py'
+      - 'scripts/model_adapter_environment_probe.py'
+      - 'scripts/test-model-adapter-dry-run.mjs'
+      - 'scripts/validate-model-adapter-dry-run.mjs'
+      - '.github/workflows/v035-no-fit-adapter-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  handshake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Validate v0.35 no-fit adapter protocol
+        run: node scripts/validate-model-adapter-dry-run.mjs
+      - name: Run JS -> Python blocked handshake regression
+        run: node scripts/test-model-adapter-dry-run.mjs
+      - name: Assert no model dependency/import/fit authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -nE 'pip[[:space:]]+install|from[[:space:]]+sklearn|import[[:space:]]+sklearn|from[[:space:]]+numpy|import[[:space:]]+numpy|executionAuthorized:[[:space:]]*true|modelFitAllowed:[[:space:]]*true|modelImportsAllowed:[[:space:]]*true' \
+            src/research/model-adapter-dry-run-protocol.js \
+            src/research/model-adapter-dry-run-request-audit.js \
+            src/research/model-adapter-dry-run-audit.js \
+            scripts/model_adapter_dry_run.py \
+            scripts/model_adapter_dry_run_strict.py
