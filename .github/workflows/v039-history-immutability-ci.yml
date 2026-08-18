@@ -1,0 +1,37 @@
+name: v0.39 History Immutability CI
+
+on:
+  pull_request:
+    paths:
+      - 'src/research/prospective-experience-history-audit.js'
+      - 'scripts/prospective-experience-history-audit-cli.mjs'
+      - 'scripts/test-prospective-experience-history-audit.mjs'
+      - 'scripts/validate-prospective-experience-history-audit.mjs'
+      - '.github/workflows/prospective-experience-history-audit.yml'
+      - '.github/workflows/v039-history-immutability-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Validate v0.39 history audit
+        run: node scripts/validate-prospective-experience-history-audit.mjs
+      - name: Run v0.39 history regression tests
+        run: node scripts/test-prospective-experience-history-audit.mjs
+      - name: Assert read-only immutable-evidence posture
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R -nE 'contents:[[:space:]]+write|git push|rowDeletionAllowed:[[:space:]]*true|inputMutationAllowed:[[:space:]]*true|maturedMutationAllowed:[[:space:]]*true|executionAuthorized:[[:space:]]*true' \
+            src/research/prospective-experience-history-audit.js \
+            scripts/prospective-experience-history-audit-cli.mjs \
+            .github/workflows/prospective-experience-history-audit.yml

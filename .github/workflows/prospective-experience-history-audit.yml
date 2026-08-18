@@ -1,0 +1,89 @@
+name: Prospective Experience History Immutability Audit
+
+on:
+  schedule:
+    - cron: '37 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prospective-experience-history-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout audit code
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout full Experience branch history
+        uses: actions/checkout@v6
+        with:
+          ref: prospective-experience-data
+          path: _experience
+          fetch-depth: 0
+
+      - name: Materialize latest rolling history window to temporary storage
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/experience-history
+          git -C _experience log -n 129 --format='%H%x09%cI' -- data/prospective-experience-v1.json | tac > /tmp/experience-history.tsv
+          : > /tmp/experience-history-manifest.ndjson
+          index=0
+          while IFS=$'\t' read -r sha committed_at; do
+            test -n "$sha" || continue
+            file=$(printf '/tmp/experience-history/%03d-%s.json' "$index" "$sha")
+            git -C _experience show "$sha:data/prospective-experience-v1.json" > "$file"
+            SHA="$sha" COMMITTED_AT="$committed_at" FILE="$file" node --input-type=module - <<'NODE' >> /tmp/experience-history-manifest.ndjson
+          console.log(JSON.stringify({commitSha:process.env.SHA,committedAt:process.env.COMMITTED_AT,path:process.env.FILE}));
+          NODE
+            index=$((index+1))
+          done < /tmp/experience-history.tsv
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const items=fs.readFileSync('/tmp/experience-history-manifest.ndjson','utf8').trim().split('\n').filter(Boolean).map(line=>JSON.parse(line));
+          if(!items.length)throw new Error('no-experience-history-snapshots');
+          fs.writeFileSync('/tmp/experience-history-manifest.json',JSON.stringify(items,null,2));
+          NODE
+
+      - name: Audit immutable rolling history
+        id: history
+        shell: bash
+        env:
+          HISTORY_MANIFEST_PATH: /tmp/experience-history-manifest.json
+        run: |
+          set -euo pipefail
+          node scripts/prospective-experience-history-audit-cli.mjs | tee /tmp/prospective-experience-history-audit.json
+          {
+            echo '### Rolling Prospective Experience History Audit'
+            echo '```json'
+            cat /tmp/prospective-experience-history-audit.json
+            echo '```'
+            echo ''
+            echo 'Scope is the latest 129 reachable commits touching the Experience file. This is a rolling immutability audit and does not claim to witness unreachable force-pushed history.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce history audit result
+        shell: bash
+        env:
+          STATUS: ${{ steps.history.outputs.status }}
+        run: |
+          set -euo pipefail
+          if [ "$STATUS" != 'PASS' ]; then
+            echo '::error title=Prospective Experience history mutation detected::Inspect the rolling transition audit before any research use.'
+            exit 1
+          fi
+          echo '::notice title=Prospective Experience history PASS::No forbidden mutation detected in the audited rolling window.'
