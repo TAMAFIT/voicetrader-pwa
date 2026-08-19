@@ -6614,17 +6614,26 @@
         "c": 64254,
         "volume": 152.61830608,
         "trades": 4038
+      },
+      {
+        "t": 1787126400,
+        "o": 64254,
+        "h": 64478.9,
+        "l": 64192.6,
+        "c": 64456.3,
+        "volume": 49.76415124,
+        "trades": 3560
       }
     ],
     "continuity": {
-      "barCount": 734,
+      "barCount": 735,
       "gapCount": 0,
       "missingBarTimes": []
     },
-    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1787112000:734",
+    "signature": "kraken-spot-btcusd-4h-v1:1776556800:1787126400:735",
     "firstBarTime": 1776556800,
-    "lastBarTime": 1787112000,
-    "closedBarCount": 734
+    "lastBarTime": 1787126400,
+    "closedBarCount": 735
   },
   "evidenceArchive": {
     "archiveVersion": "higher-timeframe-forward-store-0.1",
@@ -6642,7 +6651,8 @@
       1787068800,
       1787083200,
       1787097600,
-      1787112000
+      1787112000,
+      1787126400
     ],
     "dataSignatures": [
       "kraken-spot-btcusd-4h-v1:1776556800:1786910400:720",
@@ -6659,7 +6669,8 @@
       "kraken-spot-btcusd-4h-v1:1776556800:1787068800:731",
       "kraken-spot-btcusd-4h-v1:1776556800:1787083200:732",
       "kraken-spot-btcusd-4h-v1:1776556800:1787097600:733",
-      "kraken-spot-btcusd-4h-v1:1776556800:1787112000:734"
+      "kraken-spot-btcusd-4h-v1:1776556800:1787112000:734",
+      "kraken-spot-btcusd-4h-v1:1776556800:1787126400:735"
     ],
     "decisions": [
       {
@@ -7194,6 +7205,47 @@
           "dailyDirection": -1,
           "lastDailyBarCloseTime": 1787097600
         }
+      },
+      {
+        "decisionKey": "htf-forward-001:champion-001:1787126400",
+        "epochId": "htf-forward-001",
+        "sourceId": "champion-001",
+        "role": "benchmark",
+        "barIndex": 734,
+        "candleTime": 1787126400,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787126400:735",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "0.4-fixed-experts-policy",
+          "rawAlphaScore": 30.77503922736753,
+          "decisionScore": 81.26,
+          "confidenceScore": 81
+        }
+      },
+      {
+        "decisionKey": "htf-forward-001:higher-timeframe-wave3-reference:1787126400",
+        "epochId": "htf-forward-001",
+        "sourceId": "higher-timeframe-wave3-reference",
+        "role": "candidate",
+        "barIndex": 734,
+        "candleTime": 1787126400,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787126400:735",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "higher-timeframe-engine-0.1",
+          "registryVersion": "higher-timeframe-registry-0.1",
+          "rawContextScore": 67.66,
+          "activeAlphaCount": 1,
+          "alphaAgreement": 1,
+          "gateReason": null,
+          "dailyRegime": "range",
+          "dailyDirection": -1,
+          "lastDailyBarCloseTime": 1787097600
+        }
       }
     ],
     "evidence": [
@@ -7354,24 +7406,24 @@
       }
     ],
     "mergeConflicts": [],
-    "updatedAt": "2026-08-19T11:07:27.261Z"
+    "updatedAt": "2026-08-19T12:03:35.411Z"
   },
   "collector": {
     "version": "autonomous-htf-forward-collector-0.2-attribution",
     "status": "success",
-    "lastRunAt": "2026-08-19T11:07:27.261Z",
-    "workflowRunId": "32246026108",
+    "lastRunAt": "2026-08-19T12:03:35.411Z",
+    "workflowRunId": "32250676430",
     "workflowRunAttempt": "1",
     "evaluatorCommit": "c8fdedb9b385d1d01f7c69948a2520882388a337",
-    "marketBarsAdded": 0,
+    "marketBarsAdded": 1,
     "marketConflicts": [],
     "incomingClosedBars": 720,
-    "totalMarketBars": 734,
-    "prospectiveDecisionRecords": 26,
+    "totalMarketBars": 735,
+    "prospectiveDecisionRecords": 28,
     "prospectiveEvidenceRecords": 5,
-    "archivedDecisionRecords": 26,
+    "archivedDecisionRecords": 28,
     "archivedEvidenceRecords": 5,
-    "archivedAttributionRecords": 13,
+    "archivedAttributionRecords": 14,
     "browserRequired": false,
     "paidApiRequired": false,
     "replayAuditRequiredOnceProspectiveBarsExist": true,
@@ -7382,11 +7434,11 @@
     "status": "pass",
     "pass": true,
     "checked": {
-      "marketBars": 734,
-      "observedBars": 13,
-      "decisions": 26,
+      "marketBars": 735,
+      "observedBars": 14,
+      "decisions": 28,
       "evidence": 5,
-      "expectedDecisions": 26,
+      "expectedDecisions": 28,
       "expectedEvidence": 5
     },
     "errorCount": 0,
@@ -7402,7 +7454,7 @@
       "changesFrozenEngine": false,
       "usedByLiveDecisionEngine": false
     },
-    "checkedAt": "2026-08-19T11:07:27.261Z"
+    "checkedAt": "2026-08-19T12:03:35.411Z"
   },
   "attributionLedger": {
     "version": "prospective-attribution-ledger-0.1",
@@ -11086,10 +11138,293 @@
           "automaticLearning": false,
           "usedByLiveDecisionEngine": false
         }
+      },
+      {
+        "attributionKey": "htf-forward-001:1787126400",
+        "epochId": "htf-forward-001",
+        "candleTime": 1787126400,
+        "barIndex": 734,
+        "observedProspectively": true,
+        "futureOutcomeUsed": false,
+        "higherTimeframe": {
+          "engineVersion": "higher-timeframe-engine-0.1",
+          "registryVersion": "higher-timeframe-registry-0.1",
+          "entryDecision": "ENTER_LONG",
+          "rawContextScore": 67.66,
+          "activeAlphaCount": 1,
+          "alphaAgreement": 1,
+          "candidateDirection": 1,
+          "gateReason": null,
+          "context": {
+            "dailyRegime": "range",
+            "dailyDirection": -1,
+            "dailyMomentumDirection": 1,
+            "dailyStrongTrend": false,
+            "dailyVolatilityShock": false,
+            "lastDailyBarCloseTime": 1787097600
+          },
+          "components": [
+            {
+              "id": "HTF_D1_TREND_PULLBACK_001",
+              "role": "alpha",
+              "active": false,
+              "direction": 0,
+              "score": 0,
+              "magnitude": 0,
+              "gateTarget": null,
+              "reasons": [
+                "inactive-context"
+              ]
+            },
+            {
+              "id": "HTF_D1_BREAKOUT_ALIGN_001",
+              "role": "alpha",
+              "active": false,
+              "direction": 0,
+              "score": 0,
+              "magnitude": 0,
+              "gateTarget": null,
+              "reasons": [
+                "inactive-context"
+              ]
+            },
+            {
+              "id": "HTF_D1_MOMENTUM_ALIGN_001",
+              "role": "alpha",
+              "active": true,
+              "direction": 1,
+              "score": 67.66,
+              "magnitude": 67.66,
+              "gateTarget": null,
+              "reasons": [
+                "fully-closed-d1-momentum-agreement",
+                "four-hour-roc-macd-agreement"
+              ]
+            },
+            {
+              "id": "HTF_D1_RANGE_REVERSION_001",
+              "role": "alpha",
+              "active": false,
+              "direction": 0,
+              "score": 0,
+              "magnitude": 0,
+              "gateTarget": null,
+              "reasons": [
+                "four-hour-extreme-not-confirmed"
+              ]
+            },
+            {
+              "id": "HTF_D1_COUNTERTREND_VETO_001",
+              "role": "gate",
+              "active": false,
+              "direction": 0,
+              "score": 0,
+              "magnitude": 0,
+              "gateTarget": "entry-opposed-to-strong-d1-trend",
+              "reasons": []
+            },
+            {
+              "id": "HTF_D1_VOL_SHOCK_GATE_001",
+              "role": "gate",
+              "active": false,
+              "direction": 0,
+              "score": 0,
+              "magnitude": 0,
+              "gateTarget": "all-wave3-entry",
+              "reasons": []
+            }
+          ],
+          "features": {
+            "daily": {
+              "idx": 121,
+              "price": 64677.2,
+              "fast": 63909.783333333326,
+              "slow": 64185.661764705896,
+              "fastSlopePct": -0.17981283065745535,
+              "slowSlopePct": -0.03138803123795553,
+              "rsi14": 55.587017688489034,
+              "atr14Pct": 1.5985477906274106,
+              "atrPercentile": 1,
+              "macd": {
+                "line": -66.11382312802743,
+                "signal": -90.74126090404089,
+                "histogram": 24.62743777601345
+              },
+              "bollinger": {
+                "mid": 63854.81,
+                "upper": 65357.89119927035,
+                "lower": 62351.728800729645,
+                "sigma": 751.5405996351751,
+                "z": 1.0942722194904935,
+                "widthPct": 4.707808853461009
+              },
+              "stochastic14": 74.50860160109,
+              "dmi": {
+                "plusDI": 21.281371719474343,
+                "minusDI": 16.044418648559834,
+                "adx": 11.813930765796147
+              },
+              "donchian": {
+                "high": 65425.5,
+                "low": 62200.5,
+                "mid": 63813,
+                "position": 0.7679689922480611
+              },
+              "roc6Pct": 1.9952059547088785,
+              "roc24Pct": 0.5664493437552931,
+              "realizedVol20Pct": 1.1093234919519341,
+              "realizedVolPercentile": 4,
+              "obvSlopeNormalized": -0.12741162413048615,
+              "volumeZScore": 0.14575429361987377,
+              "marketStructure": {
+                "bullish": 2,
+                "bearish": 3,
+                "comparisons": 8,
+                "score": -0.125
+              },
+              "bbWidthPercentile": 8,
+              "direction": -1,
+              "momentumDirection": 1,
+              "regime": "range",
+              "strongTrend": false,
+              "volatilityShock": false,
+              "maSeparationPct": 0.4265466522554626
+            },
+            "fourHour": {
+              "idx": 734,
+              "price": 64456.3,
+              "fast": 64375.791666666664,
+              "slow": 63528.958823529414,
+              "fastSlopePct": 0.5814905772252077,
+              "slowSlopePct": 0.17456934483275344,
+              "rsi14": 68.16777921689754,
+              "atr14Pct": 0.6753716924593046,
+              "atrPercentile": 47,
+              "macd": {
+                "line": 304.2472577653316,
+                "signal": 255.8844385314414,
+                "histogram": 48.36281923389021
+              },
+              "bollinger": {
+                "mid": 63887.68000000001,
+                "upper": 65170.61085643772,
+                "lower": 62604.749143562294,
+                "sigma": 641.4654282188557,
+                "z": 0.8864390425199862,
+                "widthPct": 4.016207370302735
+              },
+              "stochastic14": 69.55539235071495,
+              "dmi": {
+                "plusDI": 30.195276421691386,
+                "minusDI": 14.378545982319586,
+                "adx": 35.790528560398556
+              },
+              "donchian": {
+                "high": 64995.2,
+                "low": 62660,
+                "mid": 63827.6,
+                "position": 0.7692274751627292
+              },
+              "roc6Pct": 0.26865328015233114,
+              "roc24Pct": 2.3848818757554957,
+              "realizedVol20Pct": 0.40520632975447984,
+              "realizedVolPercentile": 55.00000000000001,
+              "obvSlopeNormalized": 0.23744537623030293,
+              "volumeZScore": -0.8289547815924188,
+              "marketStructure": {
+                "bullish": 1,
+                "bearish": 3,
+                "comparisons": 8,
+                "score": -0.25
+              },
+              "bbWidthPercentile": 95,
+              "efficiencyRatio20": 0.34124658069558517,
+              "efficiencyRatio40": 0.17947800634197994,
+              "anatomy": {
+                "range": 286.3000000000029,
+                "body": 202.3000000000029,
+                "bodyPct": 0.706601466992668,
+                "upperWickPct": 0.07893817673768186,
+                "lowerWickPct": 0.21446035626965013,
+                "closeLocation": 0.9210618232623181,
+                "direction": 1
+              },
+              "previousAnatomy": {
+                "range": 242.5,
+                "body": 30.099999999998545,
+                "bodyPct": 0.12412371134020019,
+                "upperWickPct": 0.3063917525773316,
+                "lowerWickPct": 0.5694845360824682,
+                "closeLocation": 0.5694845360824682,
+                "direction": -1
+              },
+              "atrPrice": 435.3196042066468,
+              "priceToFastAtr": 0.18494074825796555,
+              "maDirection": 1,
+              "macdSign": 1,
+              "roc6Sign": 1,
+              "roc24Sign": 1,
+              "structureSign": -1,
+              "obvSign": 1,
+              "donchianBreakSign": 0,
+              "previousBreakSign": 0,
+              "currentInsideChannel": true,
+              "bbWidthExpansionRatio": 0.9535936264370056,
+              "bbWidthChangePct": -4.640637356299438,
+              "priorBbWidthPercentile": 97,
+              "atrPercentileChange": -18,
+              "realizedVolPercentileChange": 9.000000000000007,
+              "prev1": {
+                "price": 64254,
+                "donchian": {
+                  "high": 64995.2,
+                  "low": 62660,
+                  "mid": 63827.6,
+                  "position": 0.6825967797190827
+                },
+                "bollinger": {
+                  "mid": 63817.81999999999,
+                  "upper": 65121.28964920553,
+                  "lower": 62514.350350794455,
+                  "sigma": 651.734824602767,
+                  "z": 0.6692599252554283,
+                  "widthPct": 4.084970778398691
+                },
+                "rsi14": 71.40427817058983,
+                "roc6Pct": 0.1789857060892519,
+                "volumeZScore": -0.17604862055391837,
+                "anatomy": {
+                  "range": 242.5,
+                  "body": 30.099999999998545,
+                  "bodyPct": 0.12412371134020019,
+                  "upperWickPct": 0.3063917525773316,
+                  "lowerWickPct": 0.5694845360824682,
+                  "closeLocation": 0.5694845360824682,
+                  "direction": -1
+                }
+              }
+            },
+            "lastDailyBarCloseTime": 1787097600
+          }
+        },
+        "champion": {
+          "engineVersion": "0.4-fixed-experts-policy",
+          "entryDecision": "ENTER_LONG",
+          "rawAlphaScore": 30.775,
+          "decisionScore": 81.26,
+          "confidenceScore": 81
+        },
+        "governance": {
+          "researchOnly": true,
+          "changesFrozenDecision": false,
+          "causalAttribution": false,
+          "automaticLearning": false,
+          "usedByLiveDecisionEngine": false
+        }
       }
     ],
     "mergeConflicts": [],
-    "updatedAt": "2026-08-19T11:07:27.261Z",
+    "updatedAt": "2026-08-19T12:03:35.411Z",
     "methodology": {
       "descriptiveProvenanceOnly": true,
       "causalAttribution": false,
@@ -11108,8 +11443,8 @@
     "errorCount": 0,
     "errorCodes": [],
     "checked": {
-      "expectedBars": 13,
-      "records": 13
+      "expectedBars": 14,
+      "records": 14
     },
     "methodology": {
       "exactObservedBarCoverage": true,
@@ -11117,6 +11452,6 @@
       "futureOutcomeForbidden": true,
       "descriptiveOnly": true
     },
-    "checkedAt": "2026-08-19T11:07:27.261Z"
+    "checkedAt": "2026-08-19T12:03:35.411Z"
   }
 }
