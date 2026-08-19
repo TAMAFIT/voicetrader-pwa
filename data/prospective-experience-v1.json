@@ -7502,12 +7502,13 @@
         },
         "6": {
           "horizonBars": 6,
-          "status": "pending",
-          "availableAtTime": null,
-          "forwardReturnBps": null,
-          "direction": null,
-          "maxUpsideBps": null,
-          "maxDownsideBps": null
+          "status": "matured",
+          "futureBarOpenTime": 1787097600,
+          "availableAtTime": 1787112000,
+          "forwardReturnBps": 25.2487,
+          "direction": "UP",
+          "maxUpsideBps": 136.1463,
+          "maxDownsideBps": -19.0574
         }
       },
       "governance": {
@@ -10863,12 +10864,13 @@
         },
         "3": {
           "horizonBars": 3,
-          "status": "pending",
-          "availableAtTime": null,
-          "forwardReturnBps": null,
-          "direction": null,
-          "maxUpsideBps": null,
-          "maxDownsideBps": null
+          "status": "matured",
+          "futureBarOpenTime": 1787097600,
+          "availableAtTime": 1787112000,
+          "forwardReturnBps": -80.0735,
+          "direction": "DOWN",
+          "maxUpsideBps": 6.8207,
+          "maxDownsideBps": -87.82
         },
         "6": {
           "horizonBars": 6,
@@ -13094,6 +13096,1125 @@
       "labels": {
         "1": {
           "horizonBars": 1,
+          "status": "matured",
+          "futureBarOpenTime": 1787097600,
+          "availableAtTime": 1787112000,
+          "forwardReturnBps": -60.7788,
+          "direction": "DOWN",
+          "maxUpsideBps": 2.4584,
+          "maxDownsideBps": -68.5404
+        },
+        "3": {
+          "horizonBars": 3,
+          "status": "pending",
+          "availableAtTime": null,
+          "forwardReturnBps": null,
+          "direction": null,
+          "maxUpsideBps": null,
+          "maxDownsideBps": null
+        },
+        "6": {
+          "horizonBars": 6,
+          "status": "pending",
+          "availableAtTime": null,
+          "forwardReturnBps": null,
+          "direction": null,
+          "maxUpsideBps": null,
+          "maxDownsideBps": null
+        }
+      },
+      "governance": {
+        "inputsFrozenAtDecision": true,
+        "labelsDerivedAfterDecision": true,
+        "labelsNotDecisionInputs": true,
+        "causalAttribution": false,
+        "usedByDecisionEngine": false
+      }
+    },
+    {
+      "experienceKey": "BTCUSD:1787097600",
+      "instrument": "BTCUSD",
+      "decisionBarOpenTime": 1787097600,
+      "decisionAvailableTime": 1787112000,
+      "observedProspectively": true,
+      "inputs": {
+        "marketAtDecision": {
+          "o": 64677.2,
+          "h": 64693.1,
+          "l": 64233.9,
+          "c": 64284.1,
+          "volume": 91.78197662,
+          "trades": 5765
+        },
+        "channels": {
+          "knowledge": {
+            "attributionKey": "knowledge-forward-001:1787097600",
+            "epochId": "knowledge-forward-001",
+            "candleTime": 1787097600,
+            "barIndex": 732,
+            "observedProspectively": true,
+            "futureOutcomeUsed": false,
+            "wave1": {
+              "version": "human-knowledge-wave1-0.1",
+              "entryDecision": "NO_ENTRY",
+              "knowledgeScore": 15.72,
+              "familyAgreement": 0.75,
+              "direction": "UP",
+              "context": {
+                "version": "regime-risk-context-0.1",
+                "regime": "trend",
+                "riskScore": 51.25,
+                "riskGate": "OPEN",
+                "diagnostics": {
+                  "adx": 31.22,
+                  "atrPercentile": 72,
+                  "realizedVolPercentile": 53,
+                  "bbWidthPercentile": 97,
+                  "volumeZScore": -0.59,
+                  "volatilityRisk": 62.5,
+                  "lowParticipationPenalty": 0
+                },
+                "directionalVote": false,
+                "registryVersion": "human-knowledge-registry-0.1"
+              },
+              "features": {
+                "rsi14": 67.39,
+                "atr14Pct": 0.75,
+                "roc24Pct": 2.05,
+                "stochastic14": 69.55,
+                "adx": 31.22,
+                "bbZ": 0.79,
+                "bbWidthPercentile": 97,
+                "realizedVolPercentile": 53,
+                "volumeZScore": -0.59
+              },
+              "families": {
+                "trend": {
+                  "score": 26.25,
+                  "memberCount": 4,
+                  "memberIds": [
+                    "TREND_MA_ALIGNMENT_001",
+                    "TREND_MA_SLOPE_001",
+                    "TREND_MACD_001",
+                    "TREND_DMI_ADX_001"
+                  ]
+                },
+                "momentum": {
+                  "score": 38.49,
+                  "memberCount": 3,
+                  "memberIds": [
+                    "MOM_ROC_001",
+                    "MOM_RSI_002",
+                    "MOM_STOCH_001"
+                  ]
+                },
+                "meanReversion": {
+                  "score": -14.42,
+                  "memberCount": 3,
+                  "memberIds": [
+                    "MR_BOLLINGER_Z_001",
+                    "MR_RSI_EXTREME_001",
+                    "MR_STOCH_EXTREME_001"
+                  ]
+                },
+                "structure": {
+                  "score": -1.17,
+                  "memberCount": 3,
+                  "memberIds": [
+                    "STRUCT_DONCHIAN_001",
+                    "STRUCT_HHHL_001",
+                    "STRUCT_RANGE_LOCATION_001"
+                  ]
+                },
+                "volume": {
+                  "score": 29.46,
+                  "memberCount": 2,
+                  "memberIds": [
+                    "VOL_OBV_CONFIRM_001",
+                    "VOL_SPIKE_CONFIRM_001"
+                  ]
+                }
+              },
+              "experts": [
+                {
+                  "id": "TREND_MA_ALIGNMENT_001",
+                  "label": "MA Alignment",
+                  "family": "trend",
+                  "score": 50.64,
+                  "active": true
+                },
+                {
+                  "id": "TREND_MA_SLOPE_001",
+                  "label": "MA Slope",
+                  "family": "trend",
+                  "score": 22.57,
+                  "active": true
+                },
+                {
+                  "id": "TREND_MACD_001",
+                  "label": "MACD Histogram",
+                  "family": "trend",
+                  "score": 14.41,
+                  "active": true
+                },
+                {
+                  "id": "TREND_DMI_ADX_001",
+                  "label": "DMI + ADX",
+                  "family": "trend",
+                  "score": 17.37,
+                  "active": true
+                },
+                {
+                  "id": "MOM_ROC_001",
+                  "label": "Rate of Change",
+                  "family": "momentum",
+                  "score": 24.66,
+                  "active": true
+                },
+                {
+                  "id": "MOM_RSI_002",
+                  "label": "RSI Momentum",
+                  "family": "momentum",
+                  "score": 55.63,
+                  "active": true
+                },
+                {
+                  "id": "MOM_STOCH_001",
+                  "label": "Stochastic Momentum",
+                  "family": "momentum",
+                  "score": 35.19,
+                  "active": true
+                },
+                {
+                  "id": "MR_BOLLINGER_Z_001",
+                  "label": "Bollinger Z Reversion",
+                  "family": "meanReversion",
+                  "score": -30.13,
+                  "active": true
+                },
+                {
+                  "id": "MR_RSI_EXTREME_001",
+                  "label": "RSI Extreme Reversion",
+                  "family": "meanReversion",
+                  "score": -13.12,
+                  "active": true
+                },
+                {
+                  "id": "MR_STOCH_EXTREME_001",
+                  "label": "Stochastic Extreme Reversion",
+                  "family": "meanReversion",
+                  "score": 0,
+                  "active": true
+                },
+                {
+                  "id": "STRUCT_DONCHIAN_001",
+                  "label": "Donchian Breakout",
+                  "family": "structure",
+                  "score": 0,
+                  "active": true
+                },
+                {
+                  "id": "STRUCT_HHHL_001",
+                  "label": "HH / HL Structure",
+                  "family": "structure",
+                  "score": -25,
+                  "active": true
+                },
+                {
+                  "id": "STRUCT_RANGE_LOCATION_001",
+                  "label": "Range Location",
+                  "family": "structure",
+                  "score": 21.5,
+                  "active": true
+                },
+                {
+                  "id": "VOL_OBV_CONFIRM_001",
+                  "label": "OBV Confirmation",
+                  "family": "volume",
+                  "score": 58.91,
+                  "active": true
+                },
+                {
+                  "id": "VOL_SPIKE_CONFIRM_001",
+                  "label": "Volume Spike Confirmation",
+                  "family": "volume",
+                  "score": 0,
+                  "active": true
+                }
+              ],
+              "topSupport": [
+                {
+                  "id": "VOL_OBV_CONFIRM_001",
+                  "label": "OBV Confirmation",
+                  "family": "volume",
+                  "score": 58.91
+                },
+                {
+                  "id": "MOM_RSI_002",
+                  "label": "RSI Momentum",
+                  "family": "momentum",
+                  "score": 55.63
+                },
+                {
+                  "id": "TREND_MA_ALIGNMENT_001",
+                  "label": "MA Alignment",
+                  "family": "trend",
+                  "score": 50.64
+                },
+                {
+                  "id": "MOM_STOCH_001",
+                  "label": "Stochastic Momentum",
+                  "family": "momentum",
+                  "score": 35.19
+                },
+                {
+                  "id": "MOM_ROC_001",
+                  "label": "Rate of Change",
+                  "family": "momentum",
+                  "score": 24.66
+                }
+              ],
+              "topOpposition": [
+                {
+                  "id": "MR_BOLLINGER_Z_001",
+                  "label": "Bollinger Z Reversion",
+                  "family": "meanReversion",
+                  "score": -30.13
+                },
+                {
+                  "id": "STRUCT_HHHL_001",
+                  "label": "HH / HL Structure",
+                  "family": "structure",
+                  "score": -25
+                },
+                {
+                  "id": "MR_RSI_EXTREME_001",
+                  "label": "RSI Extreme Reversion",
+                  "family": "meanReversion",
+                  "score": -13.12
+                },
+                {
+                  "id": "MR_STOCH_EXTREME_001",
+                  "label": "Stochastic Extreme Reversion",
+                  "family": "meanReversion",
+                  "score": 0
+                },
+                {
+                  "id": "STRUCT_DONCHIAN_001",
+                  "label": "Donchian Breakout",
+                  "family": "structure",
+                  "score": 0
+                }
+              ]
+            },
+            "wave2": {
+              "version": "human-playbook-wave2-0.1",
+              "registryVersion": "human-playbook-registry-0.1",
+              "entryDecision": "ENTER_LONG",
+              "playbookScore": 73.67,
+              "archetypeAgreement": 1,
+              "activePlaybookCount": 1,
+              "activeArchetypeCount": 1,
+              "maxSetupStrength": 73.67,
+              "gateReason": null,
+              "archetypes": {
+                "continuation": {
+                  "score": 73.67,
+                  "memberCount": 1,
+                  "memberIds": [
+                    "PB_OBV_TREND_CONFIRM_001"
+                  ]
+                },
+                "breakout": {
+                  "score": 0,
+                  "memberCount": 0,
+                  "memberIds": []
+                },
+                "reversion": {
+                  "score": 0,
+                  "memberCount": 0,
+                  "memberIds": []
+                },
+                "reversal": {
+                  "score": 0,
+                  "memberCount": 0,
+                  "memberIds": []
+                }
+              },
+              "playbooks": [
+                {
+                  "id": "PB_TREND_PULLBACK_001",
+                  "label": "Trend Pullback Continuation",
+                  "archetype": "continuation",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "Trend-regime retracement toward fast MA with recovery confirmation",
+                  "inputs": {
+                    "maSign": 1,
+                    "pullbackDistance": 0.10146432980092909,
+                    "rsi": 67.3855509882313,
+                    "roc6": 0.25248665828683237,
+                    "closeLoc": 0.10932055749128355,
+                    "efficiency": 0.3126129565992111
+                  }
+                },
+                {
+                  "id": "PB_TREND_BREAKOUT_001",
+                  "label": "Trend Breakout Continuation",
+                  "archetype": "breakout",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "Fresh Donchian break aligned with trend/ADX/structure",
+                  "inputs": {
+                    "breakoutSign": 0,
+                    "maSign": 1,
+                    "adx": 31.218138628653612,
+                    "structure": -0.25,
+                    "efficiency": 0.3126129565992111
+                  }
+                },
+                {
+                  "id": "PB_VOLUME_BREAKOUT_001",
+                  "label": "Volume-confirmed Breakout",
+                  "archetype": "breakout",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "Breakout confirmed by abnormal participation and OBV",
+                  "inputs": {
+                    "breakoutSign": 0,
+                    "volumeZ": -0.5913693797738395,
+                    "obv": 0.5891180483385187,
+                    "roc6": 0.25248665828683237
+                  }
+                },
+                {
+                  "id": "PB_SQUEEZE_EXPANSION_001",
+                  "label": "Volatility Squeeze Expansion",
+                  "archetype": "breakout",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "Recent compression followed by width expansion and aligned momentum",
+                  "inputs": {
+                    "priorBbWidthPercentile": 92,
+                    "bbWidthExpansionRatio": 1.0747479465680083,
+                    "roc6": 0.25248665828683237,
+                    "macdHist": 99.04843569523413
+                  }
+                },
+                {
+                  "id": "PB_RANGE_MEAN_REVERSION_001",
+                  "label": "Range Mean Reversion",
+                  "archetype": "reversion",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "Range-regime distribution stretch and oscillator extreme",
+                  "inputs": {
+                    "bbZ": 0.7929827844088864,
+                    "rsi": 67.3855509882313,
+                    "stochastic": 69.54864679684826,
+                    "channelPos": 0.6954864679684826
+                  }
+                },
+                {
+                  "id": "PB_FAILED_BREAKOUT_REVERSAL_001",
+                  "label": "Failed Breakout Reversal",
+                  "archetype": "reversal",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "Prior channel escape rejected back inside the range",
+                  "inputs": {
+                    "priorBreak": 0,
+                    "currentInsideChannel": true,
+                    "closeLoc": 0.10932055749128355,
+                    "rejectionWick": 0.03462543554007307
+                  }
+                },
+                {
+                  "id": "PB_STRUCTURE_CONTINUATION_001",
+                  "label": "Structure Continuation",
+                  "archetype": "continuation",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "HH/HL or LH/LL structure aligns with trend",
+                  "inputs": {
+                    "structure": -0.25,
+                    "maSign": 1,
+                    "roc6": 0.25248665828683237,
+                    "adx": 31.218138628653612,
+                    "efficiency": 0.3126129565992111
+                  }
+                },
+                {
+                  "id": "PB_MOMENTUM_CONTINUATION_001",
+                  "label": "Multi-horizon Momentum Continuation",
+                  "archetype": "continuation",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "ROC6/ROC24/MACD directional agreement without severe oscillator extension",
+                  "inputs": {
+                    "roc6": 0.25248665828683237,
+                    "roc24": 2.054777122645257,
+                    "macdHist": 99.04843569523413,
+                    "rsi": 67.3855509882313,
+                    "efficiency": 0.3126129565992111
+                  }
+                },
+                {
+                  "id": "PB_OBV_TREND_CONFIRM_001",
+                  "label": "OBV-confirmed Trend",
+                  "archetype": "continuation",
+                  "role": "alpha",
+                  "active": true,
+                  "score": 73.67,
+                  "direction": "UP",
+                  "blockedDirectionSign": 0,
+                  "reason": "Price trend confirmed by OBV and acceptable participation",
+                  "inputs": {
+                    "maSign": 1,
+                    "obv": 0.5891180483385187,
+                    "volumeZ": -0.5913693797738395,
+                    "adx": 31.218138628653612
+                  }
+                },
+                {
+                  "id": "PB_VOL_EXPANSION_MOMENTUM_001",
+                  "label": "Volatility Expansion Momentum",
+                  "archetype": "continuation",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "Elevated volatility with directional momentum and directional close",
+                  "inputs": {
+                    "atrPctile": 72,
+                    "rvPctile": 53,
+                    "roc6": 0.25248665828683237,
+                    "macdHist": 99.04843569523413,
+                    "closeLoc": 0.10932055749128355,
+                    "riskGate": "OPEN"
+                  }
+                },
+                {
+                  "id": "PB_EXHAUSTION_REVERSAL_001",
+                  "label": "Volatility Exhaustion Reversal",
+                  "archetype": "reversion",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "High-volatility distribution stretch with rejection wick",
+                  "inputs": {
+                    "bbZ": 0.7929827844088864,
+                    "rsi": 67.3855509882313,
+                    "atrPctile": 72,
+                    "rvPctile": 53,
+                    "exhaustionWick": 0.03462543554007307
+                  }
+                },
+                {
+                  "id": "PB_TREND_QUALITY_001",
+                  "label": "Efficient Trend Continuation",
+                  "archetype": "continuation",
+                  "role": "alpha",
+                  "active": false,
+                  "score": 0,
+                  "direction": "NEUTRAL",
+                  "blockedDirectionSign": 0,
+                  "reason": "High path efficiency filters trend continuation",
+                  "inputs": {
+                    "efficiency": 0.3126129565992111,
+                    "adx": 31.218138628653612,
+                    "maSign": 1,
+                    "roc24": 2.054777122645257,
+                    "fastSlopePct": 0.7945238904406793
+                  }
+                }
+              ],
+              "gates": [
+                {
+                  "id": "PB_LOW_QUALITY_BREAKOUT_GATE_001",
+                  "label": "Low-quality Breakout Chase Gate",
+                  "archetype": null,
+                  "role": "gate",
+                  "active": false,
+                  "score": null,
+                  "direction": null,
+                  "blockedDirectionSign": 0,
+                  "reason": "Suppress same-direction chase when breakout lacks participation/path quality",
+                  "inputs": {
+                    "breakoutSign": 0,
+                    "volumeZ": -0.5913693797738395,
+                    "efficiency": 0.3126129565992111,
+                    "bbWidthPercentile": 97,
+                    "adx": 31.218138628653612
+                  }
+                }
+              ],
+              "features": {
+                "efficiencyRatio20": 0.313,
+                "priceToFastAtr": 0.1,
+                "closeLocation": 0.109,
+                "upperWickPct": 0.035,
+                "lowerWickPct": 0.109,
+                "bbWidthExpansionRatio": 1.075,
+                "priorBbWidthPercentile": 92,
+                "donchianBreakSign": 0,
+                "previousBreakSign": 0
+              }
+            },
+            "champion": {
+              "engineVersion": "0.4-fixed-experts-policy",
+              "entryDecision": "ENTER_LONG",
+              "rawAlphaScore": 28.3336,
+              "decisionScore": 76.16,
+              "confidenceScore": 78
+            },
+            "governance": {
+              "researchOnly": true,
+              "changesFrozenDecision": false,
+              "causalAttribution": false,
+              "automaticLearning": false,
+              "usedByLiveDecisionEngine": false
+            }
+          },
+          "higherTimeframe": {
+            "attributionKey": "htf-forward-001:1787097600",
+            "epochId": "htf-forward-001",
+            "candleTime": 1787097600,
+            "barIndex": 732,
+            "observedProspectively": true,
+            "futureOutcomeUsed": false,
+            "higherTimeframe": {
+              "engineVersion": "higher-timeframe-engine-0.1",
+              "registryVersion": "higher-timeframe-registry-0.1",
+              "entryDecision": "ENTER_LONG",
+              "rawContextScore": 67.59,
+              "activeAlphaCount": 1,
+              "alphaAgreement": 1,
+              "candidateDirection": 1,
+              "gateReason": null,
+              "context": {
+                "dailyRegime": "range",
+                "dailyDirection": -1,
+                "dailyMomentumDirection": 1,
+                "dailyStrongTrend": false,
+                "dailyVolatilityShock": false,
+                "lastDailyBarCloseTime": 1787097600
+              },
+              "components": [
+                {
+                  "id": "HTF_D1_TREND_PULLBACK_001",
+                  "role": "alpha",
+                  "active": false,
+                  "direction": 0,
+                  "score": 0,
+                  "magnitude": 0,
+                  "gateTarget": null,
+                  "reasons": [
+                    "inactive-context"
+                  ]
+                },
+                {
+                  "id": "HTF_D1_BREAKOUT_ALIGN_001",
+                  "role": "alpha",
+                  "active": false,
+                  "direction": 0,
+                  "score": 0,
+                  "magnitude": 0,
+                  "gateTarget": null,
+                  "reasons": [
+                    "inactive-context"
+                  ]
+                },
+                {
+                  "id": "HTF_D1_MOMENTUM_ALIGN_001",
+                  "role": "alpha",
+                  "active": true,
+                  "direction": 1,
+                  "score": 67.59,
+                  "magnitude": 67.59,
+                  "gateTarget": null,
+                  "reasons": [
+                    "fully-closed-d1-momentum-agreement",
+                    "four-hour-roc-macd-agreement"
+                  ]
+                },
+                {
+                  "id": "HTF_D1_RANGE_REVERSION_001",
+                  "role": "alpha",
+                  "active": false,
+                  "direction": 0,
+                  "score": 0,
+                  "magnitude": 0,
+                  "gateTarget": null,
+                  "reasons": [
+                    "four-hour-extreme-not-confirmed"
+                  ]
+                },
+                {
+                  "id": "HTF_D1_COUNTERTREND_VETO_001",
+                  "role": "gate",
+                  "active": false,
+                  "direction": 0,
+                  "score": 0,
+                  "magnitude": 0,
+                  "gateTarget": "entry-opposed-to-strong-d1-trend",
+                  "reasons": []
+                },
+                {
+                  "id": "HTF_D1_VOL_SHOCK_GATE_001",
+                  "role": "gate",
+                  "active": false,
+                  "direction": 0,
+                  "score": 0,
+                  "magnitude": 0,
+                  "gateTarget": "all-wave3-entry",
+                  "reasons": []
+                }
+              ],
+              "features": {
+                "daily": {
+                  "idx": 121,
+                  "price": 64677.2,
+                  "fast": 63909.783333333326,
+                  "slow": 64185.661764705896,
+                  "fastSlopePct": -0.17981283065745535,
+                  "slowSlopePct": -0.03138803123795553,
+                  "rsi14": 55.587017688489034,
+                  "atr14Pct": 1.5985477906274106,
+                  "atrPercentile": 1,
+                  "macd": {
+                    "line": -66.11382312802743,
+                    "signal": -90.74126090404089,
+                    "histogram": 24.62743777601345
+                  },
+                  "bollinger": {
+                    "mid": 63854.81,
+                    "upper": 65357.89119927035,
+                    "lower": 62351.728800729645,
+                    "sigma": 751.5405996351751,
+                    "z": 1.0942722194904935,
+                    "widthPct": 4.707808853461009
+                  },
+                  "stochastic14": 74.50860160109,
+                  "dmi": {
+                    "plusDI": 21.281371719474343,
+                    "minusDI": 16.044418648559834,
+                    "adx": 11.813930765796147
+                  },
+                  "donchian": {
+                    "high": 65425.5,
+                    "low": 62200.5,
+                    "mid": 63813,
+                    "position": 0.7679689922480611
+                  },
+                  "roc6Pct": 1.9952059547088785,
+                  "roc24Pct": 0.5664493437552931,
+                  "realizedVol20Pct": 1.1093234919519341,
+                  "realizedVolPercentile": 4,
+                  "obvSlopeNormalized": -0.12741162413048615,
+                  "volumeZScore": 0.14575429361987377,
+                  "marketStructure": {
+                    "bullish": 2,
+                    "bearish": 3,
+                    "comparisons": 8,
+                    "score": -0.125
+                  },
+                  "bbWidthPercentile": 8,
+                  "direction": -1,
+                  "momentumDirection": 1,
+                  "regime": "range",
+                  "strongTrend": false,
+                  "volatilityShock": false,
+                  "maSeparationPct": 0.4265466522554626
+                },
+                "fourHour": {
+                  "idx": 732,
+                  "price": 64284.1,
+                  "fast": 64235.283333333326,
+                  "slow": 63469.95,
+                  "fastSlopePct": 0.7945238904406793,
+                  "slowSlopePct": 0.19457350390539307,
+                  "rsi14": 67.3855509882313,
+                  "atr14Pct": 0.7484299565896372,
+                  "atrPercentile": 72,
+                  "macd": {
+                    "line": 327.0013146625206,
+                    "signal": 227.95287896728647,
+                    "histogram": 99.04843569523413
+                  },
+                  "bollinger": {
+                    "mid": 63756.334999999985,
+                    "upper": 65087.42316578766,
+                    "lower": 62425.24683421231,
+                    "sigma": 665.5440828938375,
+                    "z": 0.7929827844088864,
+                    "widthPct": 4.175547938217197
+                  },
+                  "stochastic14": 69.54864679684826,
+                  "dmi": {
+                    "plusDI": 30.979941152748886,
+                    "minusDI": 17.070183561602928,
+                    "adx": 31.218138628653612
+                  },
+                  "donchian": {
+                    "high": 64995.2,
+                    "low": 62660,
+                    "mid": 63827.6,
+                    "position": 0.6954864679684826
+                  },
+                  "roc6Pct": 0.25248665828683237,
+                  "roc24Pct": 2.054777122645257,
+                  "realizedVol20Pct": 0.4026481723495655,
+                  "realizedVolPercentile": 53,
+                  "obvSlopeNormalized": 0.5891180483385187,
+                  "volumeZScore": -0.5913693797738395,
+                  "marketStructure": {
+                    "bullish": 0,
+                    "bearish": 2,
+                    "comparisons": 8,
+                    "score": -0.25
+                  },
+                  "bbWidthPercentile": 97,
+                  "efficiencyRatio20": 0.3126129565992111,
+                  "efficiencyRatio40": 0.0177133176806249,
+                  "anatomy": {
+                    "range": 459.1999999999971,
+                    "body": 393.09999999999854,
+                    "bodyPct": 0.8560540069686434,
+                    "upperWickPct": 0.03462543554007307,
+                    "lowerWickPct": 0.10932055749128355,
+                    "closeLocation": 0.10932055749128355,
+                    "direction": -1
+                  },
+                  "previousAnatomy": {
+                    "range": 222.70000000000437,
+                    "body": 61.89999999999418,
+                    "bodyPct": 0.2779524023349482,
+                    "upperWickPct": 0.2613381230354882,
+                    "lowerWickPct": 0.4607094746295636,
+                    "closeLocation": 0.7386618769645118,
+                    "direction": 1
+                  },
+                  "atrPrice": 481.12146172403897,
+                  "priceToFastAtr": 0.10146432980092909,
+                  "maDirection": 1,
+                  "macdSign": 1,
+                  "roc6Sign": 1,
+                  "roc24Sign": 1,
+                  "structureSign": -1,
+                  "obvSign": 1,
+                  "donchianBreakSign": 0,
+                  "previousBreakSign": 0,
+                  "currentInsideChannel": true,
+                  "bbWidthExpansionRatio": 1.0747479465680083,
+                  "bbWidthChangePct": 7.474794656800832,
+                  "priorBbWidthPercentile": 92,
+                  "atrPercentileChange": 15.999999999999993,
+                  "realizedVolPercentileChange": 14,
+                  "prev1": {
+                    "price": 64677.2,
+                    "donchian": {
+                      "high": 64995.2,
+                      "low": 62660,
+                      "mid": 63827.6,
+                      "position": 0.8638232271325795
+                    },
+                    "bollinger": {
+                      "mid": 63694.92999999998,
+                      "upper": 65036.235353899676,
+                      "lower": 62353.62464610028,
+                      "sigma": 670.6526769498495,
+                      "z": 1.4646478479254195,
+                      "widthPct": 4.211655005821335
+                    },
+                    "rsi14": 75.1554355335049,
+                    "roc6Pct": 0.31874450340225735,
+                    "volumeZScore": -0.37042522502963776,
+                    "anatomy": {
+                      "range": 222.70000000000437,
+                      "body": 61.89999999999418,
+                      "bodyPct": 0.2779524023349482,
+                      "upperWickPct": 0.2613381230354882,
+                      "lowerWickPct": 0.4607094746295636,
+                      "closeLocation": 0.7386618769645118,
+                      "direction": 1
+                    }
+                  }
+                },
+                "lastDailyBarCloseTime": 1787097600
+              }
+            },
+            "champion": {
+              "engineVersion": "0.4-fixed-experts-policy",
+              "entryDecision": "ENTER_LONG",
+              "rawAlphaScore": 28.3336,
+              "decisionScore": 76.16,
+              "confidenceScore": 78
+            },
+            "governance": {
+              "researchOnly": true,
+              "changesFrozenDecision": false,
+              "causalAttribution": false,
+              "automaticLearning": false,
+              "usedByLiveDecisionEngine": false
+            }
+          }
+        },
+        "decisions": [
+          {
+            "key": "knowledge-forward-001:candidate-consensus",
+            "epochId": "knowledge-forward-001",
+            "sourceId": "candidate-consensus",
+            "role": "candidate",
+            "decision": "NO_ENTRY",
+            "record": {
+              "decisionKey": "knowledge-forward-001:candidate-consensus:1787097600",
+              "epochId": "knowledge-forward-001",
+              "sourceId": "candidate-consensus",
+              "role": "candidate",
+              "barIndex": 732,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "regime": "trend",
+              "riskGate": "OPEN",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-consensus",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 15.72,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "ENTER_LONG",
+                "wave2PlaybookScore": 73.67,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "trend",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "knowledge-forward-001:candidate-playbook-reference",
+            "epochId": "knowledge-forward-001",
+            "sourceId": "candidate-playbook-reference",
+            "role": "candidate",
+            "decision": "ENTER_LONG",
+            "record": {
+              "decisionKey": "knowledge-forward-001:candidate-playbook-reference:1787097600",
+              "epochId": "knowledge-forward-001",
+              "sourceId": "candidate-playbook-reference",
+              "role": "candidate",
+              "barIndex": 732,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "regime": "trend",
+              "riskGate": "OPEN",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-playbook-reference",
+                "decision": "ENTER_LONG",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 15.72,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "ENTER_LONG",
+                "wave2PlaybookScore": 73.67,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "trend",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "knowledge-forward-001:candidate-playbook-wave1-veto",
+            "epochId": "knowledge-forward-001",
+            "sourceId": "candidate-playbook-wave1-veto",
+            "role": "candidate",
+            "decision": "ENTER_LONG",
+            "record": {
+              "decisionKey": "knowledge-forward-001:candidate-playbook-wave1-veto:1787097600",
+              "epochId": "knowledge-forward-001",
+              "sourceId": "candidate-playbook-wave1-veto",
+              "role": "candidate",
+              "barIndex": 732,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "regime": "trend",
+              "riskGate": "OPEN",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-playbook-wave1-veto",
+                "decision": "ENTER_LONG",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 15.72,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "ENTER_LONG",
+                "wave2PlaybookScore": 73.67,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "trend",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "knowledge-forward-001:candidate-wave1-reference",
+            "epochId": "knowledge-forward-001",
+            "sourceId": "candidate-wave1-reference",
+            "role": "candidate",
+            "decision": "NO_ENTRY",
+            "record": {
+              "decisionKey": "knowledge-forward-001:candidate-wave1-reference:1787097600",
+              "epochId": "knowledge-forward-001",
+              "sourceId": "candidate-wave1-reference",
+              "role": "candidate",
+              "barIndex": 732,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "regime": "trend",
+              "riskGate": "OPEN",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-wave1-reference",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 15.72,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "ENTER_LONG",
+                "wave2PlaybookScore": 73.67,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "trend",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "knowledge-forward-001:champion-001",
+            "epochId": "knowledge-forward-001",
+            "sourceId": "champion-001",
+            "role": "benchmark",
+            "decision": "ENTER_LONG",
+            "record": {
+              "decisionKey": "knowledge-forward-001:champion-001:1787097600",
+              "epochId": "knowledge-forward-001",
+              "sourceId": "champion-001",
+              "role": "benchmark",
+              "barIndex": 732,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "regime": "trend",
+              "riskGate": "OPEN",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "championVersion": "0.4-fixed-experts-policy",
+                "rawAlphaScore": 28.333606066256145,
+                "decisionScore": 76.16,
+                "confidenceScore": 78
+              }
+            }
+          },
+          {
+            "key": "htf-forward-001:champion-001",
+            "epochId": "htf-forward-001",
+            "sourceId": "champion-001",
+            "role": "benchmark",
+            "decision": "ENTER_LONG",
+            "record": {
+              "decisionKey": "htf-forward-001:champion-001:1787097600",
+              "epochId": "htf-forward-001",
+              "sourceId": "champion-001",
+              "role": "benchmark",
+              "barIndex": 732,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "engineVersion": "0.4-fixed-experts-policy",
+                "rawAlphaScore": 28.333606066256145,
+                "decisionScore": 76.16,
+                "confidenceScore": 78
+              }
+            }
+          },
+          {
+            "key": "htf-forward-001:higher-timeframe-wave3-reference",
+            "epochId": "htf-forward-001",
+            "sourceId": "higher-timeframe-wave3-reference",
+            "role": "candidate",
+            "decision": "ENTER_LONG",
+            "record": {
+              "decisionKey": "htf-forward-001:higher-timeframe-wave3-reference:1787097600",
+              "epochId": "htf-forward-001",
+              "sourceId": "higher-timeframe-wave3-reference",
+              "role": "candidate",
+              "barIndex": 732,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "engineVersion": "higher-timeframe-engine-0.1",
+                "registryVersion": "higher-timeframe-registry-0.1",
+                "rawContextScore": 67.59,
+                "activeAlphaCount": 1,
+                "alphaAgreement": 1,
+                "gateReason": null,
+                "dailyRegime": "range",
+                "dailyDirection": -1,
+                "lastDailyBarCloseTime": 1787097600
+              }
+            }
+          }
+        ],
+        "featureCompleteness": {
+          "knowledge": true,
+          "higherTimeframe": true,
+          "ethCombined": false
+        },
+        "sourceProvenance": {
+          "knowledge": {
+            "epochId": "knowledge-forward-001",
+            "frozenEvaluatorCommit": "1af623dfa7df53618733050ff9edab5e3595a3d0"
+          },
+          "higherTimeframe": {
+            "epochId": "htf-forward-001",
+            "frozenEvaluatorCommit": "c8fdedb9b385d1d01f7c69948a2520882388a337"
+          }
+        }
+      },
+      "labels": {
+        "1": {
+          "horizonBars": 1,
           "status": "pending",
           "availableAtTime": null,
           "forwardReturnBps": null,
@@ -14290,12 +15411,13 @@
         },
         "6": {
           "horizonBars": 6,
-          "status": "pending",
-          "availableAtTime": null,
-          "forwardReturnBps": null,
-          "direction": null,
-          "maxUpsideBps": null,
-          "maxDownsideBps": null
+          "status": "matured",
+          "futureBarOpenTime": 1787097600,
+          "availableAtTime": 1787112000,
+          "forwardReturnBps": 96.1569,
+          "direction": "UP",
+          "maxUpsideBps": 152.1075,
+          "maxDownsideBps": -15.5859
         }
       },
       "governance": {
@@ -15456,12 +16578,13 @@
         },
         "3": {
           "horizonBars": 3,
-          "status": "pending",
-          "availableAtTime": null,
-          "forwardReturnBps": null,
-          "direction": null,
-          "maxUpsideBps": null,
-          "maxDownsideBps": null
+          "status": "matured",
+          "futureBarOpenTime": 1787097600,
+          "availableAtTime": 1787112000,
+          "forwardReturnBps": -26.3051,
+          "direction": "DOWN",
+          "maxUpsideBps": 23.5911,
+          "maxDownsideBps": -55.8461
         },
         "6": {
           "horizonBars": 6,
@@ -16228,6 +17351,397 @@
       "labels": {
         "1": {
           "horizonBars": 1,
+          "status": "matured",
+          "futureBarOpenTime": 1787097600,
+          "availableAtTime": 1787112000,
+          "forwardReturnBps": -26.6174,
+          "direction": "DOWN",
+          "maxUpsideBps": 7.933,
+          "maxDownsideBps": -56.1575
+        },
+        "3": {
+          "horizonBars": 3,
+          "status": "pending",
+          "availableAtTime": null,
+          "forwardReturnBps": null,
+          "direction": null,
+          "maxUpsideBps": null,
+          "maxDownsideBps": null
+        },
+        "6": {
+          "horizonBars": 6,
+          "status": "pending",
+          "availableAtTime": null,
+          "forwardReturnBps": null,
+          "direction": null,
+          "maxUpsideBps": null,
+          "maxDownsideBps": null
+        }
+      },
+      "governance": {
+        "inputsFrozenAtDecision": true,
+        "labelsDerivedAfterDecision": true,
+        "labelsNotDecisionInputs": true,
+        "causalAttribution": false,
+        "usedByDecisionEngine": false
+      }
+    },
+    {
+      "experienceKey": "ETHUSD:1787097600",
+      "instrument": "ETHUSD",
+      "decisionBarOpenTime": 1787097600,
+      "decisionAvailableTime": 1787112000,
+      "observedProspectively": true,
+      "inputs": {
+        "marketAtDecision": {
+          "o": 1916.38,
+          "h": 1917.56,
+          "l": 1905.28,
+          "c": 1910.94,
+          "volume": 1710.29734236,
+          "trades": 2427
+        },
+        "channels": {
+          "knowledge": null,
+          "higherTimeframe": null,
+          "ethDecisionDetails": [
+            {
+              "decisionKey": "eth-forward-001:candidate-consensus:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-consensus",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-consensus",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            },
+            {
+              "decisionKey": "eth-forward-001:candidate-playbook-reference:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-playbook-reference",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-playbook-reference",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            },
+            {
+              "decisionKey": "eth-forward-001:candidate-playbook-wave1-veto:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-playbook-wave1-veto",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-playbook-wave1-veto",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            },
+            {
+              "decisionKey": "eth-forward-001:candidate-wave1-reference:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-wave1-reference",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-wave1-reference",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            },
+            {
+              "decisionKey": "eth-forward-001:champion-001:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "champion-001",
+              "role": "benchmark",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "engineVersion": "0.4-fixed-experts-policy",
+                "rawAlphaScore": 20.13064788828584,
+                "decisionScore": 61.8,
+                "confidenceScore": 70
+              }
+            },
+            {
+              "decisionKey": "eth-forward-001:higher-timeframe-wave3-reference:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "higher-timeframe-wave3-reference",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "engineVersion": "higher-timeframe-engine-0.1",
+                "registryVersion": "higher-timeframe-registry-0.1",
+                "rawContextScore": 72.26,
+                "activeAlphaCount": 1,
+                "alphaAgreement": 1,
+                "gateReason": null,
+                "dailyRegime": "range",
+                "dailyDirection": 1,
+                "lastDailyBarCloseTime": 1787097600
+              }
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "key": "eth-forward-001:candidate-consensus",
+            "epochId": "eth-forward-001",
+            "sourceId": "candidate-consensus",
+            "role": "candidate",
+            "decision": "NO_ENTRY",
+            "record": {
+              "decisionKey": "eth-forward-001:candidate-consensus:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-consensus",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-consensus",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "eth-forward-001:candidate-playbook-reference",
+            "epochId": "eth-forward-001",
+            "sourceId": "candidate-playbook-reference",
+            "role": "candidate",
+            "decision": "NO_ENTRY",
+            "record": {
+              "decisionKey": "eth-forward-001:candidate-playbook-reference:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-playbook-reference",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-playbook-reference",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "eth-forward-001:candidate-playbook-wave1-veto",
+            "epochId": "eth-forward-001",
+            "sourceId": "candidate-playbook-wave1-veto",
+            "role": "candidate",
+            "decision": "NO_ENTRY",
+            "record": {
+              "decisionKey": "eth-forward-001:candidate-playbook-wave1-veto:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-playbook-wave1-veto",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-playbook-wave1-veto",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "eth-forward-001:candidate-wave1-reference",
+            "epochId": "eth-forward-001",
+            "sourceId": "candidate-wave1-reference",
+            "role": "candidate",
+            "decision": "NO_ENTRY",
+            "record": {
+              "decisionKey": "eth-forward-001:candidate-wave1-reference:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "candidate-wave1-reference",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "NO_ENTRY",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "candidateId": "candidate-wave1-reference",
+                "decision": "NO_ENTRY",
+                "wave1Decision": "NO_ENTRY",
+                "wave1KnowledgeScore": 10.62,
+                "wave1FamilyAgreement": 0.75,
+                "wave2Decision": "NO_ENTRY",
+                "wave2PlaybookScore": -65.65,
+                "wave2ArchetypeAgreement": 1,
+                "regime": "range",
+                "riskGate": "OPEN"
+              }
+            }
+          },
+          {
+            "key": "eth-forward-001:champion-001",
+            "epochId": "eth-forward-001",
+            "sourceId": "champion-001",
+            "role": "benchmark",
+            "decision": "ENTER_LONG",
+            "record": {
+              "decisionKey": "eth-forward-001:champion-001:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "champion-001",
+              "role": "benchmark",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "engineVersion": "0.4-fixed-experts-policy",
+                "rawAlphaScore": 20.13064788828584,
+                "decisionScore": 61.8,
+                "confidenceScore": 70
+              }
+            }
+          },
+          {
+            "key": "eth-forward-001:higher-timeframe-wave3-reference",
+            "epochId": "eth-forward-001",
+            "sourceId": "higher-timeframe-wave3-reference",
+            "role": "candidate",
+            "decision": "ENTER_LONG",
+            "record": {
+              "decisionKey": "eth-forward-001:higher-timeframe-wave3-reference:1787097600",
+              "epochId": "eth-forward-001",
+              "instrument": "ETHUSD",
+              "sourceId": "higher-timeframe-wave3-reference",
+              "role": "candidate",
+              "barIndex": 729,
+              "candleTime": 1787097600,
+              "decision": "ENTER_LONG",
+              "observedProspectively": true,
+              "usedFutureOutcomeAtDecision": false,
+              "details": {
+                "engineVersion": "higher-timeframe-engine-0.1",
+                "registryVersion": "higher-timeframe-registry-0.1",
+                "rawContextScore": 72.26,
+                "activeAlphaCount": 1,
+                "alphaAgreement": 1,
+                "gateReason": null,
+                "dailyRegime": "range",
+                "dailyDirection": 1,
+                "lastDailyBarCloseTime": 1787097600
+              }
+            }
+          }
+        ],
+        "featureCompleteness": {
+          "knowledge": false,
+          "higherTimeframe": false,
+          "ethCombined": false,
+          "decisionOnly": true
+        },
+        "sourceProvenance": {
+          "eth": {
+            "epochId": "eth-forward-001",
+            "frozenStrategyCommit": "0d330101f413cb19b8cd47fdd005d2230152e8db",
+            "noEthSpecificTuning": true
+          }
+        }
+      },
+      "labels": {
+        "1": {
+          "horizonBars": 1,
           "status": "pending",
           "availableAtTime": null,
           "forwardReturnBps": null,
@@ -16267,11 +17781,11 @@
   "sourceSnapshots": {
     "knowledge": {
       "epochId": "knowledge-forward-001",
-      "lastRunAt": "2026-08-19T03:15:19.709Z",
+      "lastRunAt": "2026-08-19T04:03:56.952Z",
       "collectorVersion": "autonomous-knowledge-forward-collector-0.3-attribution",
-      "marketSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787083200:732",
-      "marketBars": 732,
-      "observedBars": 12,
+      "marketSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787097600:733",
+      "marketBars": 733,
+      "observedBars": 13,
       "replayAuditStatus": "pass",
       "replayAuditPass": true,
       "attributionAuditStatus": "pass",
@@ -16279,11 +17793,11 @@
     },
     "htf": {
       "epochId": "htf-forward-001",
-      "lastRunAt": "2026-08-19T03:32:11.320Z",
+      "lastRunAt": "2026-08-19T04:22:15.570Z",
       "collectorVersion": "autonomous-htf-forward-collector-0.2-attribution",
-      "marketSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787083200:732",
-      "marketBars": 732,
-      "observedBars": 11,
+      "marketSignature": "kraken-spot-btcusd-4h-v1:1776556800:1787097600:733",
+      "marketBars": 733,
+      "observedBars": 12,
       "replayAuditStatus": "pass",
       "replayAuditPass": true,
       "attributionAuditStatus": "pass",
@@ -16291,11 +17805,11 @@
     },
     "eth": {
       "epochId": "eth-forward-001",
-      "lastRunAt": "2026-08-19T03:25:47.433Z",
+      "lastRunAt": "2026-08-19T04:09:52.293Z",
       "collectorVersion": "autonomous-eth-forward-collector-0.1",
-      "marketSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787083200:729",
-      "marketBars": 729,
-      "observedBars": 8,
+      "marketSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787097600:730",
+      "marketBars": 730,
+      "observedBars": 9,
       "replayAuditStatus": "pass",
       "replayAuditPass": true,
       "attributionAuditStatus": null,
@@ -16303,7 +17817,7 @@
     }
   },
   "deferred": [],
-  "updatedAt": "2026-08-19T03:34:36.416Z",
+  "updatedAt": "2026-08-19T04:23:18.638Z",
   "audit": {
     "version": "prospective-experience-audit-0.1",
     "status": "pass",
@@ -16312,8 +17826,8 @@
     "errorCodes": [],
     "errors": [],
     "checked": {
-      "rows": 20,
-      "maturedLabels": 40,
+      "rows": 22,
+      "maturedLabels": 46,
       "pendingLabels": 20,
       "instruments": [
         "BTCUSD",
