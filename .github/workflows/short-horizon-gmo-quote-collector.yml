@@ -1,0 +1,70 @@
+name: Short-Horizon GMO FX Public Quote Collector
+
+on:
+  schedule:
+    - cron: '3,8,13,18,23,28,33,38,43,48,53,58 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/short-horizon-gmo-quote-collector.yml'
+      - 'src/short-horizon/gmo-fx-public-quote.js'
+      - 'scripts/lib/short-horizon-gmo-quote-archive.mjs'
+      - 'scripts/collect-short-horizon-gmo-quotes.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: short-horizon-gmo-quote-data-writer
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout v0.48 code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout generated GMO quote branch
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-gmo-quote-data
+          path: _short_horizon_gmo_quote_data
+          fetch-depth: 1
+
+      - name: Sample one current GMO USDJPY public WebSocket quote
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: node scripts/collect-short-horizon-gmo-quotes.mjs --root _short_horizon_gmo_quote_data --timeout-ms 20000
+
+      - name: Commit generated public quote evidence only
+        working-directory: _short_horizon_gmo_quote_data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader GMO Public Quote Collector'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/short-horizon-gmo-quotes
+          if git diff --cached --quiet; then
+            echo 'No GMO public quote evidence change.'
+            exit 0
+          fi
+          git commit -m 'Update GMO FX public quote sample'
+          git push origin HEAD:short-horizon-gmo-quote-data
+
+      - name: Surface quote manifest
+        shell: bash
+        run: |
+          if [ -f _short_horizon_gmo_quote_data/data/short-horizon-gmo-quotes/manifest.json ]; then
+            cat _short_horizon_gmo_quote_data/data/short-horizon-gmo-quotes/manifest.json
+          fi
