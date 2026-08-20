@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-deployability-manifest-v1",
   "archiveVersion": "short-horizon-deployability-archive-v1",
-  "updatedAtMs": 1787240804433,
+  "updatedAtMs": 1787244527031,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-deployability-data",
@@ -57,10 +57,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 9,
+    "recordCount": 15,
     "fileCount": 2,
     "duplicateAssessmentIdCount": 0,
-    "contentSha256": "8b4b4883e583b297c5e32e1115434a9fe663adfcedd0326bad4326ee995f2c71",
+    "contentSha256": "c990a5afbd3f6143fac72d50d0983f04878b4401102eb9b0b6c14e4ebef7c8d0",
     "groups": [
       {
         "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -93,6 +93,38 @@
         "firstTargetCloseTimestampMs": 1787232480000,
         "lastTargetCloseTimestampMs": 1787237880000,
         "contentSha256": "5dbc8137d64e07c98f658506b4b0c357792ae0371fef7866effde4c789a69026"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-TREND",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "LONDON_NEW_YORK_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.50361,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.50361,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787239860000,
+        "lastTargetCloseTimestampMs": 1787239860000,
+        "contentSha256": "c538a88284315174add707532e4b7f4a16ef6df09ce549fe770565e75c72030a"
       },
       {
         "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-VOLATILE",
@@ -137,11 +169,11 @@
         "horizonMinutes": 15,
         "primarySession": "LONDON_NEW_YORK_OVERLAP",
         "regime": "COMPRESSION",
-        "recordCount": 1,
+        "recordCount": 2,
         "directionalCount": 0,
-        "waitCount": 1,
+        "waitCount": 2,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.504423,
+          "meanPublishedReferenceSpreadCostBps": 0.504158,
           "directionalPublishedSpreadWithinBreakEvenCount": 0,
           "directionalPublishedSpreadWithinBreakEvenRate": null,
           "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
@@ -155,8 +187,40 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787233080000,
-        "lastTargetCloseTimestampMs": 1787233080000,
-        "contentSha256": "9be40e74b749bbf5780bf7597569026b374e9a2647a17f4cd7e98ef9c1de14e1"
+        "lastTargetCloseTimestampMs": 1787238480000,
+        "contentSha256": "d72b1a8dd02ab5a6e497e5741295944eea039054b4da295767b19bcc8af50f1b"
+      },
+      {
+        "id": "USDJPY-1m-secondary-15m-LONDON_NEW_YORK_OVERLAP-TREND",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "LONDON_NEW_YORK_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.50361,
+          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "directionalPublishedSpreadWithinBreakEvenRate": 1,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 1.259026,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787240460000,
+        "lastTargetCloseTimestampMs": 1787240460000,
+        "contentSha256": "5cb13af82fe6aa426827c5583424b8af74c0950c8175c3ef10234db8dc62b419"
       },
       {
         "id": "USDJPY-1m-secondary-15m-LONDON_NEW_YORK_OVERLAP-VOLATILE",
@@ -191,6 +255,38 @@
         "contentSha256": "860e66f58a0b0e0c80750ec1194f249bb714815e35254ea93db2861b7aae0042"
       },
       {
+        "id": "USDJPY-5m-primary-15m-LONDON_NEW_YORK_OVERLAP-TREND",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "LONDON_NEW_YORK_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.504032,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787238300000,
+        "lastTargetCloseTimestampMs": 1787238300000,
+        "contentSha256": "dd3852f5c8ffde20bb8b258407e90fbfb2bacbf1cc2611ecf35b7ced53ef8f6c"
+      },
+      {
         "id": "USDJPY-5m-primary-15m-LONDON_NEW_YORK_OVERLAP-VOLATILE",
         "providerId": "oanda-japan-ny-pro-rest-v1",
         "assetClass": "fx",
@@ -201,11 +297,11 @@
         "horizonMinutes": 15,
         "primarySession": "LONDON_NEW_YORK_OVERLAP",
         "regime": "VOLATILE",
-        "recordCount": 2,
+        "recordCount": 3,
         "directionalCount": 1,
-        "waitCount": 1,
+        "waitCount": 2,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.504031,
+          "meanPublishedReferenceSpreadCostBps": 0.503928,
           "directionalPublishedSpreadWithinBreakEvenCount": 0,
           "directionalPublishedSpreadWithinBreakEvenRate": 0,
           "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.503563,
@@ -219,8 +315,40 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787232900000,
-        "lastTargetCloseTimestampMs": 1787235600000,
-        "contentSha256": "6be296bff8b14d5dfe4e158574c7d71169a88538b089822e46fd2859fd7fc28f"
+        "lastTargetCloseTimestampMs": 1787240400000,
+        "contentSha256": "abf5abe6f266ad76618cbaca1a9a8d60166a491f829b7334145a014748ba2d74"
+      },
+      {
+        "id": "USDJPY-5m-secondary-30m-LONDON_NEW_YORK_OVERLAP-TREND",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "LONDON_NEW_YORK_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.504032,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787239200000,
+        "lastTargetCloseTimestampMs": 1787239200000,
+        "contentSha256": "8bf68ec379c1df185b9fd15f4cbcd876c60445450cfe4041f959568b973ae718"
       },
       {
         "id": "USDJPY-5m-secondary-30m-LONDON_NEW_YORK_OVERLAP-VOLATILE",
@@ -259,22 +387,22 @@
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-deployability-collector-v1",
-    "startedAtMs": 1787240804194,
-    "finishedAtMs": 1787240804431,
-    "durationMs": 237,
+    "startedAtMs": 1787244527011,
+    "finishedAtMs": 1787244527030,
+    "durationMs": 19,
     "cadenceMinutes": 60,
-    "githubRunId": "32388134520",
+    "githubRunId": "32394076500",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 45,
-      "costAnalysesRead": 27,
-      "eligibleUsdJpyCostAnalyses": 9,
-      "excludedNonUsdJpyCostAnalyses": 18,
-      "existingAssessments": 5,
-      "newAssessments": 4,
-      "newDirectionalAssessments": 3,
-      "newWaitAssessments": 1,
-      "archiveAdded": 4,
+      "outcomesRead": 57,
+      "costAnalysesRead": 45,
+      "eligibleUsdJpyCostAnalyses": 15,
+      "excludedNonUsdJpyCostAnalyses": 30,
+      "existingAssessments": 9,
+      "newAssessments": 6,
+      "newDirectionalAssessments": 2,
+      "newWaitAssessments": 4,
+      "archiveAdded": 6,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 2
     }
