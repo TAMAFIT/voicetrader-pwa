@@ -22,11 +22,18 @@ function utcDayParts(timestampMs) {
   return { year, month, day, isoDay:`${year}-${month}-${day}` };
 }
 
+function assetClassDirectory(value) {
+  const normalized = String(value || 'crypto').trim().toLowerCase();
+  if (!/^[a-z0-9-]+$/.test(normalized)) throw new Error('invalid-archive-asset-class');
+  return normalized;
+}
+
 export function archiveRelativePath(event) {
   validateMarketEvent(event);
   const { year, month, isoDay } = utcDayParts(event.sourceTimestampMs);
   return path.posix.join(
-    'data', 'short-horizon', 'crypto', event.instrument, `${event.timeframeMinutes}m`, year, month, `${isoDay}.ndjson`,
+    'data', 'short-horizon', assetClassDirectory(event.assetClass), event.instrument,
+    `${event.timeframeMinutes}m`, year, month, `${isoDay}.ndjson`,
   );
 }
 
@@ -109,7 +116,10 @@ function walkFiles(dir, predicate, output = []) {
 }
 
 function streamDirectory(rootDir, stream) {
-  return path.join(rootDir, 'data', 'short-horizon', 'crypto', stream.instrument, `${stream.timeframeMinutes}m`);
+  return path.join(
+    rootDir, 'data', 'short-horizon', assetClassDirectory(stream.assetClass || 'crypto'),
+    stream.instrument, `${stream.timeframeMinutes}m`,
+  );
 }
 
 export function inspectArchiveStream(rootDir, stream) {
@@ -117,10 +127,12 @@ export function inspectArchiveStream(rootDir, stream) {
   const events = files.flatMap(readNdjson).sort((a, b) => a.sourceTimestampMs - b.sourceTimestampMs);
   const seen = new Set();
   let duplicateKeyCount = 0;
-  let gapCount = 0;
-  let missingBars = 0;
+  let rawGapCount = 0;
+  let continuousGapCount = 0;
+  let continuousMissingBars = 0;
   let largestGapMinutes = 0;
   const intervalMs = stream.timeframeMinutes * 60_000;
+  const continuityMode = stream.expectedContinuity || 'continuous-24x7';
 
   for (let i = 0; i < events.length; i += 1) {
     const key = marketEventKey(events[i]);
@@ -129,9 +141,12 @@ export function inspectArchiveStream(rootDir, stream) {
     if (i === 0) continue;
     const delta = events[i].sourceTimestampMs - events[i - 1].sourceTimestampMs;
     if (delta > intervalMs) {
-      gapCount += 1;
-      missingBars += Math.max(0, Math.round(delta / intervalMs) - 1);
+      rawGapCount += 1;
       largestGapMinutes = Math.max(largestGapMinutes, delta / 60_000);
+      if (continuityMode === 'continuous-24x7') {
+        continuousGapCount += 1;
+        continuousMissingBars += Math.max(0, Math.round(delta / intervalMs) - 1);
+      }
     }
     if (delta <= 0) throw new Error(`non-monotonic-market-data:${stream.id}`);
   }
@@ -139,23 +154,33 @@ export function inspectArchiveStream(rootDir, stream) {
   const canonical = events.map((event) => JSON.stringify(event)).join('\n');
   return {
     id: stream.id,
+    assetClass: stream.assetClass || 'crypto',
     instrument: stream.instrument,
     venue: stream.venue,
     timeframeMinutes: stream.timeframeMinutes,
+    continuityMode,
     recordCount: events.length,
     fileCount: files.length,
     firstSourceTimestampMs: events[0]?.sourceTimestampMs ?? null,
     lastSourceTimestampMs: events.at(-1)?.sourceTimestampMs ?? null,
-    gapCount,
-    missingBars,
+    gapCount: continuityMode === 'continuous-24x7' ? continuousGapCount : null,
+    missingBars: continuityMode === 'continuous-24x7' ? continuousMissingBars : null,
+    rawGapCount,
     largestGapMinutes,
     duplicateKeyCount,
     contentSha256: sha256(canonical),
   };
 }
 
-export function writeArchiveManifest({ rootDir, streams, lastRun }) {
+export function writeArchiveManifest({
+  rootDir,
+  streams,
+  lastRun,
+  manifestFile = 'manifest.json',
+  source = null,
+}) {
   if (!rootDir) throw new Error('archive-root-required');
+  if (!/^[a-z0-9._-]+$/i.test(manifestFile)) throw new Error('invalid-manifest-file');
   const inspected = streams.map((stream) => inspectArchiveStream(rootDir, stream));
   const manifest = {
     schemaVersion: 'short-horizon-manifest-v1',
@@ -167,7 +192,7 @@ export function writeArchiveManifest({ rootDir, streams, lastRun }) {
       format: 'ndjson-daily-utc',
       futureLocalMigrationSupported: true,
     },
-    source: {
+    source: source || {
       provider: 'Kraken public OHLC',
       closedCandlesOnly: true,
       sourceWindowLimitPerRequest: 720,
@@ -183,6 +208,6 @@ export function writeArchiveManifest({ rootDir, streams, lastRun }) {
   };
   const manifestDir = path.join(rootDir, 'data', 'short-horizon');
   ensureDir(manifestDir);
-  fs.writeFileSync(path.join(manifestDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  fs.writeFileSync(path.join(manifestDir, manifestFile), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
   return manifest;
 }
