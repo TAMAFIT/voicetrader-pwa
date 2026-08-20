@@ -1,0 +1,84 @@
+name: VoiceTrader v0.45 Short-Horizon Cost Analysis CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/lib/short-horizon-cost-analysis-archive.mjs'
+      - 'scripts/collect-short-horizon-cost-analysis.mjs'
+      - 'scripts/test-short-horizon-cost-analysis.mjs'
+      - 'scripts/validate-short-horizon-cost-analysis.mjs'
+      - '.github/workflows/short-horizon-cost-analysis-collector.yml'
+      - '.github/workflows/v045-short-horizon-cost-analysis-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/lib/short-horizon-cost-analysis-archive.mjs'
+      - 'scripts/collect-short-horizon-cost-analysis.mjs'
+      - 'scripts/test-short-horizon-cost-analysis.mjs'
+      - 'scripts/validate-short-horizon-cost-analysis.mjs'
+      - '.github/workflows/short-horizon-cost-analysis-collector.yml'
+      - '.github/workflows/v045-short-horizon-cost-analysis-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: v0.45 syntax checks
+        run: |
+          node --check src/short-horizon/cost-break-even.js
+          node --check scripts/lib/short-horizon-cost-analysis-archive.mjs
+          node --check scripts/collect-short-horizon-cost-analysis.mjs
+          node --check scripts/test-short-horizon-cost-analysis.mjs
+          node --check scripts/validate-short-horizon-cost-analysis.mjs
+
+      - name: v0.45 deterministic cost break-even tests
+        run: node scripts/test-short-horizon-cost-analysis.mjs
+
+      - name: v0.45 scientific and execution guardrails
+        run: node scripts/validate-short-horizon-cost-analysis.mjs
+
+      - name: v0.44 prospective outcome regression
+        run: |
+          node scripts/test-short-horizon-outcomes.mjs
+          node scripts/validate-short-horizon-outcomes.mjs
+
+      - name: v0.43 prospective signal regression
+        run: |
+          node scripts/test-short-horizon-prospective-signals.mjs
+          node scripts/validate-short-horizon-prospective-signals.mjs
+
+      - name: v0.42 Human Canon regression
+        run: |
+          node scripts/test-short-horizon-human-canon.mjs
+          node scripts/test-short-horizon-signal-contract.mjs
+          node scripts/validate-short-horizon-human-canon.mjs
+
+      - name: v0.41 FX foundation regression
+        run: |
+          node scripts/test-short-horizon-dukascopy-fx.mjs
+          node scripts/test-short-horizon-fx-archive.mjs
+          node scripts/validate-short-horizon-fx-foundation.mjs
+
+      - name: v0.40 crypto foundation regression
+        run: |
+          node scripts/test-short-horizon-market-event.mjs
+          node scripts/test-short-horizon-kraken-ohlc.mjs
+          node scripts/test-short-horizon-archive.mjs
+          node scripts/validate-short-horizon-foundation.mjs
+
+      - name: Legacy v0.39 release guardrail remains intact
+        run: node scripts/validate-v039-release-integrity.mjs

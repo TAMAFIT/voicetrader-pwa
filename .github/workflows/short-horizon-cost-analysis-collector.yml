@@ -1,0 +1,85 @@
+name: Short-Horizon Cost Break-Even Analysis Collector
+
+on:
+  schedule:
+    - cron: '12,27,42,57 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/short-horizon-cost-analysis-collector.yml'
+      - 'src/short-horizon/outcome-contract.js'
+      - 'src/short-horizon/cost-break-even.js'
+      - 'scripts/lib/short-horizon-outcome-archive.mjs'
+      - 'scripts/lib/short-horizon-cost-analysis-archive.mjs'
+      - 'scripts/collect-short-horizon-cost-analysis.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: short-horizon-cost-analysis-data-writer
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout cost analysis code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout immutable prospective outcomes
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-outcome-data
+          path: _short_horizon_outcome_data
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout generated cost analysis branch
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-cost-analysis-data
+          path: _short_horizon_cost_analysis_data
+          fetch-depth: 1
+
+      - name: Derive non-binding break-even cost evidence
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: >-
+          node scripts/collect-short-horizon-cost-analysis.mjs
+          --outcome-root _short_horizon_outcome_data
+          --analysis-root _short_horizon_cost_analysis_data
+
+      - name: Commit generated cost analysis evidence only
+        working-directory: _short_horizon_cost_analysis_data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader Cost Analysis Collector'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/short-horizon-cost-analysis
+          if git diff --cached --quiet; then
+            echo 'No short-horizon cost analysis evidence change.'
+            exit 0
+          fi
+          git commit -m 'Update short-horizon cost break-even analysis'
+          git push origin HEAD:short-horizon-cost-analysis-data
+
+      - name: Surface analysis manifest
+        shell: bash
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('_short_horizon_cost_analysis_data/data/short-horizon-cost-analysis/manifest.json', 'utf8'));
+          console.log(JSON.stringify(manifest.lastRun, null, 2));
+          NODE
