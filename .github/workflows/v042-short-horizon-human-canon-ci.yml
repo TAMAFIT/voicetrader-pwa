@@ -1,0 +1,62 @@
+name: VoiceTrader v0.42 Short-Horizon Human Canon CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/test-short-horizon-human-canon.mjs'
+      - 'scripts/test-short-horizon-signal-contract.mjs'
+      - 'scripts/validate-short-horizon-human-canon.mjs'
+      - '.github/workflows/v042-short-horizon-human-canon-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/test-short-horizon-human-canon.mjs'
+      - 'scripts/test-short-horizon-signal-contract.mjs'
+      - 'scripts/validate-short-horizon-human-canon.mjs'
+      - '.github/workflows/v042-short-horizon-human-canon-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Syntax checks
+        run: |
+          node --check src/short-horizon/human-canon-registry.js
+          node --check src/short-horizon/human-canon-engine.js
+          node --check src/short-horizon/signal-contract.js
+          node --check src/short-horizon/prospective-signal-ledger.js
+          node --check scripts/test-short-horizon-human-canon.mjs
+          node --check scripts/test-short-horizon-signal-contract.mjs
+          node --check scripts/validate-short-horizon-human-canon.mjs
+      - name: Human Canon deterministic tests
+        run: |
+          node scripts/test-short-horizon-human-canon.mjs
+          node scripts/test-short-horizon-signal-contract.mjs
+      - name: Human Canon scientific guardrail validation
+        run: node scripts/validate-short-horizon-human-canon.mjs
+      - name: v0.41 FX foundation regression
+        run: |
+          node scripts/test-short-horizon-dukascopy-fx.mjs
+          node scripts/test-short-horizon-fx-archive.mjs
+          node scripts/validate-short-horizon-fx-foundation.mjs
+      - name: v0.40 crypto foundation regression
+        run: |
+          node scripts/test-short-horizon-market-event.mjs
+          node scripts/test-short-horizon-kraken-ohlc.mjs
+          node scripts/test-short-horizon-archive.mjs
+          node scripts/validate-short-horizon-foundation.mjs
+      - name: Legacy v0.39 release guardrail remains intact
+        run: node scripts/validate-v039-release-integrity.mjs
