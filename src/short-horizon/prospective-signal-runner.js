@@ -17,6 +17,14 @@ export function selectProspectiveAnalysisWindow(events, bars = SHORT_HORIZON_PRO
     .slice(-count);
 }
 
+function stableFreshnessEvidence(freshness) {
+  const value = clone(freshness);
+  delete value.observedAtMs;
+  delete value.lagMs;
+  delete value.lagMinutes;
+  return value;
+}
+
 export function buildProspectiveShortHorizonSignal(events, {
   nowMs = Date.now(),
   inputWindowSha256 = null,
@@ -72,7 +80,7 @@ export function buildProspectiveShortHorizonSignal(events, {
     fixedAnalysisWindowBars:Number(analysisWindowBars),
   };
   record.observationContext = {
-    freshness:clone(freshness),
+    freshness:stableFreshnessEvidence(freshness),
   };
   record = attachTimeContextToSignal(record, buildShortHorizonTimeContext(
     latestMarketEvent.sourceTimestampMs,
