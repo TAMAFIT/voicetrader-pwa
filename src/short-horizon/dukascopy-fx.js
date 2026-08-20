@@ -111,6 +111,7 @@ export async function fetchUsdJpyShortHorizon({
   fromMs,
   toMs = Date.now(),
   nowMs = Date.now(),
+  ignoreFlats = true,
   downloader = defaultDownloader,
 } = {}) {
   if (!Number.isFinite(Number(fromMs))) throw new Error('fx-from-ms-required');
@@ -125,7 +126,7 @@ export async function fetchUsdJpyShortHorizon({
     priceType:'bid',
     format:'json',
     volumes:true,
-    ignoreFlats:true,
+    ignoreFlats:Boolean(ignoreFlats),
     batchSize:5,
     pauseBetweenBatchesMs:500,
   });
@@ -144,6 +145,7 @@ export async function fetchUsdJpyShortHorizon({
       sourceTimeframe:'m1',
       derivedTimeframes:['5m'],
       closedCandlesOnly:true,
+      ignoreFlats:Boolean(ignoreFlats),
       liveExecutionFeed:false,
       sessionAware:true,
     },
