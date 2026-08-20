@@ -1,17 +1,18 @@
-name: Short-Horizon Crypto Archive Collector
+name: Short-Horizon FX Archive Collector
 
 on:
   schedule:
-    - cron: '11 * * * *'
+    - cron: '29 * * * *'
   workflow_dispatch:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/short-horizon-fx-collector.yml'
       - '.github/workflows/short-horizon-crypto-collector.yml'
       - 'src/short-horizon/market-event.js'
-      - 'src/short-horizon/kraken-ohlc.js'
+      - 'src/short-horizon/dukascopy-fx.js'
       - 'scripts/lib/short-horizon-archive.mjs'
-      - 'scripts/collect-short-horizon-crypto.mjs'
+      - 'scripts/collect-short-horizon-fx.mjs'
 
 permissions:
   contents: write
@@ -23,7 +24,7 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout collector code
         uses: actions/checkout@v6
@@ -35,6 +36,10 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install pinned Dukascopy public-datafeed adapter dependency
+        shell: bash
+        run: npm install --no-save --package-lock=false --ignore-scripts dukascopy-node@1.50.0
+
       - name: Checkout generated short-horizon data branch
         uses: actions/checkout@v6
         with:
@@ -42,23 +47,23 @@ jobs:
           path: _short_horizon_data
           fetch-depth: 1
 
-      - name: Collect closed Kraken BTC/ETH 1m and 5m candles
+      - name: Collect closed Dukascopy USDJPY 1m and derived 5m candles
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
-        run: node scripts/collect-short-horizon-crypto.mjs --archive-root _short_horizon_data
+        run: node scripts/collect-short-horizon-fx.mjs --archive-root _short_horizon_data
 
-      - name: Commit generated short-horizon data only when changed
+      - name: Commit generated FX data only when changed
         working-directory: _short_horizon_data
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'VoiceTrader Short-Horizon Collector'
+          git config user.name 'VoiceTrader Short-Horizon FX Collector'
           git config user.email 'actions@users.noreply.github.com'
-          git add -- data/short-horizon
+          git add -- data/short-horizon/fx data/short-horizon/fx-manifest.json
           if git diff --cached --quiet; then
-            echo 'No generated short-horizon data change.'
+            echo 'No generated short-horizon FX data change.'
             exit 0
           fi
-          git commit -m 'Update short-horizon crypto archive'
+          git commit -m 'Update short-horizon USDJPY archive'
           git push origin HEAD:short-horizon-data
