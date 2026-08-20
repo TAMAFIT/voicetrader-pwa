@@ -1,0 +1,87 @@
+name: VoiceTrader v0.47 OANDA v20 Hard Read-Only Adapter CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/SHORT_HORIZON_OANDA_READONLY_ADAPTER.md'
+      - 'src/short-horizon/**'
+      - 'scripts/test-oanda-v20-readonly.mjs'
+      - 'scripts/validate-oanda-v20-readonly.mjs'
+      - '.github/workflows/v047-oanda-v20-readonly-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/SHORT_HORIZON_OANDA_READONLY_ADAPTER.md'
+      - 'src/short-horizon/**'
+      - 'scripts/test-oanda-v20-readonly.mjs'
+      - 'scripts/validate-oanda-v20-readonly.mjs'
+      - '.github/workflows/v047-oanda-v20-readonly-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: v0.47 syntax checks
+        run: |
+          node --check src/short-horizon/executable-quote-contract.js
+          node --check src/short-horizon/oanda-v20-readonly.js
+          node --check scripts/test-oanda-v20-readonly.mjs
+          node --check scripts/validate-oanda-v20-readonly.mjs
+
+      - name: v0.47 deterministic read-only adapter tests
+        run: node scripts/test-oanda-v20-readonly.mjs
+
+      - name: v0.47 Secret, method and execution-boundary guardrails
+        run: node scripts/validate-oanda-v20-readonly.mjs
+
+      - name: v0.46 reference deployability regression
+        run: |
+          node scripts/test-short-horizon-deployability.mjs
+          node scripts/validate-short-horizon-deployability.mjs
+
+      - name: v0.45 cost analysis regression
+        run: |
+          node scripts/test-short-horizon-cost-analysis.mjs
+          node scripts/validate-short-horizon-cost-analysis.mjs
+
+      - name: v0.44 prospective outcome regression
+        run: |
+          node scripts/test-short-horizon-outcomes.mjs
+          node scripts/validate-short-horizon-outcomes.mjs
+
+      - name: v0.43 prospective signal regression
+        run: |
+          node scripts/test-short-horizon-prospective-signals.mjs
+          node scripts/validate-short-horizon-prospective-signals.mjs
+
+      - name: v0.42 Human Canon regression
+        run: |
+          node scripts/test-short-horizon-human-canon.mjs
+          node scripts/test-short-horizon-signal-contract.mjs
+          node scripts/validate-short-horizon-human-canon.mjs
+
+      - name: v0.41 FX foundation regression
+        run: |
+          node scripts/test-short-horizon-dukascopy-fx.mjs
+          node scripts/test-short-horizon-fx-archive.mjs
+          node scripts/validate-short-horizon-fx-foundation.mjs
+
+      - name: v0.40 crypto foundation regression
+        run: |
+          node scripts/test-short-horizon-market-event.mjs
+          node scripts/test-short-horizon-kraken-ohlc.mjs
+          node scripts/test-short-horizon-archive.mjs
+          node scripts/validate-short-horizon-foundation.mjs
+
+      - name: Legacy v0.39 release guardrail remains intact
+        run: node scripts/validate-v039-release-integrity.mjs
