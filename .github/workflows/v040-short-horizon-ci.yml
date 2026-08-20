@@ -1,0 +1,52 @@
+name: VoiceTrader v0.40 Short-Horizon Foundation CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/collect-short-horizon-crypto.mjs'
+      - 'scripts/lib/short-horizon-archive.mjs'
+      - 'scripts/test-short-horizon-*.mjs'
+      - 'scripts/validate-short-horizon-foundation.mjs'
+      - '.github/workflows/short-horizon-crypto-collector.yml'
+      - '.github/workflows/v040-short-horizon-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/collect-short-horizon-crypto.mjs'
+      - 'scripts/lib/short-horizon-archive.mjs'
+      - 'scripts/test-short-horizon-*.mjs'
+      - 'scripts/validate-short-horizon-foundation.mjs'
+      - '.github/workflows/short-horizon-crypto-collector.yml'
+      - '.github/workflows/v040-short-horizon-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Syntax checks
+        run: |
+          node --check src/short-horizon/market-event.js
+          node --check src/short-horizon/kraken-ohlc.js
+          node --check scripts/lib/short-horizon-archive.mjs
+          node --check scripts/collect-short-horizon-crypto.mjs
+          node --check scripts/validate-short-horizon-foundation.mjs
+      - name: Short-horizon deterministic tests
+        run: |
+          node scripts/test-short-horizon-market-event.mjs
+          node scripts/test-short-horizon-kraken-ohlc.mjs
+          node scripts/test-short-horizon-archive.mjs
+      - name: Architecture and guardrail validation
+        run: node scripts/validate-short-horizon-foundation.mjs
