@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-deployability-manifest-v1",
   "archiveVersion": "short-horizon-deployability-archive-v1",
-  "updatedAtMs": 1787247756623,
+  "updatedAtMs": 1787252202600,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-deployability-data",
@@ -57,10 +57,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 24,
+    "recordCount": 28,
     "fileCount": 2,
     "duplicateAssessmentIdCount": 0,
-    "contentSha256": "56218d6d70d6f14f30e15ef6f4adad98fa66428ee44bde09aa629eeca8cace5b",
+    "contentSha256": "a52bd2cd52f3ca7e1b0d7c183823f8c54662f72d823423da7118ac35d9253989",
     "groups": [
       {
         "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -157,6 +157,38 @@
         "firstTargetCloseTimestampMs": 1787235000000,
         "lastTargetCloseTimestampMs": 1787235000000,
         "contentSha256": "9b5c558b291c1bd4ba39a53af948686fd9159827be0a3ade514f6d583db0b7d7"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-NEW_YORK-COMPRESSION",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "NEW_YORK",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.5031,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787245440000,
+        "lastTargetCloseTimestampMs": 1787245440000,
+        "contentSha256": "297e9069337ce4d4ca33ece1c0be7553076c0bff7a5bf1ddca0cd9f547240d14"
       },
       {
         "id": "USDJPY-1m-primary-5m-NEW_YORK-TREND",
@@ -287,6 +319,38 @@
         "contentSha256": "860e66f58a0b0e0c80750ec1194f249bb714815e35254ea93db2861b7aae0042"
       },
       {
+        "id": "USDJPY-1m-secondary-15m-NEW_YORK-COMPRESSION",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "NEW_YORK",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.5031,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787246040000,
+        "lastTargetCloseTimestampMs": 1787246040000,
+        "contentSha256": "89854a4fd0d42aec075017511091c73ed1462389f034f1bcb6b357acc4dd57a2"
+      },
+      {
         "id": "USDJPY-1m-secondary-15m-NEW_YORK-TREND",
         "providerId": "oanda-japan-ny-pro-rest-v1",
         "assetClass": "fx",
@@ -393,14 +457,14 @@
         "horizonMinutes": 15,
         "primarySession": "NEW_YORK",
         "regime": "TREND",
-        "recordCount": 1,
-        "directionalCount": 1,
+        "recordCount": 2,
+        "directionalCount": 2,
         "waitCount": 0,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.503192,
+          "meanPublishedReferenceSpreadCostBps": 0.503107,
           "directionalPublishedSpreadWithinBreakEvenCount": 1,
-          "directionalPublishedSpreadWithinBreakEvenRate": 1,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 4.277133,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0.5,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 1.887056,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -411,8 +475,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787244000000,
-        "lastTargetCloseTimestampMs": 1787244000000,
-        "contentSha256": "5a26ce2a0ff4b5a9bc7846987c294595bd3818eb39a597d0e2767799f252bd24"
+        "lastTargetCloseTimestampMs": 1787245800000,
+        "contentSha256": "305735201ce75a852e798e53227eda6bbbde8e477e18fff737d1e2561984c98e"
       },
       {
         "id": "USDJPY-5m-secondary-30m-LONDON_NEW_YORK_OVERLAP-TREND",
@@ -489,14 +553,14 @@
         "horizonMinutes": 30,
         "primarySession": "NEW_YORK",
         "regime": "TREND",
-        "recordCount": 1,
-        "directionalCount": 1,
+        "recordCount": 2,
+        "directionalCount": 2,
         "waitCount": 0,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.503192,
-          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "meanPublishedReferenceSpreadCostBps": 0.503107,
+          "directionalPublishedSpreadWithinBreakEvenCount": 2,
           "directionalPublishedSpreadWithinBreakEvenRate": 1,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 2.893355,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 1.66675,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -507,30 +571,30 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787244900000,
-        "lastTargetCloseTimestampMs": 1787244900000,
-        "contentSha256": "8d995dbccd122707e984d770d31c8914f2818bd313d15ec6529164db1c3539dc"
+        "lastTargetCloseTimestampMs": 1787246700000,
+        "contentSha256": "4d1f126ab5c27e039ee384c84f56b8a0c1ffa304fd5a2868c5b52e8728a9788e"
       }
     ]
   },
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-deployability-collector-v1",
-    "startedAtMs": 1787247756536,
-    "finishedAtMs": 1787247756621,
-    "durationMs": 85,
+    "startedAtMs": 1787252202572,
+    "finishedAtMs": 1787252202596,
+    "durationMs": 24,
     "cadenceMinutes": 60,
-    "githubRunId": "32399090836",
+    "githubRunId": "32405946349",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 86,
-      "costAnalysesRead": 72,
-      "eligibleUsdJpyCostAnalyses": 24,
-      "excludedNonUsdJpyCostAnalyses": 48,
-      "existingAssessments": 15,
-      "newAssessments": 9,
-      "newDirectionalAssessments": 6,
-      "newWaitAssessments": 3,
-      "archiveAdded": 9,
+      "outcomesRead": 98,
+      "costAnalysesRead": 86,
+      "eligibleUsdJpyCostAnalyses": 28,
+      "excludedNonUsdJpyCostAnalyses": 58,
+      "existingAssessments": 24,
+      "newAssessments": 4,
+      "newDirectionalAssessments": 2,
+      "newWaitAssessments": 2,
+      "archiveAdded": 4,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 2
     }
