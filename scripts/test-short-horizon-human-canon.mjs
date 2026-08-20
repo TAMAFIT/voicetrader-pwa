@@ -11,6 +11,7 @@ function makeSeries({ direction = 1, flat = false, gapAt = null, instrument='BTC
     if (gapAt === index) extraGap += 5 * 60_000;
     const close = flat ? 100 : 100 + direction * index * 0.1;
     const open = flat ? close : close - direction * 0.03;
+    const wick = flat ? 0.05 : index < 100 ? 0.4 : 0.05;
     return buildClosedOhlcMarketEvent({
       assetClass,
       instrument,
@@ -19,8 +20,8 @@ function makeSeries({ direction = 1, flat = false, gapAt = null, instrument='BTC
       sourceTimestampMs:BASE + index * 60_000 + extraGap,
       receivedTimestampMs:BASE + index * 60_000 + extraGap + 61_000,
       open,
-      high:Math.max(open, close) + 0.05,
-      low:Math.min(open, close) - 0.05,
+      high:Math.max(open, close) + wick,
+      low:Math.min(open, close) - wick,
       close,
       volume:100 + index * 2,
       trades:20 + index,
@@ -46,6 +47,7 @@ assert.ok(up.aggregation.familyAgreement >= 0.6);
 assert.equal(up.intendedHorizonMinutes, 5);
 
 const down = analyzeShortHorizonHumanCanon(makeSeries({ direction:-1 }));
+assert.equal(down.context.riskGate, 'OPEN');
 assert.equal(down.signal, 'SHORT');
 assert.ok(down.aggregation.compositeScore <= -25);
 
