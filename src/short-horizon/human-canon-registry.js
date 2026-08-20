@@ -61,7 +61,7 @@ export const SHORT_HORIZON_HUMAN_CANON_REGISTRY = frozen({
     compressionPercentile:20,
     volatilePercentile:85,
     cautionVolatilityPercentile:90,
-    blockVolatilityPercentile:97,
+    extremeVolatilityPercentile:97,
     recentContinuityBars:34,
   }),
   families: frozen([
