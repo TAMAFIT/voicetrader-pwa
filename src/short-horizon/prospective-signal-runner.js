@@ -4,15 +4,26 @@ import { buildShortHorizonSignalRecord, validateShortHorizonSignalRecord } from 
 import { attachTimeContextToSignal, buildShortHorizonTimeContext } from './session-context.js';
 
 export const SHORT_HORIZON_PROSPECTIVE_SIGNAL_RUNNER_VERSION = 'short-horizon-prospective-signal-runner-v1';
+export const SHORT_HORIZON_PROSPECTIVE_ANALYSIS_WINDOW_BARS = 160;
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
+
+export function selectProspectiveAnalysisWindow(events, bars = SHORT_HORIZON_PROSPECTIVE_ANALYSIS_WINDOW_BARS) {
+  if (!Array.isArray(events)) throw new Error('short-horizon-prospective-events-required');
+  const count = Number(bars);
+  if (!Number.isInteger(count) || count < 120) throw new Error('short-horizon-prospective-window-invalid');
+  return [...events]
+    .sort((a, b) => Number(a.sourceTimestampMs) - Number(b.sourceTimestampMs))
+    .slice(-count);
+}
 
 export function buildProspectiveShortHorizonSignal(events, {
   nowMs = Date.now(),
   inputWindowSha256 = null,
   dataManifestSha256 = null,
   providerFetchMode = 'direct-current-provider-fetch-v1',
-  minimumHistoryBars = 120,
+  minimumHistoryBars = SHORT_HORIZON_PROSPECTIVE_ANALYSIS_WINDOW_BARS,
+  analysisWindowBars = SHORT_HORIZON_PROSPECTIVE_ANALYSIS_WINDOW_BARS,
   maxLagMinutes = null,
 } = {}) {
   const freshness = assessShortHorizonFreshness(events, {
@@ -31,10 +42,19 @@ export function buildProspectiveShortHorizonSignal(events, {
     };
   }
 
-  const analysis = analyzeShortHorizonHumanCanon(events);
-  const latestMarketEvent = [...events]
-    .sort((a, b) => Number(a.sourceTimestampMs) - Number(b.sourceTimestampMs))
-    .at(-1);
+  const analysisEvents = selectProspectiveAnalysisWindow(events, analysisWindowBars);
+  if (analysisEvents.length < analysisWindowBars) {
+    return {
+      version:SHORT_HORIZON_PROSPECTIVE_SIGNAL_RUNNER_VERSION,
+      status:'SKIPPED',
+      reason:'fixed-analysis-window-not-available',
+      freshness:{ ...freshness, fresh:false, status:'INSUFFICIENT_HISTORY' },
+      record:null,
+    };
+  }
+
+  const analysis = analyzeShortHorizonHumanCanon(analysisEvents);
+  const latestMarketEvent = analysisEvents.at(-1);
 
   let record = buildShortHorizonSignalRecord({
     analysis,
@@ -49,6 +69,7 @@ export function buildProspectiveShortHorizonSignal(events, {
     inputWindowSha256:inputWindowSha256 || null,
     providerFetchMode,
     runnerVersion:SHORT_HORIZON_PROSPECTIVE_SIGNAL_RUNNER_VERSION,
+    fixedAnalysisWindowBars:Number(analysisWindowBars),
   };
   record.observationContext = {
     freshness:clone(freshness),
@@ -65,6 +86,7 @@ export function buildProspectiveShortHorizonSignal(events, {
     reason:null,
     freshness,
     analysis,
+    analysisEvents,
     record,
   };
 }
