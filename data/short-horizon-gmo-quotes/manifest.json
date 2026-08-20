@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "gmo-fx-quote-manifest-v1",
+  "archiveVersion": "gmo-fx-quote-archive-v1",
+  "updatedAtMs": 1787238020571,
+  "storage": {
+    "kind": "github-generated-data-branch",
+    "branch": "short-horizon-gmo-quote-data",
+    "format": "ndjson-daily-utc"
+  },
+  "scope": {
+    "providerId": "gmo-coin-fx-public-v1",
+    "instrument": "USDJPY",
+    "providerInstrument": "USD_JPY",
+    "sampleCadenceMinutes": 5,
+    "continuousCapture": false
+  },
+  "archive": {
+    "recordCount": 1,
+    "fileCount": 1,
+    "duplicateQuoteIdCount": 0,
+    "openQuoteCount": 1,
+    "firstSourceTimestampMs": 1787238020495,
+    "lastSourceTimestampMs": 1787238020495,
+    "meanObservedSpreadBps": 0.315043,
+    "contentSha256": "da39c0a72ce31fae844486e30985365c5a5404c168a55b5636d1b2749d6334a4"
+  },
+  "lastRun": {
+    "status": "success",
+    "collectorVersion": "gmo-fx-public-quote-collector-v1",
+    "startedAtMs": 1787238019447,
+    "finishedAtMs": 1787238020570,
+    "durationMs": 1123,
+    "cadenceMinutes": 5,
+    "githubRunId": "32383509223",
+    "githubRunAttempt": "1",
+    "captured": {
+      "quoteId": "gmo-coin-fx-public-v1|USD_JPY|1787238020495",
+      "sourceTimestampMs": 1787238020495,
+      "receivedTimestampMs": 1787238020568,
+      "marketStatus": "OPEN",
+      "bid": 158.706,
+      "ask": 158.711,
+      "spreadBps": 0.315043
+    },
+    "merge": {
+      "fetched": 1,
+      "added": 1,
+      "duplicates": 0,
+      "filesTouched": 1
+    }
+  },
+  "guardrails": {
+    "authenticationRequired": false,
+    "accountSpecificPricing": false,
+    "fillObserved": false,
+    "executionAuthorized": false,
+    "realMoneyRouting": false,
+    "orderSubmission": false,
+    "generatedDataOnly": true
+  }
+}
