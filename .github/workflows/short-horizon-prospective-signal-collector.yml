@@ -1,0 +1,86 @@
+name: Short-Horizon Prospective Signal Collector
+
+on:
+  schedule:
+    - cron: '2,17,32,47 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/short-horizon-prospective-signal-collector.yml'
+      - 'src/short-horizon/market-event.js'
+      - 'src/short-horizon/kraken-ohlc.js'
+      - 'src/short-horizon/dukascopy-fx.js'
+      - 'src/short-horizon/human-canon-registry.js'
+      - 'src/short-horizon/human-canon-engine.js'
+      - 'src/short-horizon/signal-contract.js'
+      - 'src/short-horizon/prospective-signal-ledger.js'
+      - 'src/short-horizon/session-context.js'
+      - 'src/short-horizon/freshness-gate.js'
+      - 'src/short-horizon/prospective-signal-runner.js'
+      - 'scripts/lib/short-horizon-signal-archive.mjs'
+      - 'scripts/collect-short-horizon-signals.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: short-horizon-signal-data-writer
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout collector code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install pinned Dukascopy public-datafeed adapter dependency
+        shell: bash
+        run: npm install --no-save --package-lock=false --ignore-scripts dukascopy-node@1.50.0
+
+      - name: Checkout generated prospective signal branch
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-signal-data
+          path: _short_horizon_signal_data
+          fetch-depth: 1
+
+      - name: Generate current prospective Human Canon signals
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: node scripts/collect-short-horizon-signals.mjs --archive-root _short_horizon_signal_data
+
+      - name: Commit generated prospective signal evidence when changed
+        working-directory: _short_horizon_signal_data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader Prospective Signal Collector'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/short-horizon-signals
+          if git diff --cached --quiet; then
+            echo 'No prospective signal evidence change.'
+            exit 0
+          fi
+          git commit -m 'Update short-horizon prospective signals'
+          git push origin HEAD:short-horizon-signal-data
+
+      - name: Surface total provider failure after preserving health evidence
+        shell: bash
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('_short_horizon_signal_data/data/short-horizon-signals/manifest.json', 'utf8'));
+          console.log(JSON.stringify(manifest.lastRun, null, 2));
+          if (manifest.lastRun?.status === 'fail') process.exit(1);
+          NODE
