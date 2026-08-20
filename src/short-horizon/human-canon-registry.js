@@ -18,6 +18,7 @@ export const SHORT_HORIZON_HUMAN_CANON_REGISTRY = frozen({
     automaticPromotion: false,
     equalFamilyWeight: true,
     correlatedRuleCountDoesNotIncreaseFamilyWeight: true,
+    volatilityIsContextNotDirectionalAlpha: true,
     executionAuthorized: false,
   }),
   horizons: frozen({
@@ -61,7 +62,7 @@ export const SHORT_HORIZON_HUMAN_CANON_REGISTRY = frozen({
     compressionPercentile:20,
     volatilePercentile:85,
     cautionVolatilityPercentile:90,
-    extremeVolatilityPercentile:97,
+    blockVolatilityPercentile:101,
     recentContinuityBars:34,
   }),
   families: frozen([
