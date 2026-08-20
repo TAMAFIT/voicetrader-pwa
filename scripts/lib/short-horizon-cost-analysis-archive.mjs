@@ -146,7 +146,11 @@ export function readCostAnalysisRecords(rootDir) {
 }
 
 function finite(values) {
-  return values.map(Number).filter(Number.isFinite).sort((a, b) => a - b);
+  return values
+    .filter((value) => value !== null && value !== undefined && value !== '')
+    .map(Number)
+    .filter(Number.isFinite)
+    .sort((a, b) => a - b);
 }
 
 function mean(values) {
