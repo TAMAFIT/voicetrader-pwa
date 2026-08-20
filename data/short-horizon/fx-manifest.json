@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "short-horizon-manifest-v1",
+  "archiveVersion": "short-horizon-archive-v1",
+  "updatedAtMs": 1787228983807,
+  "storage": {
+    "kind": "github-generated-data-branch",
+    "branch": "short-horizon-data",
+    "format": "ndjson-daily-utc",
+    "futureLocalMigrationSupported": true
+  },
+  "source": {
+    "provider": "Dukascopy public datafeed via dukascopy-node",
+    "instrument": "USDJPY",
+    "priceType": "bid",
+    "sourceTimeframe": "m1",
+    "derivedTimeframes": [
+      "5m"
+    ],
+    "closedCandlesOnly": true,
+    "liveExecutionFeed": false,
+    "sessionAware": true,
+    "packageVersion": "1.50.0",
+    "collectionMode": "hourly-72h-overlap-catchup",
+    "continuityAssessment": "session-aware-not-24x7"
+  },
+  "streams": [
+    {
+      "id": "USDJPY-1m",
+      "assetClass": "fx",
+      "instrument": "USDJPY",
+      "venue": "dukascopy",
+      "timeframeMinutes": 1,
+      "continuityMode": "sessioned",
+      "recordCount": 4310,
+      "fileCount": 4,
+      "firstSourceTimestampMs": 1786969800000,
+      "lastSourceTimestampMs": 1787228880000,
+      "gapCount": null,
+      "missingBars": null,
+      "rawGapCount": 7,
+      "largestGapMinutes": 4,
+      "duplicateKeyCount": 0,
+      "contentSha256": "b9ee99aea0ec632175f3f8ff6b2c81dbf53b45dd74c4b354c6341c49ae418a05"
+    },
+    {
+      "id": "USDJPY-5m",
+      "assetClass": "fx",
+      "instrument": "USDJPY",
+      "venue": "dukascopy",
+      "timeframeMinutes": 5,
+      "continuityMode": "sessioned",
+      "recordCount": 856,
+      "fileCount": 4,
+      "firstSourceTimestampMs": 1786969800000,
+      "lastSourceTimestampMs": 1787228400000,
+      "gapCount": null,
+      "missingBars": null,
+      "rawGapCount": 7,
+      "largestGapMinutes": 10,
+      "duplicateKeyCount": 0,
+      "contentSha256": "3191f5d853d6a5358dce50f8b95ef4622bf77924196fbb18d9a97276a1507c43"
+    }
+  ],
+  "lastRun": {
+    "status": "success",
+    "collectorVersion": "short-horizon-fx-collector-v1",
+    "providerVersion": "short-horizon-dukascopy-fx-v1",
+    "startedAtMs": 1787228983146,
+    "finishedAtMs": 1787228983772,
+    "durationMs": 626,
+    "lookbackHours": 72,
+    "githubRunId": "32369095175",
+    "githubRunAttempt": "1",
+    "aggregate": {
+      "fetched": 5166,
+      "added": 5166,
+      "duplicates": 0,
+      "conflicts": 0,
+      "filesTouched": 8
+    },
+    "streams": [
+      {
+        "id": "USDJPY-1m",
+        "fetched": 4310,
+        "firstSourceTimestampMs": 1786969800000,
+        "lastSourceTimestampMs": 1787228880000,
+        "added": 4310,
+        "duplicates": 0,
+        "filesTouched": 4
+      },
+      {
+        "id": "USDJPY-5m",
+        "fetched": 856,
+        "firstSourceTimestampMs": 1786969800000,
+        "lastSourceTimestampMs": 1787228400000,
+        "added": 856,
+        "duplicates": 0,
+        "filesTouched": 4
+      }
+    ]
+  },
+  "guardrails": {
+    "realMoneyRouting": false,
+    "orderSubmission": false,
+    "legacyResearchMutation": false,
+    "generatedDataOnly": true
+  }
+}
