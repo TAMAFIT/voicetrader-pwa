@@ -12,6 +12,13 @@ const stable = (value) => {
 };
 const canonical = (value) => JSON.stringify(stable(value));
 
+function immutableDecisionView(record) {
+  const value = clone(record);
+  delete value.generatedAtMs;
+  if (value.market) delete value.market.sourceReceivedTimestampMs;
+  return value;
+}
+
 export function emptyShortHorizonSignalLedger() {
   return {
     schemaVersion:SHORT_HORIZON_SIGNAL_LEDGER_VERSION,
@@ -20,6 +27,8 @@ export function emptyShortHorizonSignalLedger() {
     methodology:{
       prospectiveOnly:true,
       immutableDecisionRecords:true,
+      firstObservationMetadataRetained:true,
+      retryObservationMetadataIgnoredForDuplicateCheck:true,
       futureOutcomeStoredSeparately:true,
       futureOutcomeUsed:false,
       executionAuthorized:false,
@@ -55,7 +64,9 @@ export function mergeProspectiveShortHorizonSignals(existing, incoming, { update
       added += 1;
       continue;
     }
-    if (canonical(prior) !== canonical(record)) throw new Error(`short-horizon-signal-immutability-conflict:${record.signalId}`);
+    if (canonical(immutableDecisionView(prior)) !== canonical(immutableDecisionView(record))) {
+      throw new Error(`short-horizon-signal-immutability-conflict:${record.signalId}`);
+    }
     duplicates += 1;
   }
 
