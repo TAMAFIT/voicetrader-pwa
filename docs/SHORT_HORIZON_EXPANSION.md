@@ -113,7 +113,7 @@ Governance is explicit:
 - `scoreIsExpectedReturn:false`
 - `executionAuthorized:false`
 
-Signals default to `WAIT`. LONG/SHORT requires a minimum composite score, at least three meaningful directional families, sufficient family agreement, and an open/non-blocked risk gate. Recent data discontinuity or extreme volatility blocks entry rather than synthesizing missing information.
+Signals default to `WAIT`. LONG/SHORT requires a minimum composite score, at least three meaningful directional families, sufficient family agreement, and a non-blocked risk gate. Recent data discontinuity is a hard block. Volatility is intentionally contextual in v0.42: high/extreme relative volatility produces `CAUTION` rather than becoming an arbitrary directional-alpha veto before prospective evidence exists.
 
 Initial intended horizons are preregistered in bar-independent clock time:
 
