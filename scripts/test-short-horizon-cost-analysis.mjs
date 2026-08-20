@@ -102,7 +102,7 @@ try {
   assert.equal(duplicate.duplicates, 1);
 
   const conflict = JSON.parse(JSON.stringify(win));
-  conflict.costEnvelope.breakEvenRoundTripCostBps = 999;
+  conflict.provenance.outcomeRecordSha256 = 'different-valid-source-hash';
   assert.throws(() => mergeCostAnalysesIntoArchive({ rootDir:root, records:[conflict] }), /immutability-conflict/);
 
   const inspected = inspectCostAnalysisArchive(root);
