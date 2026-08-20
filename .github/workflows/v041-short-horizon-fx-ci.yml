@@ -1,0 +1,62 @@
+name: VoiceTrader v0.41 Short-Horizon FX Foundation CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/collect-short-horizon-fx.mjs'
+      - 'scripts/lib/short-horizon-archive.mjs'
+      - 'scripts/test-short-horizon-*.mjs'
+      - 'scripts/validate-short-horizon-fx-foundation.mjs'
+      - '.github/workflows/short-horizon-fx-collector.yml'
+      - '.github/workflows/short-horizon-crypto-collector.yml'
+      - '.github/workflows/v041-short-horizon-fx-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/SHORT_HORIZON_EXPANSION.md'
+      - 'src/short-horizon/**'
+      - 'scripts/collect-short-horizon-fx.mjs'
+      - 'scripts/lib/short-horizon-archive.mjs'
+      - 'scripts/test-short-horizon-*.mjs'
+      - 'scripts/validate-short-horizon-fx-foundation.mjs'
+      - '.github/workflows/short-horizon-fx-collector.yml'
+      - '.github/workflows/short-horizon-crypto-collector.yml'
+      - '.github/workflows/v041-short-horizon-fx-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Syntax checks
+        run: |
+          node --check src/short-horizon/dukascopy-fx.js
+          node --check scripts/lib/short-horizon-archive.mjs
+          node --check scripts/collect-short-horizon-fx.mjs
+          node --check scripts/test-short-horizon-dukascopy-fx.mjs
+          node --check scripts/test-short-horizon-fx-archive.mjs
+          node --check scripts/validate-short-horizon-fx-foundation.mjs
+      - name: Existing short-horizon regression tests
+        run: |
+          node scripts/test-short-horizon-market-event.mjs
+          node scripts/test-short-horizon-kraken-ohlc.mjs
+          node scripts/test-short-horizon-archive.mjs
+          node scripts/validate-short-horizon-foundation.mjs
+      - name: FX deterministic tests
+        run: |
+          node scripts/test-short-horizon-dukascopy-fx.mjs
+          node scripts/test-short-horizon-fx-archive.mjs
+      - name: FX architecture and guardrail validation
+        run: node scripts/validate-short-horizon-fx-foundation.mjs
+      - name: Legacy v0.39 release guardrail remains intact
+        run: node scripts/validate-v039-release-integrity.mjs
