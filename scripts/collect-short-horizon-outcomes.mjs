@@ -74,10 +74,18 @@ function streamKey({ instrument, timeframeMinutes }) {
   return `${instrument}-${Number(timeframeMinutes)}m`;
 }
 
-function outcomeIdFor(signalRecord, horizonKind) {
-  const horizonMinutes = horizonKind === 'primary'
+function horizonMinutesFor(signalRecord, horizonKind) {
+  return horizonKind === 'primary'
     ? Number(signalRecord.decision.intendedHorizonMinutes)
     : Number(signalRecord.decision.secondaryHorizonMinutes);
+}
+
+function targetCloseFor(signalRecord, horizonKind) {
+  return Number(signalRecord.decisionBarCloseTimestampMs) + horizonMinutesFor(signalRecord, horizonKind) * 60_000;
+}
+
+function outcomeIdFor(signalRecord, horizonKind) {
+  const horizonMinutes = horizonMinutesFor(signalRecord, horizonKind);
   return `${signalRecord.signalId}|${horizonKind}|${horizonMinutes}m`;
 }
 
@@ -150,24 +158,44 @@ async function main() {
   const existingOutcomeArchive = readOutcomeArchiveRecords(outcomeRoot);
   const completedOutcomeIds = new Set(existingOutcomeArchive.records.map((record) => record.outcomeId));
 
-  const work = [];
+  const incompleteWork = [];
   for (const signalRecord of signalArchive.records) {
     for (const horizonKind of HORIZON_KINDS) {
       const outcomeId = outcomeIdFor(signalRecord, horizonKind);
-      if (!completedOutcomeIds.has(outcomeId)) work.push({ signalRecord, horizonKind, outcomeId });
+      if (!completedOutcomeIds.has(outcomeId)) incompleteWork.push({ signalRecord, horizonKind, outcomeId });
     }
   }
 
-  const requiredKeys = new Set(work.map(({ signalRecord }) => streamKey(signalRecord.market)));
+  const evaluationHealth = [];
+  const eligibleWork = [];
+  let pendingTime = 0;
+  for (const item of incompleteWork) {
+    const targetCloseTimestampMs = targetCloseFor(item.signalRecord, item.horizonKind);
+    if (nowMs < targetCloseTimestampMs) {
+      pendingTime += 1;
+      evaluationHealth.push({
+        outcomeId:item.outcomeId,
+        signalId:item.signalRecord.signalId,
+        streamId:streamKey(item.signalRecord.market),
+        horizonKind:item.horizonKind,
+        horizonMinutes:horizonMinutesFor(item.signalRecord, item.horizonKind),
+        status:'PENDING_TIME',
+        targetCloseTimestampMs,
+        remainingMs:targetCloseTimestampMs - nowMs,
+      });
+    } else {
+      eligibleWork.push(item);
+    }
+  }
+
+  const requiredKeys = new Set(eligibleWork.map(({ signalRecord }) => streamKey(signalRecord.market)));
   const { windows, providerHealth } = await fetchProviderWindows(nowMs, requiredKeys);
   const maturedRecords = [];
-  const evaluationHealth = [];
-  let pendingTime = 0;
   let missingData = 0;
   let providerUnavailable = 0;
   let matured = 0;
 
-  for (const item of work) {
+  for (const item of eligibleWork) {
     const key = streamKey(item.signalRecord.market);
     const events = windows.get(key);
     if (!events) {
@@ -177,7 +205,9 @@ async function main() {
         signalId:item.signalRecord.signalId,
         streamId:key,
         horizonKind:item.horizonKind,
+        horizonMinutes:horizonMinutesFor(item.signalRecord, item.horizonKind),
         status:'PROVIDER_UNAVAILABLE',
+        targetCloseTimestampMs:targetCloseFor(item.signalRecord, item.horizonKind),
       });
       continue;
     }
@@ -190,20 +220,6 @@ async function main() {
       signalRecordSha256:signalSha256(item.signalRecord),
     });
 
-    if (result.status === 'PENDING_TIME') {
-      pendingTime += 1;
-      evaluationHealth.push({
-        outcomeId:item.outcomeId,
-        signalId:item.signalRecord.signalId,
-        streamId:key,
-        horizonKind:item.horizonKind,
-        horizonMinutes:result.horizonMinutes,
-        status:result.status,
-        targetCloseTimestampMs:result.targetCloseTimestampMs,
-        remainingMs:result.remainingMs,
-      });
-      continue;
-    }
     if (result.status === 'MISSING_DATA') {
       missingData += 1;
       evaluationHealth.push({
@@ -218,6 +234,7 @@ async function main() {
       });
       continue;
     }
+    if (result.status !== 'MATURED') throw new Error(`unexpected-outcome-status:${result.status}`);
 
     result.record.provenance.futureWindowSha256 = futureWindowSha256(result.futureEvents);
     validateShortHorizonOutcomeRecord(result.record);
@@ -238,7 +255,12 @@ async function main() {
 
   const mergeSummary = mergeOutcomesIntoArchive({ rootDir:outcomeRoot, records:maturedRecords });
   const providerFailures = providerHealth.filter((item) => item.status === 'FAILED').length;
-  const status = providerFailures > 0 || providerUnavailable > 0 || missingData > 0 ? 'warning' : 'success';
+  const totalEligibleUnavailable = eligibleWork.length > 0 && providerUnavailable === eligibleWork.length;
+  const status = totalEligibleUnavailable
+    ? 'fail'
+    : providerFailures > 0 || providerUnavailable > 0 || missingData > 0
+      ? 'warning'
+      : 'success';
   const finishedAtMs = Date.now();
   const lastRun = {
     status,
@@ -253,7 +275,8 @@ async function main() {
     aggregate:{
       signalsRead:signalArchive.records.length,
       existingOutcomes:existingOutcomeArchive.records.length,
-      incompleteHorizonsAtStart:work.length,
+      incompleteHorizonsAtStart:incompleteWork.length,
+      eligibleHorizons:eligibleWork.length,
       matured,
       pendingTime,
       missingData,
