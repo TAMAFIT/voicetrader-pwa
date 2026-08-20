@@ -62,6 +62,15 @@ const duplicate = mergeProspectiveShortHorizonSignals(first.ledger, [prospective
 assert.equal(duplicate.summary.duplicates, 1);
 assert.equal(duplicate.ledger.records.length, 1);
 
+const retryObservation = JSON.parse(JSON.stringify(prospective));
+retryObservation.generatedAtMs += 5000;
+retryObservation.market.sourceReceivedTimestampMs += 5000;
+const retry = mergeProspectiveShortHorizonSignals(first.ledger, [retryObservation], { updatedAtMs:closeAt + 7000 });
+assert.equal(retry.summary.duplicates, 1);
+assert.equal(retry.ledger.records.length, 1);
+assert.equal(retry.ledger.records[0].generatedAtMs, prospective.generatedAtMs);
+assert.equal(retry.ledger.records[0].market.sourceReceivedTimestampMs, prospective.market.sourceReceivedTimestampMs);
+
 const conflict = JSON.parse(JSON.stringify(prospective));
 conflict.decision.signal = prospective.decision.signal === 'LONG' ? 'WAIT' : 'LONG';
 assert.throws(() => mergeProspectiveShortHorizonSignals(first.ledger, [conflict]), /immutability-conflict/);
