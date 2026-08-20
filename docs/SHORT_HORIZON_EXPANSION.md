@@ -1,12 +1,12 @@
 # VoiceTrader Short-Horizon Expansion Contract
 
-Status: v0.41 FX data foundation
+Status: v0.42 Human Canon / Signal foundation
 
 ## Goal
 
 Add a short-horizon research wing to VoiceTrader without changing the semantics, data, evaluators, or generated branches of the existing v0.39 4H research system.
 
-The current delivery is data collection only. It does not authorize or implement real-money order routing.
+The current delivery adds a frozen research signal benchmark. It does not authorize or implement real-money order routing.
 
 ## Non-breaking boundary
 
@@ -18,15 +18,7 @@ Protected legacy surfaces remain unchanged:
 - existing Champion/Challenger, Prospective Evidence, Experience, model-readiness and history-audit contracts
 - existing legacy generated data branches
 
-New short-horizon work lives under:
-
-- `src/short-horizon/`
-- `scripts/collect-short-horizon-*.mjs`
-- `scripts/lib/short-horizon-*.mjs`
-- `.github/workflows/short-horizon-*.yml`
-- generated branch `short-horizon-data`
-
-Removing those new surfaces must leave legacy VoiceTrader behavior intact.
+New short-horizon work lives under `src/short-horizon/`, `scripts/collect-short-horizon-*.mjs`, `scripts/lib/short-horizon-*.mjs`, `.github/workflows/short-horizon-*.yml`, and generated short-horizon data/evidence domains. Removing those surfaces must leave legacy VoiceTrader behavior intact.
 
 ## Architecture discovery disposition
 
@@ -34,129 +26,130 @@ Removing those new surfaces must leave legacy VoiceTrader behavior intact.
 
 - generated-data-branch pattern already used by existing VoiceTrader forward collectors
 - closed-candle-only market-data discipline
-- gap/conflict health semantics and immutable research posture
+- immutable prospective evidence and fail-closed conflict philosophy
+- timeframe-neutral indicator primitives from `src/knowledge/knowledge-indicators.js`
 - branch -> tests -> PR -> exact-head CI -> merge governance
 
 ### ADAPT
 
-- Kraken public OHLC feed from the existing 4H usage to BTC/USD and ETH/USD 1m/5m streams
-- Dukascopy public historical/datafeed source for USD/JPY 1m research archiving
-- normalized event identity using venue + instrument + timeframe + source timestamp
-- batch catch-up collection suitable for GitHub Actions
-- archive routing by asset class while preserving the existing crypto paths
+- Kraken public OHLC to BTC/USD and ETH/USD 1m/5m
+- Dukascopy public BID M1 source to USD/JPY 1m plus deterministic 5m aggregation
+- normalized MarketEvent identity
+- archive routing and session-aware FX continuity
+- textbook/canonical technical concepts into a separately frozen short-horizon benchmark
 
 ### BUILD
 
-- isolated short-horizon MarketEvent contract
-- daily UTC NDJSON archive layout
-- deterministic deduplication and fail-closed OHLCV conflict detection
-- per-domain archive manifests with counts, continuity diagnostics, hashes and collector provenance
-- session-aware continuity semantics for FX so ordinary market closures are not mislabeled as missing 24/7 bars
-- shared single-writer concurrency for the generated short-horizon data branch
+- isolated MarketEvent contract and daily NDJSON archive
+- short-horizon Human Canon Registry and engine
+- explicit LONG / SHORT / WAIT research signal contract
+- prospective immutable signal ledger whose outcomes are stored separately
 
 ### DEFER
 
+- scheduled prospective signal collection and outcome maturation
 - broker-specific live FX quote adapter for human/demo signaling
-- live signal console and Human Canon short-horizon engine
-- tick/orderbook/WebSocket persistence
+- live PWA signal console
+- tick/orderbook/WebSocket persistence and microstructure lab
 - local 24h PC collector/storage migration
 - order submission or real-money execution
 
-## MarketEvent v1
+## MarketEvent v1 and active data streams
 
-Short-horizon OHLC records use epoch milliseconds for both market/source time and collector receive time. This avoids mixing seconds and milliseconds and preserves the information required for later latency/lead-lag analysis.
+Market events use epoch milliseconds for both market/source time and collector receive time. Repeated retrieval of identical economic/source fields is a duplicate; changed OHLCV for the same event key is a conflict and fails closed.
 
-A closed OHLC event contains:
-
-- schema/event version
-- asset class, instrument, venue
-- timeframe in minutes
-- `sourceTimestampMs`
-- `receivedTimestampMs`
-- OHLC, volume, trade count
-- source/provider id
-- explicit closed/data-quality state
-
-Repeated retrieval of the same candle is a duplicate when economic/source fields are identical. A changed OHLCV payload for the same event key is a conflict and the collector fails rather than silently rewriting prior data.
-
-## Active crypto streams
+Active crypto streams:
 
 - BTCUSD 1m — Kraken spot
 - BTCUSD 5m — Kraken spot
 - ETHUSD 1m — Kraken spot
 - ETHUSD 5m — Kraken spot
 
-Only candles closed at collection time are accepted. Kraken OHLC requests expose a bounded recent window, so scheduled collection is treated as an archive/catch-up feed rather than a millisecond live execution feed.
-
-## Active FX baseline
-
-The first FX research stream is USD/JPY from Dukascopy public market-data storage through a fixed `dukascopy-node` runtime version.
+Active FX baseline:
 
 - USDJPY 1m — Dukascopy BID candles
-- USDJPY 5m — deterministically derived from complete aligned groups of five stored 1m candles
-- runtime dependency pinned to `dukascopy-node@1.50.0`
-- install scripts disabled in GitHub Actions
-- no broker credential, trading account token, or order capability is used by this collector
-- the adapter is explicitly marked `liveExecutionFeed:false`
+- USDJPY 5m — complete aligned groups of five stored 1m candles
+- `dukascopy-node@1.50.0`, install scripts disabled
+- no broker credential/order capability
+- `liveExecutionFeed:false`
 
-The purpose of this source is prospective research data accumulation, not broker-exact executable pricing. A later demo/live signal phase must separately validate a broker-specific quote adapter, spread and execution characteristics.
-
-FX is sessioned rather than 24/7. Therefore the v0.41 archive reports raw time gaps but does not convert every weekend/market-closure gap into `missingBars`. A later market-calendar health layer can classify session-expected versus unexpected gaps without corrupting the stored data.
+Dukascopy is a research archive baseline, not broker-executable pricing. A later human/demo phase must separately validate broker quotes, spread and execution characteristics.
 
 ## Generated storage
 
-The initial GitHub stage uses the existing repository with a dedicated generated branch:
+Generated raw data branch: `short-horizon-data`.
 
-`short-horizon-data`
+- `data/short-horizon/crypto/<INSTRUMENT>/<TIMEFRAME>m/YYYY/MM/YYYY-MM-DD.ndjson`
+- `data/short-horizon/fx/<INSTRUMENT>/<TIMEFRAME>m/YYYY/MM/YYYY-MM-DD.ndjson`
+- `data/short-horizon/manifest.json` — crypto health/provenance
+- `data/short-horizon/fx-manifest.json` — FX health/provenance
 
-Daily crypto files:
+Crypto and FX workflows share the `short-horizon-data-writer` concurrency group, serializing generated-branch writes. Raw short-horizon data is never committed to `main`.
 
-`data/short-horizon/crypto/<INSTRUMENT>/<TIMEFRAME>m/YYYY/MM/YYYY-MM-DD.ndjson`
+Crypto is assessed as continuous 24/7. FX is `sessioned`; raw gaps are surfaced but ordinary market-closure gaps are not automatically labeled missing 24/7 bars.
 
-Daily FX files:
+## v0.42 Frozen Human Canon benchmark
 
-`data/short-horizon/fx/<INSTRUMENT>/<TIMEFRAME>m/YYYY/MM/YYYY-MM-DD.ndjson`
+The first short-horizon signal model is intentionally not fitted to accumulated short-horizon outcomes. It is a benchmark representation of widely used technical-analysis concepts. Its purpose is to test whether canonical knowledge has prospective net value, not to assume that it does.
 
-Health/provenance:
+The frozen registry uses 1m and 5m inputs and the following families with equal family weight:
 
-- `data/short-horizon/manifest.json` — crypto collector
-- `data/short-horizon/fx-manifest.json` — FX collector
+- Trend — SMA alignment/slope, MACD 12/26/9, DMI/ADX
+- Momentum — RSI 14, ROC, Stochastic 14
+- Mean reversion — Bollinger 20/2 stretch, RSI 30/70, Stochastic 20/80
+- Structure — Donchian 20 and HH/HL versus LH/LL structure
+- Participation — OBV direction and relative volume-spike confirmation
 
-Raw short-horizon data is not committed to `main`.
+The engine reuses indicator mathematics, not the existing BTC 4H Human Knowledge Engine thresholds or 4H Playbook Registry. Short-horizon thresholds are separately frozen before prospective outcome testing.
 
-Separate manifests avoid concurrent collectors rewriting one shared generated metadata file. Both workflows use the same `short-horizon-data-writer` concurrency group so only one workflow writes the generated branch at a time.
+Governance is explicit:
 
-## Manifest requirements
+- `optimizedOnObservedShortHorizonData:false`
+- `parameterSweep:false`
+- `adaptiveWeights:false`
+- `selfLearning:false`
+- `automaticPromotion:false`
+- `confidenceIsCalibratedProbability:false`
+- `scoreIsExpectedReturn:false`
+- `executionAuthorized:false`
 
-Each successful run records:
+Signals default to `WAIT`. LONG/SHORT requires a minimum composite score, at least three meaningful directional families, sufficient family agreement, and an open/non-blocked risk gate. Recent data discontinuity or extreme volatility blocks entry rather than synthesizing missing information.
 
-- collector/provider versions
-- fetched/added/duplicate/conflict counts
-- first/last source timestamp per stream
-- record/file counts
-- continuity mode and raw gap diagnostics
-- missing-bar estimates only where the stream is legitimately continuous 24/7
-- duplicate-key count
-- deterministic SHA-256 over canonical stream events
-- GitHub run id/attempt when available
-- guardrails proving no order submission or real-money routing
+Initial intended horizons are preregistered in bar-independent clock time:
 
-## Scheduling
+- 1m input: primary 5 minutes, secondary 15 minutes
+- 5m input: primary 15 minutes, secondary 30 minutes
 
-Crypto collection runs hourly with overlapping recent-window catch-up. USD/JPY collection also runs hourly and re-reads a 72-hour overlapping window so routine missed runs can be repaired by deterministic deduplication.
+These horizons are research labels, not expiry contracts.
 
-Hourly archive collection is intentionally not the future live signal cadence. When the project reaches live human/demo signaling, signal-time feeds will be separate lower-latency adapters. When the operator's home PC becomes a 24h node, the storage/collector adapter can migrate to local DB/archive without changing MarketEvent semantics.
+## Signal immutability contract
+
+A signal record freezes the latest market event, engine/registry versions, generated time, direction, horizons, family scores, regime/risk context, supporting/opposing reasons and decision-time features.
+
+Two observation modes are distinguished:
+
+- `historical-replay` — useful for deterministic testing but never represented as a prospective prediction
+- `prospective` — may enter the prospective ledger only after the decision bar has actually closed
+
+The prospective signal ledger accepts only records with `observedProspectively:true` and `futureOutcomeUsed:false`. The same `signalId` may be re-seen only if every decision-time field is identical; any mutation is an immutability conflict. Future outcomes will be stored in a separate outcome ledger rather than modifying the signal record.
+
+## Scheduling and next runtime stage
+
+Raw BTC/ETH and USDJPY collection runs hourly with overlapping catch-up. That cadence is an archive cadence, not the eventual interactive signal cadence.
+
+The v0.42 engine/contract is deliberately deterministic and runtime-independent. The next phase may add a prospective signal collector at a cadence appropriate to the input horizon and a separate PWA/demo console. A later broker-specific live adapter remains necessary before treating any FX signal as executable.
 
 ## Capacity migration
 
-GitHub is the first-stage durable buffer. Repository size is monitored operationally; no exact size is treated as a sudden failure boundary. Before high-volume tick/orderbook collection, raw persistence migrates to the 24h local node or another dedicated data store. GitHub then remains code, manifests, evidence, and compact research results.
+GitHub is the first-stage durable buffer. Repository size is monitored operationally; no exact size is treated as a sudden failure boundary. Before high-volume tick/orderbook collection, raw persistence migrates to the operator's 24h local node or another dedicated store without changing MarketEvent semantics.
 
 ## Scientific guardrails
 
 - historical/backfilled candles are not represented as predictions made at those historical times
-- decision-time evidence will be frozen separately when the Signal Engine is added
-- future outcomes may append labels/results but must not rewrite decision-time inputs
-- collector conflict never silently mutates a prior event
+- future outcomes never rewrite decision-time inputs
+- collector conflicts never silently mutate prior market events
+- signal conflicts never silently mutate prior prospective decisions
 - data gaps are surfaced rather than synthesized
-- FX source prices are not represented as broker-executable prices
+- FX archive prices are not represented as broker-executable prices
+- signal strength is not presented as calibrated win probability
 - this phase makes no profitability claim
