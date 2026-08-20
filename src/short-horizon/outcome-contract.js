@@ -51,8 +51,8 @@ function signedExcursions(signal, entryPrice, futureEvents) {
   }
   if (signal === 'SHORT') {
     return {
-      mfePct:Math.max(0, (entryPrice / minLow - 1) * 100),
-      maePct:Math.min(0, (entryPrice / maxHigh - 1) * 100),
+      mfePct:Math.max(0, ((entryPrice - minLow) / entryPrice) * 100),
+      maePct:Math.min(0, ((entryPrice - maxHigh) / entryPrice) * 100),
       marketMaxUpPct,
       marketMaxDownPct,
     };
