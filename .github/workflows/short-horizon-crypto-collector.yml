@@ -1,0 +1,64 @@
+name: Short-Horizon Crypto Archive Collector
+
+on:
+  schedule:
+    - cron: '11 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/short-horizon-crypto-collector.yml'
+      - 'src/short-horizon/market-event.js'
+      - 'src/short-horizon/kraken-ohlc.js'
+      - 'scripts/lib/short-horizon-archive.mjs'
+      - 'scripts/collect-short-horizon-crypto.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: short-horizon-crypto-archive-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout collector code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout generated short-horizon data branch
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-data
+          path: _short_horizon_data
+          fetch-depth: 1
+
+      - name: Collect closed Kraken BTC/ETH 1m and 5m candles
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: node scripts/collect-short-horizon-crypto.mjs --archive-root _short_horizon_data
+
+      - name: Commit generated short-horizon data only when changed
+        working-directory: _short_horizon_data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader Short-Horizon Collector'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/short-horizon
+          if git diff --cached --quiet; then
+            echo 'No generated short-horizon data change.'
+            exit 0
+          fi
+          git commit -m 'Update short-horizon crypto archive'
+          git push origin HEAD:short-horizon-data
