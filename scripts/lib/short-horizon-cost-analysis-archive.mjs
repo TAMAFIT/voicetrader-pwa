@@ -146,7 +146,11 @@ export function readCostAnalysisRecords(rootDir) {
 }
 
 function finite(values) {
-  return values.map(Number).filter(Number.isFinite).sort((a, b) => a - b);
+  return values
+    .filter((value) => value !== null && value !== undefined && value !== '')
+    .map(Number)
+    .filter(Number.isFinite)
+    .sort((a, b) => a - b);
 }
 
 function mean(values) {
@@ -167,9 +171,11 @@ function percentile(values, p) {
 }
 
 function round(value, digits = 6) {
-  if (!Number.isFinite(Number(value))) return null;
+  if (value === null || value === undefined || value === '') return null;
+  const number = Number(value);
+  if (!Number.isFinite(number)) return null;
   const scale = 10 ** digits;
-  return Math.round(Number(value) * scale) / scale;
+  return Math.round(number * scale) / scale;
 }
 
 function groupId(record) {
