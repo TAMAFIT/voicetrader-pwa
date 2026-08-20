@@ -1,0 +1,99 @@
+name: Short-Horizon OANDA Japan Reference Deployability Collector
+
+on:
+  schedule:
+    - cron: '14 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/short-horizon-deployability-collector.yml'
+      - 'src/short-horizon/deployability-registry.js'
+      - 'src/short-horizon/reference-cost-binding.js'
+      - 'scripts/lib/short-horizon-outcome-archive.mjs'
+      - 'scripts/lib/short-horizon-cost-analysis-archive.mjs'
+      - 'scripts/lib/short-horizon-deployability-archive.mjs'
+      - 'scripts/collect-short-horizon-deployability.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: short-horizon-deployability-data-writer
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout deployability analysis code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout immutable prospective outcomes
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-outcome-data
+          path: _short_horizon_outcome_data
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout immutable cost break-even analyses
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-cost-analysis-data
+          path: _short_horizon_cost_analysis_data
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout generated deployability branch
+        uses: actions/checkout@v6
+        with:
+          ref: short-horizon-deployability-data
+          path: _short_horizon_deployability_data
+          fetch-depth: 1
+
+      - name: Derive OANDA Japan published-reference deployability evidence
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: >-
+          node scripts/collect-short-horizon-deployability.mjs
+          --outcome-root _short_horizon_outcome_data
+          --cost-root _short_horizon_cost_analysis_data
+          --deployability-root _short_horizon_deployability_data
+
+      - name: Commit generated deployability evidence only
+        working-directory: _short_horizon_deployability_data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'VoiceTrader Deployability Collector'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- data/short-horizon-deployability
+          if git diff --cached --quiet; then
+            echo 'No short-horizon deployability evidence change.'
+            exit 0
+          fi
+          git commit -m 'Update short-horizon OANDA reference deployability'
+          git push origin HEAD:short-horizon-deployability-data
+
+      - name: Surface deployability manifest
+        shell: bash
+        run: |
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('_short_horizon_deployability_data/data/short-horizon-deployability/manifest.json', 'utf8'));
+          console.log(JSON.stringify({
+            providerReference:manifest.providerReference,
+            lastRun:manifest.lastRun,
+            guardrails:manifest.guardrails,
+          }, null, 2));
+          NODE
