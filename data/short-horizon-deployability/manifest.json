@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "short-horizon-deployability-manifest-v1",
+  "archiveVersion": "short-horizon-deployability-archive-v1",
+  "updatedAtMs": 1787234493501,
+  "storage": {
+    "kind": "github-generated-data-branch",
+    "branch": "short-horizon-deployability-data",
+    "sourceCostAnalysisBranch": "short-horizon-cost-analysis-data",
+    "sourceOutcomesBranch": "short-horizon-outcome-data",
+    "format": "ndjson-daily-utc"
+  },
+  "scope": {
+    "assetClass": "fx",
+    "instrument": "USDJPY",
+    "providerId": "oanda-japan-ny-pro-rest-v1",
+    "cryptoProvidersEvaluated": false
+  },
+  "providerReference": {
+    "providerId": "oanda-japan-ny-pro-rest-v1",
+    "legalName": "OANDA証券株式会社",
+    "registrationStatus": "REGISTERED_DOMESTIC_PROVIDER_REFERENCE",
+    "registrationNumber": "関東財務局長（金商）第2137号",
+    "providerInstrument": "USD_JPY",
+    "publishedSpreadSen": 0.8,
+    "publishedSpreadPriceUnits": 0.008,
+    "pricingStreamSupported": true,
+    "pricingStreamMaximumPricesPerSecondPerInstrumentReference": 4,
+    "providerOrderSubmissionSupported": true,
+    "eligibilityStatus": "UNVERIFIED",
+    "requiredNyServerBalanceJpy": 250000,
+    "requiredMembershipStatus": "Gold or higher",
+    "requiredCourse": "pro",
+    "evidenceVerifiedAt": "2026-08-20",
+    "evidenceReferences": [
+      "https://www.oanda.jp/company/disclosure",
+      "https://www.oanda.jp/platform/api",
+      "https://help.oanda.jp/oanda/faq/show/720?site_domain=default",
+      "https://help.oanda.jp/oanda/faq/show/808?site_domain=default",
+      "https://www.oanda.jp/fx/pro",
+      "https://www.oanda.jp/account_type",
+      "https://developer.oanda.com/rest-live-v20/development-guide/",
+      "https://developer.oanda.com/rest-live-v20/pricing-ep/",
+      "https://developer.oanda.com/rest-live-v20/instrument-df/",
+      "https://developer.oanda.com/rest-live-v20/order-ep/"
+    ]
+  },
+  "methodology": {
+    "officialPublicReferenceOnly": true,
+    "publishedSpreadIsNotObservedExecutionCost": true,
+    "crossVenueQuoteMismatchAcknowledged": true,
+    "providerConnectionAttempted": false,
+    "operatorEligibilityVerified": false,
+    "actualProviderCostBinding": false,
+    "netReturnAvailable": false,
+    "optimizer": false,
+    "changesHumanCanonThresholds": false,
+    "profitabilityClaim": false
+  },
+  "archive": {
+    "recordCount": 2,
+    "fileCount": 2,
+    "duplicateAssessmentIdCount": 0,
+    "contentSha256": "f1617006ecd57b4e17aa33b99d7f8e775cf4e408ffd2512d6e7a858da1baef10",
+    "groups": [
+      {
+        "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "LONDON_NEW_YORK_OVERLAP",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.504423,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787232480000,
+        "lastTargetCloseTimestampMs": 1787232480000,
+        "contentSha256": "a4d3b176d1124eb2702e87b139159266d37fee692f49b44ec2b1dc44837da626"
+      },
+      {
+        "id": "USDJPY-5m-primary-15m-LONDON_NEW_YORK_OVERLAP-VOLATILE",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "LONDON_NEW_YORK_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.5045,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787232900000,
+        "lastTargetCloseTimestampMs": 1787232900000,
+        "contentSha256": "01b991049ab1d20e06ae7035e24b834a344145492948812a663fa339a2b64c7c"
+      }
+    ]
+  },
+  "lastRun": {
+    "status": "success",
+    "collectorVersion": "short-horizon-deployability-collector-v1",
+    "startedAtMs": 1787234493319,
+    "finishedAtMs": 1787234493499,
+    "durationMs": 180,
+    "cadenceMinutes": 60,
+    "githubRunId": "32377633881",
+    "githubRunAttempt": "1",
+    "aggregate": {
+      "outcomesRead": 6,
+      "costAnalysesRead": 6,
+      "eligibleUsdJpyCostAnalyses": 2,
+      "excludedNonUsdJpyCostAnalyses": 4,
+      "existingAssessments": 0,
+      "newAssessments": 2,
+      "newDirectionalAssessments": 0,
+      "newWaitAssessments": 2,
+      "archiveAdded": 2,
+      "archiveDuplicates": 0,
+      "archiveFilesTouched": 2
+    }
+  },
+  "guardrails": {
+    "credentialsPresent": false,
+    "secretRequiredForThisStage": false,
+    "usedByDecisionEngine": false,
+    "automaticPromotion": false,
+    "executionAuthorized": false,
+    "realMoneyRouting": false,
+    "orderSubmission": false,
+    "generatedDataOnly": true
+  }
+}
