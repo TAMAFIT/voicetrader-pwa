@@ -128,6 +128,21 @@ try {
   assert.equal(group.costBinding.actualRoundTripCostBps, null);
   assert.equal(group.costBinding.netReturnAvailable, false);
 
+  const waitOnlyRoot = path.join(root, 'wait-only');
+  mergeCostAnalysesIntoArchive({ rootDir:waitOnlyRoot, records:[wait] });
+  const waitOnly = inspectCostAnalysisArchive(waitOnlyRoot).groups[0];
+  assert.equal(waitOnly.directionalCount, 0);
+  assert.equal(waitOnly.waitCount, 1);
+  assert.equal(waitOnly.breakEvenEvidence.positiveCostBudgetCount, 0);
+  assert.equal(waitOnly.breakEvenEvidence.positiveCostBudgetRate, null);
+  assert.equal(waitOnly.breakEvenEvidence.meanGrossDirectionalReturnBps, null);
+  assert.equal(waitOnly.breakEvenEvidence.medianGrossDirectionalReturnBps, null);
+  assert.equal(waitOnly.breakEvenEvidence.meanBreakEvenRoundTripCostBps, null);
+  assert.equal(waitOnly.breakEvenEvidence.p25BreakEvenRoundTripCostBps, null);
+  assert.equal(waitOnly.breakEvenEvidence.medianBreakEvenRoundTripCostBps, null);
+  assert.equal(waitOnly.breakEvenEvidence.p75BreakEvenRoundTripCostBps, null);
+  assert.equal(waitOnly.breakEvenEvidence.maximumObservedBreakEvenRoundTripCostBps, null);
+
   const manifest = writeCostAnalysisManifest({
     rootDir:root,
     lastRun:{ status:'success', aggregate:{ outcomesRead:4, newAnalyses:4 } },
