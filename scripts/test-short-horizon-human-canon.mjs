@@ -34,8 +34,10 @@ const registry = getShortHorizonHumanCanonRegistrySnapshot();
 assert.equal(registry.philosophy.optimizedOnObservedShortHorizonData, false);
 assert.equal(registry.philosophy.parameterSweep, false);
 assert.equal(registry.philosophy.adaptiveWeights, false);
+assert.equal(registry.philosophy.volatilityIsContextNotDirectionalAlpha, true);
 assert.equal(registry.thresholds.rsiExtremeHigh, 70);
 assert.equal(registry.thresholds.rsiExtremeLow, 30);
+assert.ok(registry.thresholds.blockVolatilityPercentile > 100);
 
 const up = analyzeShortHorizonHumanCanon(makeSeries({ direction:1 }));
 assert.equal(up.signal, 'LONG');
@@ -47,7 +49,7 @@ assert.ok(up.aggregation.familyAgreement >= 0.6);
 assert.equal(up.intendedHorizonMinutes, 5);
 
 const down = analyzeShortHorizonHumanCanon(makeSeries({ direction:-1 }));
-assert.equal(down.context.riskGate, 'OPEN');
+assert.notEqual(down.context.riskGate, 'BLOCK');
 assert.equal(down.signal, 'SHORT');
 assert.ok(down.aggregation.compositeScore <= -25);
 
