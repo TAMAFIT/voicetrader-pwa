@@ -1,7 +1,7 @@
 {
   "schemaVersion": "gmo-fx-paper-manifest-v1",
   "archiveVersion": "gmo-fx-paper-archive-v1",
-  "updatedAtMs": 1787325381961,
+  "updatedAtMs": 1787327611921,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-gmo-paper-data",
@@ -23,40 +23,40 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 80,
+    "recordCount": 83,
     "fileCount": 4,
     "duplicatePaperIdCount": 0,
-    "directionalCount": 0,
-    "waitCount": 80,
+    "directionalCount": 1,
+    "waitCount": 82,
     "positiveAfterObservedQuotedSpreadOnlyCount": 0,
-    "meanQuotedRoundTripReturnBps": null,
-    "contentSha256": "0d1760e1a2e91c85c966a220b8ea3789082074dfcb7343bc11b6606b57e85a66"
+    "meanQuotedRoundTripReturnBps": -2.579233,
+    "contentSha256": "0deb94135527a26341e5778351eb7c0dbee0392aa5cf2f288ca21d4decb96f25"
   },
   "lastRun": {
     "status": "success",
     "collectorVersion": "gmo-fx-paper-collector-v1",
-    "startedAtMs": 1787325381935,
-    "finishedAtMs": 1787325381960,
-    "durationMs": 25,
+    "startedAtMs": 1787327611894,
+    "finishedAtMs": 1787327611920,
+    "durationMs": 26,
     "cadenceMinutes": 5,
-    "githubRunId": "32496675710",
+    "githubRunId": "32500033145",
     "githubRunAttempt": "1",
     "tolerances": {
       "entryMs": 600000,
       "exitMs": 600000
     },
     "aggregate": {
-      "signalsRead": 82,
-      "quotesRead": 40,
+      "signalsRead": 84,
+      "quotesRead": 41,
       "existingPaperRecords": 80,
-      "newPaperRecords": 0,
-      "newDirectionalReady": 0,
-      "newWaitNoTrade": 0,
-      "pendingEntry": 68,
-      "pendingExit": 16,
-      "archiveAdded": 0,
+      "newPaperRecords": 3,
+      "newDirectionalReady": 1,
+      "newWaitNoTrade": 2,
+      "pendingEntry": 70,
+      "pendingExit": 15,
+      "archiveAdded": 3,
       "archiveDuplicates": 0,
-      "archiveFilesTouched": 0
+      "archiveFilesTouched": 2
     }
   },
   "guardrails": {
