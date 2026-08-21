@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-deployability-manifest-v1",
   "archiveVersion": "short-horizon-deployability-archive-v1",
-  "updatedAtMs": 1787302499781,
+  "updatedAtMs": 1787305821581,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-deployability-data",
@@ -57,10 +57,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 109,
+    "recordCount": 117,
     "fileCount": 4,
     "duplicateAssessmentIdCount": 0,
-    "contentSha256": "99d6523e95e14d49ae123328ecae25c2a60b9078052965e7c07a28ecaa9bdb9d",
+    "contentSha256": "ae010fd94ccbddf15084614065152e0baf40d8846abfd958f9c476c3f421179c",
     "groups": [
       {
         "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -349,6 +349,70 @@
         "firstTargetCloseTimestampMs": 1787260080000,
         "lastTargetCloseTimestampMs": 1787269920000,
         "contentSha256": "34a54a11f4774f963481fac55b5fc7b278f4c06e4c5a3698b8a4e452213af2fa"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-TOKYO_LONDON_OVERLAP-COMPRESSION",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503528,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787297520000,
+        "lastTargetCloseTimestampMs": 1787297520000,
+        "contentSha256": "2c6930275fd58f2f24e98ffc06a73edbd658cf1bfee959d766b0c6c9e71bcc8f"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503832,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787299740000,
+        "lastTargetCloseTimestampMs": 1787299740000,
+        "contentSha256": "803196ad7e59862f331dbaef197f817cb88ac5c923f99fae9366afd80614a258"
       },
       {
         "id": "USDJPY-1m-primary-5m-TOKYO-COMPRESSION",
@@ -767,6 +831,70 @@
         "contentSha256": "ad4d6111b312b7e1ab5d4504a3e731c330acc31d8221e98cb838fc1bff27fe3e"
       },
       {
+        "id": "USDJPY-1m-secondary-15m-TOKYO_LONDON_OVERLAP-COMPRESSION",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503528,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787298120000,
+        "lastTargetCloseTimestampMs": 1787298120000,
+        "contentSha256": "0ea78736144a7ff6a9065474d9af23b8c6f5b97baccdf65fb472ee1bba2fffdc"
+      },
+      {
+        "id": "USDJPY-1m-secondary-15m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503832,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": null,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787300340000,
+        "lastTargetCloseTimestampMs": 1787300340000,
+        "contentSha256": "bcbd5362eb35a9a78d8bb24e6c0775123d44f1931f9d7e94e3add339e9d7e202"
+      },
+      {
         "id": "USDJPY-1m-secondary-15m-TOKYO-COMPRESSION",
         "providerId": "oanda-japan-ny-pro-rest-v1",
         "assetClass": "fx",
@@ -1085,6 +1213,70 @@
         "firstTargetCloseTimestampMs": 1787262900000,
         "lastTargetCloseTimestampMs": 1787268600000,
         "contentSha256": "2ca8e29adf33cfe13b53805b87cf7dd3e46524380c53cb882e546a9fd7a5089c"
+      },
+      {
+        "id": "USDJPY-5m-primary-15m-TOKYO_LONDON_OVERLAP-TREND",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503493,
+          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "directionalPublishedSpreadWithinBreakEvenRate": 1,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 6.356599,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787298000000,
+        "lastTargetCloseTimestampMs": 1787298000000,
+        "contentSha256": "324855d8cc92ec154853b006b50aaf8f27c3626736e6e9d7004f87e363295d81"
+      },
+      {
+        "id": "USDJPY-5m-primary-15m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503712,
+          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "directionalPublishedSpreadWithinBreakEvenRate": 1,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 0,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787300100000,
+        "lastTargetCloseTimestampMs": 1787300100000,
+        "contentSha256": "88cfcbde1fa2c968790ab33de8b5a4041b855dcf0fe703ca864f099c9b9a9184"
       },
       {
         "id": "USDJPY-5m-primary-15m-TOKYO-COMPRESSION",
@@ -1407,6 +1599,70 @@
         "contentSha256": "398426c20b8ed65a24f136db80f88a5c053267a8c2ec5d962025c0c7b20f625e"
       },
       {
+        "id": "USDJPY-5m-secondary-30m-TOKYO_LONDON_OVERLAP-TREND",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503493,
+          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "directionalPublishedSpreadWithinBreakEvenRate": 1,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 3.776197,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787298900000,
+        "lastTargetCloseTimestampMs": 1787298900000,
+        "contentSha256": "da9874014bd46d8962f6d5b8760e8b08b804d8b5b1af96f186aaad7a5dec83f1"
+      },
+      {
+        "id": "USDJPY-5m-secondary-30m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503712,
+          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "directionalPublishedSpreadWithinBreakEvenRate": 1,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 5.288973,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787301000000,
+        "lastTargetCloseTimestampMs": 1787301000000,
+        "contentSha256": "16d1e64d3ed7898b1380dc3cbfc7d74d0d5a00a25ff6c7e15a4945e371ba46ea"
+      },
+      {
         "id": "USDJPY-5m-secondary-30m-TOKYO-COMPRESSION",
         "providerId": "oanda-japan-ny-pro-rest-v1",
         "assetClass": "fx",
@@ -1539,22 +1795,22 @@
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-deployability-collector-v1",
-    "startedAtMs": 1787302499733,
-    "finishedAtMs": 1787302499769,
-    "durationMs": 36,
+    "startedAtMs": 1787305821531,
+    "finishedAtMs": 1787305821570,
+    "durationMs": 39,
     "cadenceMinutes": 60,
-    "githubRunId": "32465370688",
+    "githubRunId": "32469776308",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 365,
-      "costAnalysesRead": 341,
-      "eligibleUsdJpyCostAnalyses": 109,
-      "excludedNonUsdJpyCostAnalyses": 232,
-      "existingAssessments": 104,
-      "newAssessments": 5,
-      "newDirectionalAssessments": 1,
+      "outcomesRead": 386,
+      "costAnalysesRead": 365,
+      "eligibleUsdJpyCostAnalyses": 117,
+      "excludedNonUsdJpyCostAnalyses": 248,
+      "existingAssessments": 109,
+      "newAssessments": 8,
+      "newDirectionalAssessments": 4,
       "newWaitAssessments": 4,
-      "archiveAdded": 5,
+      "archiveAdded": 8,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 2
     }
