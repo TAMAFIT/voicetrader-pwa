@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-deployability-manifest-v1",
   "archiveVersion": "short-horizon-deployability-archive-v1",
-  "updatedAtMs": 1787277316870,
+  "updatedAtMs": 1787282026550,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-deployability-data",
@@ -57,10 +57,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 75,
+    "recordCount": 77,
     "fileCount": 2,
     "duplicateAssessmentIdCount": 0,
-    "contentSha256": "cb03ea8ae8093036f882f8cc229bdb617e16cf64d7aa292b3f28e5089e8f41fe",
+    "contentSha256": "0b23c2ddb9e861d6fd5f149c78aa94a2ee0c66f805a353d6735bfe673ea52e9c",
     "groups": [
       {
         "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -329,11 +329,11 @@
         "horizonMinutes": 5,
         "primarySession": "OFF_HOURS",
         "regime": "VOLATILE",
-        "recordCount": 2,
+        "recordCount": 3,
         "directionalCount": 2,
-        "waitCount": 0,
+        "waitCount": 1,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.503395,
+          "meanPublishedReferenceSpreadCostBps": 0.503401,
           "directionalPublishedSpreadWithinBreakEvenCount": 0,
           "directionalPublishedSpreadWithinBreakEvenRate": 0,
           "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.503395,
@@ -347,8 +347,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787260080000,
-        "lastTargetCloseTimestampMs": 1787268120000,
-        "contentSha256": "cf6130da82fc9b8bab3bb0808641407d91327d1f99513836e76f49bfe06b76fa"
+        "lastTargetCloseTimestampMs": 1787269920000,
+        "contentSha256": "34a54a11f4774f963481fac55b5fc7b278f4c06e4c5a3698b8a4e452213af2fa"
       },
       {
         "id": "USDJPY-1m-secondary-15m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -1001,14 +1001,14 @@
         "horizonMinutes": 30,
         "primarySession": "OFF_HOURS",
         "regime": "TREND",
-        "recordCount": 3,
-        "directionalCount": 1,
+        "recordCount": 4,
+        "directionalCount": 2,
         "waitCount": 2,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.503064,
+          "meanPublishedReferenceSpreadCostBps": 0.503159,
           "directionalPublishedSpreadWithinBreakEvenCount": 1,
-          "directionalPublishedSpreadWithinBreakEvenRate": 1,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 3.900328,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0.5,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 1.855769,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -1019,30 +1019,30 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787263800000,
-        "lastTargetCloseTimestampMs": 1787268300000,
-        "contentSha256": "fb21a30fc337d3972efe979f71e8730c935d1df5832df213ed67036ab16bfb04"
+        "lastTargetCloseTimestampMs": 1787269500000,
+        "contentSha256": "398426c20b8ed65a24f136db80f88a5c053267a8c2ec5d962025c0c7b20f625e"
       }
     ]
   },
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-deployability-collector-v1",
-    "startedAtMs": 1787277316828,
-    "finishedAtMs": 1787277316862,
-    "durationMs": 34,
+    "startedAtMs": 1787282026506,
+    "finishedAtMs": 1787282026541,
+    "durationMs": 35,
     "cadenceMinutes": 60,
-    "githubRunId": "32437980343",
+    "githubRunId": "32442625594",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 245,
-      "costAnalysesRead": 233,
-      "eligibleUsdJpyCostAnalyses": 75,
-      "excludedNonUsdJpyCostAnalyses": 158,
-      "existingAssessments": 71,
-      "newAssessments": 4,
-      "newDirectionalAssessments": 4,
-      "newWaitAssessments": 0,
-      "archiveAdded": 4,
+      "outcomesRead": 257,
+      "costAnalysesRead": 245,
+      "eligibleUsdJpyCostAnalyses": 77,
+      "excludedNonUsdJpyCostAnalyses": 168,
+      "existingAssessments": 75,
+      "newAssessments": 2,
+      "newDirectionalAssessments": 1,
+      "newWaitAssessments": 1,
+      "archiveAdded": 2,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 2
     }
