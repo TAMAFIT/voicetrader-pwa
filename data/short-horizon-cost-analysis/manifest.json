@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-cost-analysis-manifest-v1",
   "archiveVersion": "short-horizon-cost-analysis-archive-v1",
-  "updatedAtMs": 1787299035985,
+  "updatedAtMs": 1787302694699,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-cost-analysis-data",
@@ -19,10 +19,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 341,
+    "recordCount": 365,
     "fileCount": 12,
     "duplicateAnalysisIdCount": 0,
-    "contentSha256": "ee8c8164779decba840ba14f0fc01145bcb5ce00b1fbe6f698cb1503949a5e9d",
+    "contentSha256": "d4b34749e84c3fb70b4bd1ec38b547d6c91aa7495950306736805d1b8a74232b",
     "groups": [
       {
         "id": "BTCUSD-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -383,6 +383,86 @@
         "firstTargetCloseTimestampMs": 1787260140000,
         "lastTargetCloseTimestampMs": 1787269980000,
         "contentSha256": "594f48dbbab38144d7306028f8d579bfb7e487ad3d08e97caf09e7a530686841"
+      },
+      {
+        "id": "BTCUSD-1m-primary-5m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 9.931069,
+          "medianGrossDirectionalReturnBps": 9.931069,
+          "meanBreakEvenRoundTripCostBps": 9.931069,
+          "p25BreakEvenRoundTripCostBps": 9.931069,
+          "medianBreakEvenRoundTripCostBps": 9.931069,
+          "p75BreakEvenRoundTripCostBps": 9.931069,
+          "maximumObservedBreakEvenRoundTripCostBps": 9.931069
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787299740000,
+        "lastTargetCloseTimestampMs": 1787299740000,
+        "contentSha256": "8cb9ff2ba49b1e03e4d63d3509b9780d8cc56fcb2a927f886a73f85367f2890e"
+      },
+      {
+        "id": "BTCUSD-1m-primary-5m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787297520000,
+        "lastTargetCloseTimestampMs": 1787297520000,
+        "contentSha256": "7740389457bf2363574f2ca1e94710abe6eb573e9d5196137eed24c32a974243"
       },
       {
         "id": "BTCUSD-1m-primary-5m-TOKYO-COMPRESSION",
@@ -905,6 +985,86 @@
         "contentSha256": "eac75981f2ce786379ad66656146042dbb6d4f8941719efd652e824179cdba10"
       },
       {
+        "id": "BTCUSD-1m-secondary-15m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 60.277158,
+          "medianGrossDirectionalReturnBps": 60.277158,
+          "meanBreakEvenRoundTripCostBps": 60.277158,
+          "p25BreakEvenRoundTripCostBps": 60.277158,
+          "medianBreakEvenRoundTripCostBps": 60.277158,
+          "p75BreakEvenRoundTripCostBps": 60.277158,
+          "maximumObservedBreakEvenRoundTripCostBps": 60.277158
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787300340000,
+        "lastTargetCloseTimestampMs": 1787300340000,
+        "contentSha256": "93f6de3492c329b502d1e87f5fe7193abc29b7880755e2b2d273632d00af5eb5"
+      },
+      {
+        "id": "BTCUSD-1m-secondary-15m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298120000,
+        "lastTargetCloseTimestampMs": 1787298120000,
+        "contentSha256": "d8ef77d31c1878902185e9f25e57a4f52ef38a3098e05aa7e7b560dad1c222a2"
+      },
+      {
         "id": "BTCUSD-1m-secondary-15m-TOKYO-COMPRESSION",
         "assetClass": "crypto",
         "instrument": "BTCUSD",
@@ -1425,6 +1585,86 @@
         "contentSha256": "e666bd037d03a253b65be6586f780030fd095549542a8a6d1127c69b59e2b440"
       },
       {
+        "id": "BTCUSD-5m-primary-15m-TOKYO_LONDON_OVERLAP-RANGE",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "RANGE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 32.584613,
+          "medianGrossDirectionalReturnBps": 32.584613,
+          "meanBreakEvenRoundTripCostBps": 32.584613,
+          "p25BreakEvenRoundTripCostBps": 32.584613,
+          "medianBreakEvenRoundTripCostBps": 32.584613,
+          "p75BreakEvenRoundTripCostBps": 32.584613,
+          "maximumObservedBreakEvenRoundTripCostBps": 32.584613
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298000000,
+        "lastTargetCloseTimestampMs": 1787298000000,
+        "contentSha256": "bd1bcaea6637956ae5d5b6e7aca4ff3319226159d3647c077511973a8d864e54"
+      },
+      {
+        "id": "BTCUSD-5m-primary-15m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 77.73128,
+          "medianGrossDirectionalReturnBps": 77.73128,
+          "meanBreakEvenRoundTripCostBps": 77.73128,
+          "p25BreakEvenRoundTripCostBps": 77.73128,
+          "medianBreakEvenRoundTripCostBps": 77.73128,
+          "p75BreakEvenRoundTripCostBps": 77.73128,
+          "maximumObservedBreakEvenRoundTripCostBps": 77.73128
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787300100000,
+        "lastTargetCloseTimestampMs": 1787300100000,
+        "contentSha256": "14419e7a43b0395a937dc0e430e91f2521c44f584cfae686869d850e7c3bcbc9"
+      },
+      {
         "id": "BTCUSD-5m-primary-15m-TOKYO-COMPRESSION",
         "assetClass": "crypto",
         "instrument": "BTCUSD",
@@ -1943,6 +2183,86 @@
         "firstTargetCloseTimestampMs": 1787271300000,
         "lastTargetCloseTimestampMs": 1787271300000,
         "contentSha256": "ea52d41ebaf1a91016ef72156c5cdfbd7c619ab64fbc483d25cc4890f6a5ccc5"
+      },
+      {
+        "id": "BTCUSD-5m-secondary-30m-TOKYO_LONDON_OVERLAP-RANGE",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "RANGE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 11.346896,
+          "medianGrossDirectionalReturnBps": 11.346896,
+          "meanBreakEvenRoundTripCostBps": 11.346896,
+          "p25BreakEvenRoundTripCostBps": 11.346896,
+          "medianBreakEvenRoundTripCostBps": 11.346896,
+          "p75BreakEvenRoundTripCostBps": 11.346896,
+          "maximumObservedBreakEvenRoundTripCostBps": 11.346896
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298900000,
+        "lastTargetCloseTimestampMs": 1787298900000,
+        "contentSha256": "f22bb4511af7096176337fb320ab7ea4d7b3817ddd1e2dc4b8399b0e98627ea5"
+      },
+      {
+        "id": "BTCUSD-5m-secondary-30m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 119.120662,
+          "medianGrossDirectionalReturnBps": 119.120662,
+          "meanBreakEvenRoundTripCostBps": 119.120662,
+          "p25BreakEvenRoundTripCostBps": 119.120662,
+          "medianBreakEvenRoundTripCostBps": 119.120662,
+          "p75BreakEvenRoundTripCostBps": 119.120662,
+          "maximumObservedBreakEvenRoundTripCostBps": 119.120662
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787301000000,
+        "lastTargetCloseTimestampMs": 1787301000000,
+        "contentSha256": "4a37e6bd58c98000e284cfa62a753a9be0c6f05acdc5fb76462fdc7455eae440"
       },
       {
         "id": "BTCUSD-5m-secondary-30m-TOKYO-COMPRESSION",
@@ -2505,6 +2825,86 @@
         "contentSha256": "c1aba2a3a259e9ec46bc5eb6d9b63cd66b587c84d644cecd40e241f710c86eba"
       },
       {
+        "id": "ETHUSD-1m-primary-5m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "ETHUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 22.989279,
+          "medianGrossDirectionalReturnBps": 22.989279,
+          "meanBreakEvenRoundTripCostBps": 22.989279,
+          "p25BreakEvenRoundTripCostBps": 22.989279,
+          "medianBreakEvenRoundTripCostBps": 22.989279,
+          "p75BreakEvenRoundTripCostBps": 22.989279,
+          "maximumObservedBreakEvenRoundTripCostBps": 22.989279
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787299740000,
+        "lastTargetCloseTimestampMs": 1787299740000,
+        "contentSha256": "063bfe424586f76f04b4b5a817c4aa85c41ca5a69cfd47e94864fc384c2a50f3"
+      },
+      {
+        "id": "ETHUSD-1m-primary-5m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "crypto",
+        "instrument": "ETHUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787297520000,
+        "lastTargetCloseTimestampMs": 1787297520000,
+        "contentSha256": "8538b26ba0c3875681aca56cb8f440ac80565b32a136751c488f38986c4d40e4"
+      },
+      {
         "id": "ETHUSD-1m-primary-5m-TOKYO-COMPRESSION",
         "assetClass": "crypto",
         "instrument": "ETHUSD",
@@ -3025,6 +3425,86 @@
         "contentSha256": "7c8831bac2e6d15928beb97088ebad5886ccbca626a9f2d78c6ea22ff235711e"
       },
       {
+        "id": "ETHUSD-1m-secondary-15m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "ETHUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 45.768418,
+          "medianGrossDirectionalReturnBps": 45.768418,
+          "meanBreakEvenRoundTripCostBps": 45.768418,
+          "p25BreakEvenRoundTripCostBps": 45.768418,
+          "medianBreakEvenRoundTripCostBps": 45.768418,
+          "p75BreakEvenRoundTripCostBps": 45.768418,
+          "maximumObservedBreakEvenRoundTripCostBps": 45.768418
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787300340000,
+        "lastTargetCloseTimestampMs": 1787300340000,
+        "contentSha256": "650507d4088eee32eb489ba8a9ff1163b9b76b93fca1595c5398e94eab435271"
+      },
+      {
+        "id": "ETHUSD-1m-secondary-15m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "crypto",
+        "instrument": "ETHUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298120000,
+        "lastTargetCloseTimestampMs": 1787298120000,
+        "contentSha256": "25f2bb9aade100d70ac9242ca7dd5ccbec6dd5b511c4511fdc0e93d1c2a19845"
+      },
+      {
         "id": "ETHUSD-1m-secondary-15m-TOKYO-COMPRESSION",
         "assetClass": "crypto",
         "instrument": "ETHUSD",
@@ -3425,6 +3905,46 @@
         "contentSha256": "b83ae9823dab586a1a76214ec19790b8e6fdc7770d1a01f2b143a77ba4d27933"
       },
       {
+        "id": "ETHUSD-5m-primary-15m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "ETHUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 2,
+        "directionalCount": 1,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 14.511957,
+          "medianGrossDirectionalReturnBps": 14.511957,
+          "meanBreakEvenRoundTripCostBps": 14.511957,
+          "p25BreakEvenRoundTripCostBps": 14.511957,
+          "medianBreakEvenRoundTripCostBps": 14.511957,
+          "p75BreakEvenRoundTripCostBps": 14.511957,
+          "maximumObservedBreakEvenRoundTripCostBps": 14.511957
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298000000,
+        "lastTargetCloseTimestampMs": 1787300100000,
+        "contentSha256": "6b510d1645e01b40d2a092ecaf26c158cf91199e84c2f07820f75309ad95866f"
+      },
+      {
         "id": "ETHUSD-5m-primary-15m-TOKYO-COMPRESSION",
         "assetClass": "crypto",
         "instrument": "ETHUSD",
@@ -3823,6 +4343,46 @@
         "firstTargetCloseTimestampMs": 1787271300000,
         "lastTargetCloseTimestampMs": 1787271300000,
         "contentSha256": "a683c85642dea8d9c65cd518f1c267f52e0c6beffaf007b389b6a1a548fb9b16"
+      },
+      {
+        "id": "ETHUSD-5m-secondary-30m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "crypto",
+        "instrument": "ETHUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 2,
+        "directionalCount": 1,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 1,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": 0,
+          "meanGrossDirectionalReturnBps": -25.280249,
+          "medianGrossDirectionalReturnBps": -25.280249,
+          "meanBreakEvenRoundTripCostBps": 0,
+          "p25BreakEvenRoundTripCostBps": 0,
+          "medianBreakEvenRoundTripCostBps": 0,
+          "p75BreakEvenRoundTripCostBps": 0,
+          "maximumObservedBreakEvenRoundTripCostBps": 0
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298900000,
+        "lastTargetCloseTimestampMs": 1787301000000,
+        "contentSha256": "f0ae15d3bffb7c4d361bf938ee5af9bb257f03734338abf758474f09b07bf52d"
       },
       {
         "id": "ETHUSD-5m-secondary-30m-TOKYO-COMPRESSION",
@@ -4303,6 +4863,86 @@
         "firstTargetCloseTimestampMs": 1787260080000,
         "lastTargetCloseTimestampMs": 1787269920000,
         "contentSha256": "dff97df2a7fa1d0c13832c4840a3d8ab7a7400a6db3221aec59097f65cba09a9"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-TOKYO_LONDON_OVERLAP-COMPRESSION",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787297520000,
+        "lastTargetCloseTimestampMs": 1787297520000,
+        "contentSha256": "1de7e28917b2462db2dda0a88daabb2e4c83e60232f3c94ff6a447ee85c1466d"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787299740000,
+        "lastTargetCloseTimestampMs": 1787299740000,
+        "contentSha256": "dbbf035eb640b3a225c22dc660a85c21934639ed235b8cf9683a88ddc4bd0642"
       },
       {
         "id": "USDJPY-1m-primary-5m-TOKYO-COMPRESSION",
@@ -4825,6 +5465,86 @@
         "contentSha256": "70615282ba2bfd86cc567753ad65059bbe1be70f2f5e381f285f5b433011158f"
       },
       {
+        "id": "USDJPY-1m-secondary-15m-TOKYO_LONDON_OVERLAP-COMPRESSION",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298120000,
+        "lastTargetCloseTimestampMs": 1787298120000,
+        "contentSha256": "6f1aaa1d821b7350add462c10dce89ddff94f460104d7bef81510e249b43faa7"
+      },
+      {
+        "id": "USDJPY-1m-secondary-15m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787300340000,
+        "lastTargetCloseTimestampMs": 1787300340000,
+        "contentSha256": "fb70b63af4afad16ad2e8e9783c99723d6f409777559425d9461d0bae72300fc"
+      },
+      {
         "id": "USDJPY-1m-secondary-15m-TOKYO-COMPRESSION",
         "assetClass": "fx",
         "instrument": "USDJPY",
@@ -5223,6 +5943,86 @@
         "firstTargetCloseTimestampMs": 1787262900000,
         "lastTargetCloseTimestampMs": 1787268600000,
         "contentSha256": "d66e1a641fac317088d0895b4d70f8f50601ea9aaa910b1dc46f84c41cbc8d59"
+      },
+      {
+        "id": "USDJPY-5m-primary-15m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 6.860092,
+          "medianGrossDirectionalReturnBps": 6.860092,
+          "meanBreakEvenRoundTripCostBps": 6.860092,
+          "p25BreakEvenRoundTripCostBps": 6.860092,
+          "medianBreakEvenRoundTripCostBps": 6.860092,
+          "p75BreakEvenRoundTripCostBps": 6.860092,
+          "maximumObservedBreakEvenRoundTripCostBps": 6.860092
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298000000,
+        "lastTargetCloseTimestampMs": 1787298000000,
+        "contentSha256": "e36afa798c5da9129926939ce4d658d4997a90d1600b67c15e4ae41aa796103d"
+      },
+      {
+        "id": "USDJPY-5m-primary-15m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "primary",
+        "horizonMinutes": 15,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 0.503712,
+          "medianGrossDirectionalReturnBps": 0.503712,
+          "meanBreakEvenRoundTripCostBps": 0.503712,
+          "p25BreakEvenRoundTripCostBps": 0.503712,
+          "medianBreakEvenRoundTripCostBps": 0.503712,
+          "p75BreakEvenRoundTripCostBps": 0.503712,
+          "maximumObservedBreakEvenRoundTripCostBps": 0.503712
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787300100000,
+        "lastTargetCloseTimestampMs": 1787300100000,
+        "contentSha256": "011d3a52250ca18cc0753f27bdc95a589f44799a2e89d97ed35e0eabd6eb648e"
       },
       {
         "id": "USDJPY-5m-primary-15m-TOKYO-COMPRESSION",
@@ -5625,6 +6425,86 @@
         "contentSha256": "ac556f4843e532b58b7f6cecb572d3535d7c3816253544c8dedbe6298eb849bc"
       },
       {
+        "id": "USDJPY-5m-secondary-30m-TOKYO_LONDON_OVERLAP-TREND",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "TREND",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 4.27969,
+          "medianGrossDirectionalReturnBps": 4.27969,
+          "meanBreakEvenRoundTripCostBps": 4.27969,
+          "p25BreakEvenRoundTripCostBps": 4.27969,
+          "medianBreakEvenRoundTripCostBps": 4.27969,
+          "p75BreakEvenRoundTripCostBps": 4.27969,
+          "maximumObservedBreakEvenRoundTripCostBps": 4.27969
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787298900000,
+        "lastTargetCloseTimestampMs": 1787298900000,
+        "contentSha256": "c8b016bae93799650b20e27dd4bc86ef8496d148b578e9da54b9d5f2dcfcf8c0"
+      },
+      {
+        "id": "USDJPY-5m-secondary-30m-TOKYO_LONDON_OVERLAP-VOLATILE",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "TOKYO_LONDON_OVERLAP",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 5.792685,
+          "medianGrossDirectionalReturnBps": 5.792685,
+          "meanBreakEvenRoundTripCostBps": 5.792685,
+          "p25BreakEvenRoundTripCostBps": 5.792685,
+          "medianBreakEvenRoundTripCostBps": 5.792685,
+          "p75BreakEvenRoundTripCostBps": 5.792685,
+          "maximumObservedBreakEvenRoundTripCostBps": 5.792685
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787301000000,
+        "lastTargetCloseTimestampMs": 1787301000000,
+        "contentSha256": "d5f491121862391b9983dc754aabcf14133822884cd5d40fb2b0b652c2a30356"
+      },
+      {
         "id": "USDJPY-5m-secondary-30m-TOKYO-COMPRESSION",
         "assetClass": "fx",
         "instrument": "USDJPY",
@@ -5789,20 +6669,20 @@
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-cost-analysis-collector-v1",
-    "startedAtMs": 1787299035835,
-    "finishedAtMs": 1787299035973,
-    "durationMs": 138,
+    "startedAtMs": 1787302694661,
+    "finishedAtMs": 1787302694689,
+    "durationMs": 28,
     "cadenceMinutes": 15,
-    "githubRunId": "32460910637",
+    "githubRunId": "32465625751",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 341,
-      "existingAnalyses": 326,
-      "newAnalyses": 15,
-      "newDirectionalAnalyses": 2,
-      "newWaitAnalyses": 13,
-      "positiveCostBudgetNew": 0,
-      "archiveAdded": 15,
+      "outcomesRead": 365,
+      "existingAnalyses": 341,
+      "newAnalyses": 24,
+      "newDirectionalAnalyses": 14,
+      "newWaitAnalyses": 10,
+      "positiveCostBudgetNew": 13,
+      "archiveAdded": 24,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 6
     }
