@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-cost-analysis-manifest-v1",
   "archiveVersion": "short-horizon-cost-analysis-archive-v1",
-  "updatedAtMs": 1787312523696,
+  "updatedAtMs": 1787314514550,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-cost-analysis-data",
@@ -19,10 +19,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 422,
+    "recordCount": 434,
     "fileCount": 12,
     "duplicateAnalysisIdCount": 0,
-    "contentSha256": "37535a6a130d8b5947c01022c546c6f5f62c4a0a8fe8747f6844d40e81d621a1",
+    "contentSha256": "493c53dd55ac0ffd8e735515d21211fd80f8f63fb1e938c8abbefcd4174b2643",
     "groups": [
       {
         "id": "BTCUSD-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -223,6 +223,46 @@
         "firstTargetCloseTimestampMs": 1787304780000,
         "lastTargetCloseTimestampMs": 1787306640000,
         "contentSha256": "fd3640df6274ddc1b38d359cee92e9578fe2ff3e61efd06a5545dbda6a3d3ac6"
+      },
+      {
+        "id": "BTCUSD-1m-primary-5m-LONDON-VOLATILE",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "LONDON",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 1,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": 0,
+          "meanGrossDirectionalReturnBps": -23.204587,
+          "medianGrossDirectionalReturnBps": -23.204587,
+          "meanBreakEvenRoundTripCostBps": 0,
+          "p25BreakEvenRoundTripCostBps": 0,
+          "medianBreakEvenRoundTripCostBps": 0,
+          "p75BreakEvenRoundTripCostBps": 0,
+          "maximumObservedBreakEvenRoundTripCostBps": 0
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787311500000,
+        "lastTargetCloseTimestampMs": 1787311500000,
+        "contentSha256": "a7a0921c2bb9e57054721381bbccd461cb9a92858c8c25d398197faf58d36bc9"
       },
       {
         "id": "BTCUSD-1m-primary-5m-NEW_YORK-COMPRESSION",
@@ -905,6 +945,46 @@
         "contentSha256": "d06d5e0525a5b892ed5ece2538b54235c2b4b9bf041104c84ac5632d3e115e87"
       },
       {
+        "id": "BTCUSD-1m-secondary-15m-LONDON-VOLATILE",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "LONDON",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 112.039093,
+          "medianGrossDirectionalReturnBps": 112.039093,
+          "meanBreakEvenRoundTripCostBps": 112.039093,
+          "p25BreakEvenRoundTripCostBps": 112.039093,
+          "medianBreakEvenRoundTripCostBps": 112.039093,
+          "p75BreakEvenRoundTripCostBps": 112.039093,
+          "maximumObservedBreakEvenRoundTripCostBps": 112.039093
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787312100000,
+        "lastTargetCloseTimestampMs": 1787312100000,
+        "contentSha256": "f758ef6f3ee4f4f3e8e04a632ee312091cfd319996925f0479b66e08409f3669"
+      },
+      {
         "id": "BTCUSD-1m-secondary-15m-NEW_YORK-COMPRESSION",
         "assetClass": "crypto",
         "instrument": "BTCUSD",
@@ -1514,24 +1594,24 @@
         "horizonMinutes": 15,
         "primarySession": "LONDON",
         "regime": "RANGE",
-        "recordCount": 1,
-        "directionalCount": 0,
+        "recordCount": 2,
+        "directionalCount": 1,
         "waitCount": 1,
         "directionalOutcomeCounts": {
-          "WIN": 0,
+          "WIN": 1,
           "LOSS": 0,
           "FLAT": 0
         },
         "breakEvenEvidence": {
-          "positiveCostBudgetCount": 0,
-          "positiveCostBudgetRate": null,
-          "meanGrossDirectionalReturnBps": null,
-          "medianGrossDirectionalReturnBps": null,
-          "meanBreakEvenRoundTripCostBps": null,
-          "p25BreakEvenRoundTripCostBps": null,
-          "medianBreakEvenRoundTripCostBps": null,
-          "p75BreakEvenRoundTripCostBps": null,
-          "maximumObservedBreakEvenRoundTripCostBps": null
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 112.039093,
+          "medianGrossDirectionalReturnBps": 112.039093,
+          "meanBreakEvenRoundTripCostBps": 112.039093,
+          "p25BreakEvenRoundTripCostBps": 112.039093,
+          "medianBreakEvenRoundTripCostBps": 112.039093,
+          "p75BreakEvenRoundTripCostBps": 112.039093,
+          "maximumObservedBreakEvenRoundTripCostBps": 112.039093
         },
         "costBinding": {
           "status": "UNBOUND",
@@ -1541,8 +1621,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787310600000,
-        "lastTargetCloseTimestampMs": 1787310600000,
-        "contentSha256": "1b3a04b76f310a110f9e2e83fe291f56bace6c4db7a58766244fae3c633fedc4"
+        "lastTargetCloseTimestampMs": 1787312100000,
+        "contentSha256": "abecda1a03cba3eb2c56204b6fb81271e21fd5301bf829a709125adeb19786a6"
       },
       {
         "id": "BTCUSD-5m-primary-15m-LONDON-VOLATILE",
@@ -2223,6 +2303,46 @@
         "firstTargetCloseTimestampMs": 1787243100000,
         "lastTargetCloseTimestampMs": 1787243100000,
         "contentSha256": "0c912654664db7eb8affcb71bba234ff6d439204d2835a7d09b50c22c87555b6"
+      },
+      {
+        "id": "BTCUSD-5m-secondary-30m-LONDON-RANGE",
+        "assetClass": "crypto",
+        "instrument": "BTCUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "LONDON",
+        "regime": "RANGE",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787311500000,
+        "lastTargetCloseTimestampMs": 1787311500000,
+        "contentSha256": "664d75dc117985f03995c8c832750e2fd8ecc268f255ba4789d8e87eafc878ad"
       },
       {
         "id": "BTCUSD-5m-secondary-30m-LONDON-VOLATILE",
@@ -2994,9 +3114,9 @@
         "horizonMinutes": 5,
         "primarySession": "LONDON",
         "regime": "TREND",
-        "recordCount": 2,
+        "recordCount": 3,
         "directionalCount": 1,
-        "waitCount": 1,
+        "waitCount": 2,
         "directionalOutcomeCounts": {
           "WIN": 1,
           "LOSS": 0,
@@ -3021,8 +3141,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787304780000,
-        "lastTargetCloseTimestampMs": 1787308440000,
-        "contentSha256": "52858118b62989568aea49fe852925cdd3acca1459e4e0c49d80240325358886"
+        "lastTargetCloseTimestampMs": 1787311500000,
+        "contentSha256": "e25963d6af03151109ecb586012a744e2935bd6f6ce535fa1a6617a5ab40a70b"
       },
       {
         "id": "ETHUSD-1m-primary-5m-NEW_YORK-COMPRESSION",
@@ -3674,9 +3794,9 @@
         "horizonMinutes": 15,
         "primarySession": "LONDON",
         "regime": "TREND",
-        "recordCount": 2,
+        "recordCount": 3,
         "directionalCount": 1,
-        "waitCount": 1,
+        "waitCount": 2,
         "directionalOutcomeCounts": {
           "WIN": 1,
           "LOSS": 0,
@@ -3701,8 +3821,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787305380000,
-        "lastTargetCloseTimestampMs": 1787309040000,
-        "contentSha256": "5b59545a0094b61b1c6d908aafdc5f80bd8310c4b2d65bc2b7fc4e4d2e9ed2e3"
+        "lastTargetCloseTimestampMs": 1787312100000,
+        "contentSha256": "57af5c28910bee4d365ec69eb1d9c8c3e9ea58bc5268bfbf3f4779b910211d0b"
       },
       {
         "id": "ETHUSD-1m-secondary-15m-NEW_YORK-COMPRESSION",
@@ -4234,24 +4354,24 @@
         "horizonMinutes": 15,
         "primarySession": "LONDON",
         "regime": "RANGE",
-        "recordCount": 1,
-        "directionalCount": 1,
+        "recordCount": 2,
+        "directionalCount": 2,
         "waitCount": 0,
         "directionalOutcomeCounts": {
-          "WIN": 1,
+          "WIN": 2,
           "LOSS": 0,
           "FLAT": 0
         },
         "breakEvenEvidence": {
-          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetCount": 2,
           "positiveCostBudgetRate": 1,
-          "meanGrossDirectionalReturnBps": 19.951166,
-          "medianGrossDirectionalReturnBps": 19.951166,
-          "meanBreakEvenRoundTripCostBps": 19.951166,
-          "p25BreakEvenRoundTripCostBps": 19.951166,
-          "medianBreakEvenRoundTripCostBps": 19.951166,
-          "p75BreakEvenRoundTripCostBps": 19.951166,
-          "maximumObservedBreakEvenRoundTripCostBps": 19.951166
+          "meanGrossDirectionalReturnBps": 46.332559,
+          "medianGrossDirectionalReturnBps": 46.332559,
+          "meanBreakEvenRoundTripCostBps": 46.332559,
+          "p25BreakEvenRoundTripCostBps": 33.141863,
+          "medianBreakEvenRoundTripCostBps": 46.332559,
+          "p75BreakEvenRoundTripCostBps": 59.523256,
+          "maximumObservedBreakEvenRoundTripCostBps": 72.713952
         },
         "costBinding": {
           "status": "UNBOUND",
@@ -4261,8 +4381,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787310600000,
-        "lastTargetCloseTimestampMs": 1787310600000,
-        "contentSha256": "898c9ca2d48686ab2f3b51b72a781ab08584f567e326f57105a00e26e6e0337c"
+        "lastTargetCloseTimestampMs": 1787312100000,
+        "contentSha256": "ae137d44236464444e8a9c2a0c2bacfec3d804d3851a098ec3de56532a663673"
       },
       {
         "id": "ETHUSD-5m-primary-15m-LONDON-VOLATILE",
@@ -4783,6 +4903,46 @@
         "firstTargetCloseTimestampMs": 1787233800000,
         "lastTargetCloseTimestampMs": 1787243100000,
         "contentSha256": "4c8c94e05e577e5dfb97b1d5f03ed367b369294c80ac18c2f8807ab3e77df3e2"
+      },
+      {
+        "id": "ETHUSD-5m-secondary-30m-LONDON-RANGE",
+        "assetClass": "crypto",
+        "instrument": "ETHUSD",
+        "venue": "kraken",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "LONDON",
+        "regime": "RANGE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 1,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 46.371851,
+          "medianGrossDirectionalReturnBps": 46.371851,
+          "meanBreakEvenRoundTripCostBps": 46.371851,
+          "p25BreakEvenRoundTripCostBps": 46.371851,
+          "medianBreakEvenRoundTripCostBps": 46.371851,
+          "p75BreakEvenRoundTripCostBps": 46.371851,
+          "maximumObservedBreakEvenRoundTripCostBps": 46.371851
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787311500000,
+        "lastTargetCloseTimestampMs": 1787311500000,
+        "contentSha256": "02fbb35ce5aae676289c8172aef123f919aab695c140d3b951bd49b6b9a2d394"
       },
       {
         "id": "ETHUSD-5m-secondary-30m-LONDON-VOLATILE",
@@ -5343,6 +5503,46 @@
         "firstTargetCloseTimestampMs": 1787235000000,
         "lastTargetCloseTimestampMs": 1787235000000,
         "contentSha256": "c2b8ed90cd7d0b9a73a3c1fa5342b1a319a67edaf597a8900da9b1515320b735"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-LONDON-COMPRESSION",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "LONDON",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787311500000,
+        "lastTargetCloseTimestampMs": 1787311500000,
+        "contentSha256": "f02c31b50eb8c7ab3a1130c95254fe706f348aed1202764e6ea76786d570dd11"
       },
       {
         "id": "USDJPY-1m-primary-5m-LONDON-TREND",
@@ -6023,6 +6223,46 @@
         "firstTargetCloseTimestampMs": 1787235600000,
         "lastTargetCloseTimestampMs": 1787235600000,
         "contentSha256": "06bf95c6ed2e701e78b60cf4ff501e9c6bfb3d3ac0893da1efdbe3f431fca404"
+      },
+      {
+        "id": "USDJPY-1m-secondary-15m-LONDON-COMPRESSION",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "LONDON",
+        "regime": "COMPRESSION",
+        "recordCount": 1,
+        "directionalCount": 0,
+        "waitCount": 1,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 0,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": null,
+          "meanGrossDirectionalReturnBps": null,
+          "medianGrossDirectionalReturnBps": null,
+          "meanBreakEvenRoundTripCostBps": null,
+          "p25BreakEvenRoundTripCostBps": null,
+          "medianBreakEvenRoundTripCostBps": null,
+          "p75BreakEvenRoundTripCostBps": null,
+          "maximumObservedBreakEvenRoundTripCostBps": null
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787312100000,
+        "lastTargetCloseTimestampMs": 1787312100000,
+        "contentSha256": "e2efbd9f0a84343d822971fc280c111cbaec3a3d3225e66a948b94a102fd5078"
       },
       {
         "id": "USDJPY-1m-secondary-15m-LONDON-TREND",
@@ -6714,19 +6954,19 @@
         "horizonMinutes": 15,
         "primarySession": "LONDON",
         "regime": "TREND",
-        "recordCount": 1,
-        "directionalCount": 1,
+        "recordCount": 2,
+        "directionalCount": 2,
         "waitCount": 0,
         "directionalOutcomeCounts": {
           "WIN": 0,
-          "LOSS": 0,
+          "LOSS": 1,
           "FLAT": 1
         },
         "breakEvenEvidence": {
           "positiveCostBudgetCount": 0,
           "positiveCostBudgetRate": 0,
-          "meanGrossDirectionalReturnBps": 0,
-          "medianGrossDirectionalReturnBps": 0,
+          "meanGrossDirectionalReturnBps": -2.173666,
+          "medianGrossDirectionalReturnBps": -2.173666,
           "meanBreakEvenRoundTripCostBps": 0,
           "p25BreakEvenRoundTripCostBps": 0,
           "medianBreakEvenRoundTripCostBps": 0,
@@ -6741,8 +6981,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787308800000,
-        "lastTargetCloseTimestampMs": 1787308800000,
-        "contentSha256": "0ffeb39d8e84c0cc597a74b75b4c6d01941ed6def43b219f6c36b64f8082ff7c"
+        "lastTargetCloseTimestampMs": 1787312100000,
+        "contentSha256": "81da49dd9c6d863eb8eec68d6fd1e8f668dd45348b3d560bc05c63fbaf7d0afc"
       },
       {
         "id": "USDJPY-5m-primary-15m-LONDON-VOLATILE",
@@ -7265,6 +7505,46 @@
         "contentSha256": "f67630c28f91a6da1e80bc8056f3f8e77d6a8cd1856dacbd4f54b351b6bfd4fc"
       },
       {
+        "id": "USDJPY-5m-secondary-30m-LONDON-RANGE",
+        "assetClass": "fx",
+        "instrument": "USDJPY",
+        "venue": "dukascopy",
+        "timeframeMinutes": 5,
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "primarySession": "LONDON",
+        "regime": "RANGE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "directionalOutcomeCounts": {
+          "WIN": 0,
+          "LOSS": 1,
+          "FLAT": 0
+        },
+        "breakEvenEvidence": {
+          "positiveCostBudgetCount": 0,
+          "positiveCostBudgetRate": 0,
+          "meanGrossDirectionalReturnBps": -5.67072,
+          "medianGrossDirectionalReturnBps": -5.67072,
+          "meanBreakEvenRoundTripCostBps": 0,
+          "p25BreakEvenRoundTripCostBps": 0,
+          "medianBreakEvenRoundTripCostBps": 0,
+          "p75BreakEvenRoundTripCostBps": 0,
+          "maximumObservedBreakEvenRoundTripCostBps": 0
+        },
+        "costBinding": {
+          "status": "UNBOUND",
+          "actualRoundTripCostBps": null,
+          "providerCostClaim": false,
+          "netReturnAvailable": false,
+          "profitabilityClaim": false
+        },
+        "firstTargetCloseTimestampMs": 1787311500000,
+        "lastTargetCloseTimestampMs": 1787311500000,
+        "contentSha256": "7bfac13b6544487829a83960cf5e325251d9e759c4838c665af5fafd7622ae8e"
+      },
+      {
         "id": "USDJPY-5m-secondary-30m-LONDON-TREND",
         "assetClass": "fx",
         "instrument": "USDJPY",
@@ -7749,18 +8029,18 @@
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-cost-analysis-collector-v1",
-    "startedAtMs": 1787312523646,
-    "finishedAtMs": 1787312523681,
-    "durationMs": 35,
+    "startedAtMs": 1787314514350,
+    "finishedAtMs": 1787314514535,
+    "durationMs": 185,
     "cadenceMinutes": 15,
-    "githubRunId": "32478394110",
+    "githubRunId": "32480985138",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 422,
-      "existingAnalyses": 410,
+      "outcomesRead": 434,
+      "existingAnalyses": 422,
       "newAnalyses": 12,
-      "newDirectionalAnalyses": 5,
-      "newWaitAnalyses": 7,
+      "newDirectionalAnalyses": 7,
+      "newWaitAnalyses": 5,
       "positiveCostBudgetNew": 4,
       "archiveAdded": 12,
       "archiveDuplicates": 0,
