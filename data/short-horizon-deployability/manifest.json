@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-deployability-manifest-v1",
   "archiveVersion": "short-horizon-deployability-archive-v1",
-  "updatedAtMs": 1787269043263,
+  "updatedAtMs": 1787277316870,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-deployability-data",
@@ -57,10 +57,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 71,
+    "recordCount": 75,
     "fileCount": 2,
     "duplicateAssessmentIdCount": 0,
-    "contentSha256": "e731549a46dbeb1b18afbc9dc9e1d5bc44df84ddd5e12c76e2a495258d2b89f8",
+    "contentSha256": "cb03ea8ae8093036f882f8cc229bdb617e16cf64d7aa292b3f28e5089e8f41fe",
     "groups": [
       {
         "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -329,14 +329,14 @@
         "horizonMinutes": 5,
         "primarySession": "OFF_HOURS",
         "regime": "VOLATILE",
-        "recordCount": 1,
-        "directionalCount": 1,
+        "recordCount": 2,
+        "directionalCount": 2,
         "waitCount": 0,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.503297,
+          "meanPublishedReferenceSpreadCostBps": 0.503395,
           "directionalPublishedSpreadWithinBreakEvenCount": 0,
           "directionalPublishedSpreadWithinBreakEvenRate": 0,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.503297,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.503395,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -347,8 +347,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787260080000,
-        "lastTargetCloseTimestampMs": 1787260080000,
-        "contentSha256": "62468f88b70eeaecd412c760468972050b45bec63a18a960851a496f07737e06"
+        "lastTargetCloseTimestampMs": 1787268120000,
+        "contentSha256": "cf6130da82fc9b8bab3bb0808641407d91327d1f99513836e76f49bfe06b76fa"
       },
       {
         "id": "USDJPY-1m-secondary-15m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -617,14 +617,14 @@
         "horizonMinutes": 15,
         "primarySession": "OFF_HOURS",
         "regime": "VOLATILE",
-        "recordCount": 1,
-        "directionalCount": 1,
+        "recordCount": 2,
+        "directionalCount": 2,
         "waitCount": 0,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.503297,
-          "directionalPublishedSpreadWithinBreakEvenCount": 0,
-          "directionalPublishedSpreadWithinBreakEvenRate": 0,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.503297,
+          "meanPublishedReferenceSpreadCostBps": 0.503395,
+          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0.5,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.125775,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -635,8 +635,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787260680000,
-        "lastTargetCloseTimestampMs": 1787260680000,
-        "contentSha256": "a386da1e640458c3f3b7e9f025868d1566426a61e1759e27f1fbadc8c1eb46cb"
+        "lastTargetCloseTimestampMs": 1787268720000,
+        "contentSha256": "ad4d6111b312b7e1ab5d4504a3e731c330acc31d8221e98cb838fc1bff27fe3e"
       },
       {
         "id": "USDJPY-5m-primary-15m-LONDON_NEW_YORK_OVERLAP-TREND",
@@ -809,14 +809,14 @@
         "horizonMinutes": 15,
         "primarySession": "OFF_HOURS",
         "regime": "TREND",
-        "recordCount": 3,
-        "directionalCount": 1,
+        "recordCount": 4,
+        "directionalCount": 2,
         "waitCount": 2,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.503064,
+          "meanPublishedReferenceSpreadCostBps": 0.503159,
           "directionalPublishedSpreadWithinBreakEvenCount": 1,
-          "directionalPublishedSpreadWithinBreakEvenRate": 1,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 1.132353,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0.5,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 0.440316,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -827,8 +827,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787262900000,
-        "lastTargetCloseTimestampMs": 1787267400000,
-        "contentSha256": "41417afb03c2171d7b0ff78b6303f7da1fb281ebac617982a2811957fa5f3a9a"
+        "lastTargetCloseTimestampMs": 1787268600000,
+        "contentSha256": "2ca8e29adf33cfe13b53805b87cf7dd3e46524380c53cb882e546a9fd7a5089c"
       },
       {
         "id": "USDJPY-5m-secondary-30m-LONDON_NEW_YORK_OVERLAP-TREND",
@@ -1001,14 +1001,14 @@
         "horizonMinutes": 30,
         "primarySession": "OFF_HOURS",
         "regime": "TREND",
-        "recordCount": 2,
-        "directionalCount": 0,
+        "recordCount": 3,
+        "directionalCount": 1,
         "waitCount": 2,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.502963,
-          "directionalPublishedSpreadWithinBreakEvenCount": 0,
-          "directionalPublishedSpreadWithinBreakEvenRate": null,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
+          "meanPublishedReferenceSpreadCostBps": 0.503064,
+          "directionalPublishedSpreadWithinBreakEvenCount": 1,
+          "directionalPublishedSpreadWithinBreakEvenRate": 1,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 3.900328,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -1019,30 +1019,30 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787263800000,
-        "lastTargetCloseTimestampMs": 1787264700000,
-        "contentSha256": "a5c448bb106fda80e3e34a664e81f820a784b65cd7bdfddfc7b7619ec39feb3d"
+        "lastTargetCloseTimestampMs": 1787268300000,
+        "contentSha256": "fb21a30fc337d3972efe979f71e8730c935d1df5832df213ed67036ab16bfb04"
       }
     ]
   },
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-deployability-collector-v1",
-    "startedAtMs": 1787269043151,
-    "finishedAtMs": 1787269043257,
-    "durationMs": 106,
+    "startedAtMs": 1787277316828,
+    "finishedAtMs": 1787277316862,
+    "durationMs": 34,
     "cadenceMinutes": 60,
-    "githubRunId": "32429403538",
+    "githubRunId": "32437980343",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 221,
-      "costAnalysesRead": 221,
-      "eligibleUsdJpyCostAnalyses": 71,
-      "excludedNonUsdJpyCostAnalyses": 150,
-      "existingAssessments": 62,
-      "newAssessments": 9,
-      "newDirectionalAssessments": 7,
-      "newWaitAssessments": 2,
-      "archiveAdded": 9,
+      "outcomesRead": 245,
+      "costAnalysesRead": 233,
+      "eligibleUsdJpyCostAnalyses": 75,
+      "excludedNonUsdJpyCostAnalyses": 158,
+      "existingAssessments": 71,
+      "newAssessments": 4,
+      "newDirectionalAssessments": 4,
+      "newWaitAssessments": 0,
+      "archiveAdded": 4,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 2
     }
