@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-manifest-v1",
   "archiveVersion": "short-horizon-archive-v1",
-  "updatedAtMs": 1787297052827,
+  "updatedAtMs": 1787299565692,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-data",
@@ -32,16 +32,16 @@
       "venue": "dukascopy",
       "timeframeMinutes": 1,
       "continuityMode": "sessioned",
-      "recordCount": 5442,
+      "recordCount": 5484,
       "fileCount": 5,
       "firstSourceTimestampMs": 1786969800000,
-      "lastSourceTimestampMs": 1787296980000,
+      "lastSourceTimestampMs": 1787299500000,
       "gapCount": null,
       "missingBars": null,
       "rawGapCount": 9,
       "largestGapMinutes": 4,
       "duplicateKeyCount": 0,
-      "contentSha256": "a4bd66f0962f6956805897eb45f7a6fb47c3937a94bae9d9ffa972b7dc853024"
+      "contentSha256": "6758e207e7f6722b8637002fbcd83d5db963354c4876a1d9c138eee444a9846a"
     },
     {
       "id": "USDJPY-5m",
@@ -50,32 +50,32 @@
       "venue": "dukascopy",
       "timeframeMinutes": 5,
       "continuityMode": "sessioned",
-      "recordCount": 1081,
+      "recordCount": 1090,
       "fileCount": 5,
       "firstSourceTimestampMs": 1786969800000,
-      "lastSourceTimestampMs": 1787296500000,
+      "lastSourceTimestampMs": 1787299200000,
       "gapCount": null,
       "missingBars": null,
       "rawGapCount": 9,
       "largestGapMinutes": 10,
       "duplicateKeyCount": 0,
-      "contentSha256": "bff3b952afdfee11b7ea666333406c417987cfde2a77a8ebf9ee151408a3edc3"
+      "contentSha256": "c78a212f8bd784abc83217543c6345a769f94363d393b3dbd50b69cac4bfff89"
     }
   ],
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-fx-collector-v1",
     "providerVersion": "short-horizon-dukascopy-fx-v1",
-    "startedAtMs": 1787297052279,
-    "finishedAtMs": 1787297052783,
-    "durationMs": 504,
+    "startedAtMs": 1787299565149,
+    "finishedAtMs": 1787299565647,
+    "durationMs": 498,
     "lookbackHours": 72,
-    "githubRunId": "32458459537",
+    "githubRunId": "32461600272",
     "githubRunAttempt": "1",
     "aggregate": {
       "fetched": 5169,
-      "added": 103,
-      "duplicates": 5066,
+      "added": 51,
+      "duplicates": 5118,
       "conflicts": 0,
       "filesTouched": 2
     },
@@ -83,19 +83,19 @@
       {
         "id": "USDJPY-1m",
         "fetched": 4312,
-        "firstSourceTimestampMs": 1787037900000,
-        "lastSourceTimestampMs": 1787296980000,
-        "added": 86,
-        "duplicates": 4226,
+        "firstSourceTimestampMs": 1787040420000,
+        "lastSourceTimestampMs": 1787299500000,
+        "added": 42,
+        "duplicates": 4270,
         "filesTouched": 1
       },
       {
         "id": "USDJPY-5m",
         "fetched": 857,
-        "firstSourceTimestampMs": 1787037900000,
-        "lastSourceTimestampMs": 1787296500000,
-        "added": 17,
-        "duplicates": 840,
+        "firstSourceTimestampMs": 1787040600000,
+        "lastSourceTimestampMs": 1787299200000,
+        "added": 9,
+        "duplicates": 848,
         "filesTouched": 1
       }
     ]
