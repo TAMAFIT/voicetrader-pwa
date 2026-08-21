@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-deployability-manifest-v1",
   "archiveVersion": "short-horizon-deployability-archive-v1",
-  "updatedAtMs": 1787340906702,
+  "updatedAtMs": 1787344651539,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-deployability-data",
@@ -57,10 +57,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 173,
+    "recordCount": 184,
     "fileCount": 4,
     "duplicateAssessmentIdCount": 0,
-    "contentSha256": "84272b5d136630501ef0c92ee920659e480421ea8ce73cb804036390d88da672",
+    "contentSha256": "a221febbb7cf8d549a4d9f5fde24da76eb70f0b6188c8618e946cbb174e1598b",
     "groups": [
       {
         "id": "USDJPY-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -265,11 +265,11 @@
         "horizonMinutes": 5,
         "primarySession": "NEW_YORK",
         "regime": "COMPRESSION",
-        "recordCount": 3,
+        "recordCount": 4,
         "directionalCount": 0,
-        "waitCount": 3,
+        "waitCount": 4,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.502944,
+          "meanPublishedReferenceSpreadCostBps": 0.502975,
           "directionalPublishedSpreadWithinBreakEvenCount": 0,
           "directionalPublishedSpreadWithinBreakEvenRate": null,
           "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
@@ -283,8 +283,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787245440000,
-        "lastTargetCloseTimestampMs": 1787255280000,
-        "contentSha256": "8d9c37aa29b8632d7206188dc65d78b3a5ea115b6d03a6721fe645ee2636b0ed"
+        "lastTargetCloseTimestampMs": 1787341140000,
+        "contentSha256": "2278d6ec16baa5284adf6a2f4d9a55cf1e295d99c37bb0e0b798be198b4232b8"
       },
       {
         "id": "USDJPY-1m-primary-5m-NEW_YORK-RANGE",
@@ -329,14 +329,14 @@
         "horizonMinutes": 5,
         "primarySession": "NEW_YORK",
         "regime": "TREND",
-        "recordCount": 6,
-        "directionalCount": 5,
+        "recordCount": 7,
+        "directionalCount": 6,
         "waitCount": 1,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.502914,
+          "meanPublishedReferenceSpreadCostBps": 0.502939,
           "directionalPublishedSpreadWithinBreakEvenCount": 2,
-          "directionalPublishedSpreadWithinBreakEvenRate": 0.4,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 0.176076,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0.333333,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 0.062882,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -347,8 +347,40 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787243520000,
-        "lastTargetCloseTimestampMs": 1787337000000,
-        "contentSha256": "3362e656d5ed933e35181f0ad2da72dee8a03cdc88a10297368c96a7ed02a536"
+        "lastTargetCloseTimestampMs": 1787339400000,
+        "contentSha256": "5a3434ea2800d1b957cc6c33aa1689554a6fb7c3409be92dba441f336891b030"
+      },
+      {
+        "id": "USDJPY-1m-primary-5m-NEW_YORK-VOLATILE",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "primary",
+        "horizonMinutes": 5,
+        "primarySession": "NEW_YORK",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503176,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.503176,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787342340000,
+        "lastTargetCloseTimestampMs": 1787342340000,
+        "contentSha256": "73fd4d998248b38a2bda2b508211e489fdee2e87dbc5636ba54a98ead88e8e95"
       },
       {
         "id": "USDJPY-1m-primary-5m-OFF_HOURS-COMPRESSION",
@@ -873,11 +905,11 @@
         "horizonMinutes": 15,
         "primarySession": "NEW_YORK",
         "regime": "COMPRESSION",
-        "recordCount": 3,
+        "recordCount": 4,
         "directionalCount": 0,
-        "waitCount": 3,
+        "waitCount": 4,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.502944,
+          "meanPublishedReferenceSpreadCostBps": 0.502975,
           "directionalPublishedSpreadWithinBreakEvenCount": 0,
           "directionalPublishedSpreadWithinBreakEvenRate": null,
           "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": null,
@@ -891,8 +923,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787246040000,
-        "lastTargetCloseTimestampMs": 1787255880000,
-        "contentSha256": "2cf4a607d1b3d21c9a27508f8c2a109db8f25efbbfd2d6d530b00c820c0f7fb8"
+        "lastTargetCloseTimestampMs": 1787341740000,
+        "contentSha256": "171e1342340dedf324e7c649b6dc193a257e652a47f5b5754769525f9fa516d0"
       },
       {
         "id": "USDJPY-1m-secondary-15m-NEW_YORK-RANGE",
@@ -937,14 +969,14 @@
         "horizonMinutes": 15,
         "primarySession": "NEW_YORK",
         "regime": "TREND",
-        "recordCount": 6,
-        "directionalCount": 5,
+        "recordCount": 7,
+        "directionalCount": 6,
         "waitCount": 1,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.502914,
+          "meanPublishedReferenceSpreadCostBps": 0.502939,
           "directionalPublishedSpreadWithinBreakEvenCount": 1,
-          "directionalPublishedSpreadWithinBreakEvenRate": 0.2,
-          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.326879,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0.166667,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.356247,
           "actualProviderCostBinding": false,
           "actualNetEvAvailable": false
         },
@@ -955,8 +987,40 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787244120000,
-        "lastTargetCloseTimestampMs": 1787337600000,
-        "contentSha256": "e3d024f5d494ecb28068a96229868dfedce466ebc11f55a6b6543480fd67f63d"
+        "lastTargetCloseTimestampMs": 1787340000000,
+        "contentSha256": "2c189363f08cbe075df09d7a7ff2bc88f38572c7aa87d050f5a3261d9bf18188"
+      },
+      {
+        "id": "USDJPY-1m-secondary-15m-NEW_YORK-VOLATILE",
+        "providerId": "oanda-japan-ny-pro-rest-v1",
+        "assetClass": "fx",
+        "researchInstrument": "USDJPY",
+        "researchVenue": "dukascopy",
+        "timeframeMinutes": 1,
+        "horizonKind": "secondary",
+        "horizonMinutes": 15,
+        "primarySession": "NEW_YORK",
+        "regime": "VOLATILE",
+        "recordCount": 1,
+        "directionalCount": 1,
+        "waitCount": 0,
+        "publishedReferenceEvidence": {
+          "meanPublishedReferenceSpreadCostBps": 0.503176,
+          "directionalPublishedSpreadWithinBreakEvenCount": 0,
+          "directionalPublishedSpreadWithinBreakEvenRate": 0,
+          "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.503176,
+          "actualProviderCostBinding": false,
+          "actualNetEvAvailable": false
+        },
+        "deployability": {
+          "providerReferenceReady": true,
+          "operatorAccountEligibility": "UNVERIFIED",
+          "executableQuoteObserved": false,
+          "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
+        },
+        "firstTargetCloseTimestampMs": 1787342940000,
+        "lastTargetCloseTimestampMs": 1787342940000,
+        "contentSha256": "9d4218ed0634c4fef9bdba26e7387d0aa8ed12eadfee52912ae6e815a1704399"
       },
       {
         "id": "USDJPY-1m-secondary-15m-OFF_HOURS-COMPRESSION",
@@ -1481,11 +1545,11 @@
         "horizonMinutes": 15,
         "primarySession": "NEW_YORK",
         "regime": "COMPRESSION",
-        "recordCount": 8,
+        "recordCount": 11,
         "directionalCount": 3,
-        "waitCount": 5,
+        "waitCount": 8,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.502851,
+          "meanPublishedReferenceSpreadCostBps": 0.502927,
           "directionalPublishedSpreadWithinBreakEvenCount": 1,
           "directionalPublishedSpreadWithinBreakEvenRate": 0.333333,
           "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": -0.188557,
@@ -1499,8 +1563,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787249400000,
-        "lastTargetCloseTimestampMs": 1787337600000,
-        "contentSha256": "6fdf47212b9d4428615bfce818af1632ae6acc330304277b2b2123780d23bd16"
+        "lastTargetCloseTimestampMs": 1787342700000,
+        "contentSha256": "f2af7d0cc938106764c391cbee602cfade7faa9670d70c69515ff3e49ab1cb13"
       },
       {
         "id": "USDJPY-5m-primary-15m-NEW_YORK-TREND",
@@ -1993,11 +2057,11 @@
         "horizonMinutes": 30,
         "primarySession": "NEW_YORK",
         "regime": "COMPRESSION",
-        "recordCount": 8,
+        "recordCount": 10,
         "directionalCount": 3,
-        "waitCount": 5,
+        "waitCount": 7,
         "publishedReferenceEvidence": {
-          "meanPublishedReferenceSpreadCostBps": 0.502851,
+          "meanPublishedReferenceSpreadCostBps": 0.502893,
           "directionalPublishedSpreadWithinBreakEvenCount": 1,
           "directionalPublishedSpreadWithinBreakEvenRate": 0.333333,
           "meanDirectionalMarginToBreakEvenAfterPublishedSpreadBps": 0.209561,
@@ -2011,8 +2075,8 @@
           "readinessStatus": "REFERENCE_READY_OPERATOR_ELIGIBILITY_UNVERIFIED"
         },
         "firstTargetCloseTimestampMs": 1787250300000,
-        "lastTargetCloseTimestampMs": 1787338500000,
-        "contentSha256": "71672b082c25fc3aba290e814e8ee1fda3cc60e49dd06828bccd4223c85f388f"
+        "lastTargetCloseTimestampMs": 1787342400000,
+        "contentSha256": "f9e317c47dd5878a9f751c940588e51c604a561174a98dbd8c8e49882b4f4006"
       },
       {
         "id": "USDJPY-5m-secondary-30m-NEW_YORK-TREND",
@@ -2307,22 +2371,22 @@
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-deployability-collector-v1",
-    "startedAtMs": 1787340906651,
-    "finishedAtMs": 1787340906688,
-    "durationMs": 37,
+    "startedAtMs": 1787344651473,
+    "finishedAtMs": 1787344651522,
+    "durationMs": 49,
     "cadenceMinutes": 60,
-    "githubRunId": "32519199901",
+    "githubRunId": "32524495997",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 574,
-      "costAnalysesRead": 565,
-      "eligibleUsdJpyCostAnalyses": 173,
-      "excludedNonUsdJpyCostAnalyses": 392,
-      "existingAssessments": 165,
-      "newAssessments": 8,
-      "newDirectionalAssessments": 2,
-      "newWaitAssessments": 6,
-      "archiveAdded": 8,
+      "outcomesRead": 598,
+      "costAnalysesRead": 598,
+      "eligibleUsdJpyCostAnalyses": 184,
+      "excludedNonUsdJpyCostAnalyses": 414,
+      "existingAssessments": 173,
+      "newAssessments": 11,
+      "newDirectionalAssessments": 4,
+      "newWaitAssessments": 7,
+      "archiveAdded": 11,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 2
     }
