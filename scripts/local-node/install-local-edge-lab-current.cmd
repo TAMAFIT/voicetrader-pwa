@@ -4,7 +4,7 @@ setlocal EnableExtensions
 set "V084_UPGRADER_SOURCE=d6f0762e245b50411f98a00358549361624b2c2f"
 set "V084_RUNTIME=dd76d0d72aa2b57aac933bc6f7016d9f7453d55d"
 set "V085_SOURCE=3e5658e4462264614c7830d5b7c757303e4bccb8"
-set "V086_SOURCE=3e5658e4462264614c7830d5b7c757303e4bccb8"
+set "V086_SOURCE=d2ed6c5fbb49ff4d69af0f5b868ccc7dabf508f4"
 set "V084_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%V084_UPGRADER_SOURCE%/scripts/local-node/upgrade-v084-windows.ps1"
 set "V085_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%V085_SOURCE%/scripts/local-node/install-v085-reboot-recovery.cmd"
 set "V086_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%V086_SOURCE%/scripts/local-node/install-v086-soak-certification.cmd"
@@ -34,6 +34,8 @@ echo v0.85: genuine reboot recovery witness
 echo v0.86: 24h continuous soak certification
 
 echo PowerShell receipt path collision guard: ON
+
+echo PowerShell alias collision guard: ON
 
 echo Real money / orders / cloud upload: OFF
 
