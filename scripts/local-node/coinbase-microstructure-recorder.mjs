@@ -17,8 +17,9 @@ function appendIntegrity(rootDir,evidence){const file=partitionedPath(rootDir,'b
 function appendMicrostructure(rootDir,record){const file=partitionedPath(rootDir,'microstructure',record.productId,record.receivedTimestampMs);fs.mkdirSync(path.dirname(file),{recursive:true});fs.appendFileSync(file,JSON.stringify(record)+'\n','utf8');}
 
 export function evaluateCoinbaseProviderSequence(previous,current){
-  const prev=Number(previous),cur=Number(current),hasPrev=Number.isInteger(prev)&&prev>=0;
-  if(!Number.isInteger(cur)||cur<0)return {status:'INVALID',verified:false,previous:hasPrev?prev:null,current:Number.isFinite(cur)?cur:null,reconnectRequired:true};
+  const hasPrev=previous!==null&&previous!==undefined&&Number.isInteger(Number(previous))&&Number(previous)>=0,hasCurrent=current!==null&&current!==undefined&&Number.isInteger(Number(current))&&Number(current)>=0;
+  const prev=hasPrev?Number(previous):null,cur=hasCurrent?Number(current):null;
+  if(!hasCurrent)return {status:'INVALID',verified:false,previous:prev,current:null,reconnectRequired:true};
   if(!hasPrev)return {status:'BASELINE',verified:true,previous:null,current:cur,reconnectRequired:false};
   if(cur===prev+1)return {status:'CONTIGUOUS',verified:true,previous:prev,current:cur,reconnectRequired:false};
   if(cur<=prev)return {status:'OUT_OF_ORDER',verified:false,previous:prev,current:cur,reconnectRequired:true};
