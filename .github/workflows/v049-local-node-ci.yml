@@ -1,0 +1,39 @@
+name: v0.49 Local Node CI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact ref
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Validate Local Node source
+        run: |
+          node --check src/short-horizon/local-node-gmo-tick.js
+          node --check scripts/local-node/gmo-fx-tick-recorder.mjs
+          node scripts/test-short-horizon-local-node.mjs
+
+      - name: Assert cloud-cost boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q "googleCloudEnabled:false" src/short-horizon/local-node-gmo-tick.js
+          grep -q "cloudUploadEnabled:false" src/short-horizon/local-node-gmo-tick.js
+          grep -q "githubActionsRequired:false" src/short-horizon/local-node-gmo-tick.js
+          if grep -R -E "@google-cloud|googleapis|storage\.googleapis|run\.app|pubsub|bigquery" \
+            src/short-horizon/local-node-gmo-tick.js scripts/local-node/gmo-fx-tick-recorder.mjs; then
+            echo 'Unexpected Google Cloud dependency or endpoint in Local Node runtime.' >&2
+            exit 1
+          fi
