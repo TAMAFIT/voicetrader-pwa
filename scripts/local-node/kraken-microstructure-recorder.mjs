@@ -10,8 +10,9 @@ import {
   buildKrakenWireMeta,
 } from '../../src/short-horizon/local-node-kraken-wire.js';
 import { KrakenBookIntegrityTracker } from '../../src/short-horizon/kraken-book-integrity.js';
+import { snapshotKrakenBookState, buildBookMicrostructureFeature, extractTradeMicrostructureFeatures } from '../../src/short-horizon/kraken-microstructure-features.js';
 
-export const KRAKEN_LOCAL_RECORDER_VERSION='kraken-local-microstructure-recorder-v2';
+export const KRAKEN_LOCAL_RECORDER_VERSION='kraken-local-microstructure-recorder-v3';
 const GiB=1024**3;
 
 function parseArgs(argv){const out={warnFreeBytes:50*GiB,hardStopFreeBytes:10*GiB};for(let i=0;i<argv.length;i+=1){if(argv[i]==='--root')out.rootDir=argv[++i];else if(argv[i]==='--warn-free-gb')out.warnFreeBytes=Number(argv[++i])*GiB;else if(argv[i]==='--hard-stop-free-gb')out.hardStopFreeBytes=Number(argv[++i])*GiB;}return out;}
@@ -25,6 +26,12 @@ function integrityPath(rootDir, timestampMs) {
   return path.join(path.resolve(rootDir),'derived','kraken','book-integrity',String(d.getUTCFullYear()),pad(d.getUTCMonth()+1),pad(d.getUTCDate()),`${pad(d.getUTCHours())}.ndjson`);
 }
 function appendIntegrity(rootDir,evidence){const file=integrityPath(rootDir,evidence.receivedTimestampMs);fs.mkdirSync(path.dirname(file),{recursive:true});fs.appendFileSync(file,JSON.stringify(evidence)+'\n','utf8');}
+
+function microstructurePath(rootDir, symbol, timestampMs) {
+  const d=new Date(timestampMs); const pad=(v)=>String(v).padStart(2,'0'); const instrument=String(symbol).replace('/','');
+  return path.join(path.resolve(rootDir),'derived','kraken','microstructure',instrument,String(d.getUTCFullYear()),pad(d.getUTCMonth()+1),pad(d.getUTCDate()),`${pad(d.getUTCHours())}.ndjson`);
+}
+function appendMicrostructure(rootDir,record){const file=microstructurePath(rootDir,record.symbol,record.receivedTimestampMs);fs.mkdirSync(path.dirname(file),{recursive:true});fs.appendFileSync(file,JSON.stringify(record)+'\n','utf8');}
 
 export function persistKrakenWireMessage({rootDir,rawText,receivedTimestampMs=Date.now(),connectionId,sequence}){
   const raw=String(rawText??'');
@@ -50,7 +57,7 @@ export async function runKrakenRecorder({
   fs.mkdirSync(path.resolve(rootDir),{recursive:true});
   let sequence=0,reconnects=0,backoffMs=1000;
   const startedAtMs=now();
-  const counts={messages:0,book:0,trade:0,heartbeat:0,ack:0,parseErrors:0,bytes:0,checksumMatches:0,checksumMismatches:0};
+  const counts={messages:0,book:0,trade:0,heartbeat:0,ack:0,parseErrors:0,bytes:0,checksumMatches:0,checksumMismatches:0,bookFeatures:0,bookOfiFeatures:0,tradeFeatures:0};
   let lastMessageAtMs=null,lastBookAtMs=null,lastTradeAtMs=null,lastConnectionId=null,lastHealthWrite=0;
   let bookState={};
 
@@ -61,7 +68,7 @@ export async function runKrakenRecorder({
     connection:{lastConnectionId,reconnects,lastMessageAtMs,lastBookAtMs,lastTradeAtMs,backoffMs},
     counts:{...counts},storage:{freeBytes:freeBytes(rootDir),warnFreeBytes,hardStopFreeBytes,wireFormat:'RFC7464_JSON_TEXT_SEQUENCE_PLUS_NDJSON_META',hourlyPartition:true},
     integrity:{exactProviderTextPreserved:true,perMessageSha256:true,wireMetaAlignmentAudited:false,bookChecksumObserved:true,bookChecksumVerified:counts.checksumMatches>0&&counts.checksumMismatches===0,bookSynchronizationVerified:Object.values(bookState).length>0&&Object.values(bookState).every((s)=>s.trusted===true),bookState},
-    semantics:{ofiAvailable:false,micropriceAvailable:false,tradesObserved:true,l2BookMessagesObserved:true},
+    semantics:{ofiAvailable:counts.bookOfiFeatures>0,micropriceAvailable:counts.bookFeatures>0,tradesObserved:true,l2BookMessagesObserved:true,predictionInputAuthorized:false},
     runtimePolicy:{googleCloudEnabled:false,cloudUploadEnabled:false,githubActionsRequired:false,authenticationRequired:false,orderSubmission:false,realMoneyRouting:false},
     error:error?String(error):null,
   });
@@ -100,12 +107,21 @@ export async function runKrakenRecorder({
           counts.messages+=1;counts.bytes+=persisted.meta.byteLength;if(!persisted.meta.parseOk)counts.parseErrors+=1;
           if(persisted.meta.isBook){
             counts.book+=1;lastBookAtMs=received;
+            const previousBooks={};for(const symbol of persisted.meta.symbols)previousBooks[symbol]=snapshotKrakenBookState(bookTracker.state(symbol),{depth:10});
             const integrity=bookTracker.applyRawMessage(raw,{receivedTimestampMs:received,sourceSha256:persisted.meta.sourceSha256,sequence});
-            for(const item of integrity){appendIntegrity(rootDir,item);if(item.status==='MATCH')counts.checksumMatches+=1;if(item.status==='MISMATCH')counts.checksumMismatches+=1;}
+            for(const item of integrity){
+              appendIntegrity(rootDir,item);if(item.status==='MATCH')counts.checksumMatches+=1;if(item.status==='MISMATCH')counts.checksumMismatches+=1;
+              if(item.status==='MATCH'){
+                const current=snapshotKrakenBookState(bookTracker.state(item.symbol),{depth:10});
+                const feature=buildBookMicrostructureFeature({symbol:item.symbol,previous:previousBooks[item.symbol],current,integrityEvidence:item,receivedTimestampMs:received,sourceSha256:persisted.meta.sourceSha256,sequence});
+                if(feature){appendMicrostructure(rootDir,feature);counts.bookFeatures+=1;if(feature.book.ofi!=null)counts.bookOfiFeatures+=1;}
+              }
+            }
             bookState=bookTracker.snapshot();
             if(integrity.some((item)=>item.status==='MISMATCH')){terminalError=new Error('kraken-book-checksum-mismatch');finish(terminalError);return;}
           }
-          if(persisted.meta.isTrade){counts.trade+=1;lastTradeAtMs=received;}if(persisted.meta.isHeartbeat)counts.heartbeat+=1;if(persisted.meta.isAck)counts.ack+=1;lastMessageAtMs=received;
+          if(persisted.meta.isTrade){counts.trade+=1;lastTradeAtMs=received;const tradeFeatures=extractTradeMicrostructureFeatures(raw,{receivedTimestampMs:received,sourceSha256:persisted.meta.sourceSha256,sequence});for(const feature of tradeFeatures){appendMicrostructure(rootDir,feature);counts.tradeFeatures+=1;}}
+          if(persisted.meta.isHeartbeat)counts.heartbeat+=1;if(persisted.meta.isAck)counts.ack+=1;lastMessageAtMs=received;
           const freeNow=freeBytes(rootDir);if(Number.isFinite(freeNow)&&freeNow<hardStopFreeBytes){terminalError=new Error(`disk-free-hard-stop:${freeNow}`);finish(terminalError);return;}
           maybeHealth('RUNNING');
         });
