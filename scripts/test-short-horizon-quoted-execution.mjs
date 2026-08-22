@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { aggregateMicrostructureEvents } from '../src/short-horizon/kraken-boundary-windows.js';
+import { buildProspectiveSignals,matureProspectiveOutcome } from '../src/short-horizon/short-horizon-prospective-experiment.js';
+import { createScorecardState,updateScorecardState,buildScorecardSnapshot } from '../src/short-horizon/prospective-scorecard.js';
+const base=Date.parse('2026-08-22T00:04:50Z');
+const book=(t,bid,ask,ofi=1)=>({eventType:'BOOK',symbol:'BTC/USD',receivedTimestampMs:t,book:{bestBid:{price:bid,qty:2},bestAsk:{price:ask,qty:1},mid:(bid+ask)/2,spreadBps:(ask-bid)/((bid+ask)/2)*10000,micropriceMinusMid:.01,ofi,top1Imbalance:.2,depthImbalance:.1,bidDepth:10,askDepth:9}});
+const input=aggregateMicrostructureEvents([book(base+100,99.9,100.1),book(base+4900,99.9,100.1)],{windowSec:5,nowMs:base+6000})[0];
+assert.equal(input.price.closeBid,99.9);assert.equal(input.price.closeAsk,100.1);
+const signal=buildProspectiveSignals(input,{generatedAtMs:input.endTimestampMs})[0];
+assert.equal(signal.evidence.entryBid,99.9);assert.equal(signal.evidence.entryAsk,100.1);assert.equal(signal.decision,'LONG');
+const exitStart=input.endTimestampMs+4000;const future=aggregateMicrostructureEvents([book(exitStart+100,100.4,100.6)],{windowSec:1,nowMs:exitStart+2000})[0];future.targetHorizonSec=5;
+const outcome=matureProspectiveOutcome(signal,future,{maturedAtMs:future.endTimestampMs+100});
+assert.equal(outcome.quotedExecution.available,true);assert.ok(outcome.directionalReturnBps>outcome.quotedExecution.quotedDirectionalReturnBps);assert.equal(outcome.governance.observedSpreadEmbedded,true);assert.equal(outcome.governance.actualNetEvAvailable,false);
+const losingSpread={...outcome,outcomeId:'spread-flip',directionalReturnBps:.5,result:'WIN',quotedExecution:{...outcome.quotedExecution,quotedDirectionalReturnBps:-.5},quotedResult:'LOSS'};
+const state=createScorecardState();updateScorecardState(state,losingSpread);const snap=buildScorecardSnapshot(state);assert.equal(snap.groups[0].mid.wins,1);assert.equal(snap.groups[0].quoted.losses,1);assert.equal(snap.governance.actualNetEvAvailable,false);
+console.log('v0.61 quoted execution tests PASS');
