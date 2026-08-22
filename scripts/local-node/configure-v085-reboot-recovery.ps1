@@ -13,12 +13,12 @@ $BaseConfig=Join-Path $DataRoot 'state\local-node-config.json'
 $Stamp=(Get-Date).ToUniversalTime().ToString('yyyyMMdd-HHmmss')
 $Staging=Join-Path $DataRoot "staging\voicetrader-v085-$Stamp"
 $Backup=Join-Path $DataRoot "runtime-backups\voicetrader-before-v085-overlay-$Stamp"
-$Receipt=Join-Path $DataRoot 'state\local-edge-lab-v085-config.json'
+$ReceiptPath=Join-Path $DataRoot 'state\local-edge-lab-v085-config.json'
 $TaskName='VoiceTrader-LocalNode-RebootWitness'
 
 function Test-Administrator {$id=[Security.Principal.WindowsIdentity]::GetCurrent();$p=[Security.Principal.WindowsPrincipal]::new($id);return $p.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)}
 function Assert-ExactCommit([string]$Ref){if($Ref -notmatch '^[0-9a-f]{40}$'){throw "OverlayRef must be an exact 40-hex commit SHA. Found: $Ref"}}
-function Save-JsonAtomic([string]$Path,$Value){New-Item -ItemType Directory -Force -Path (Split-Path $Path -Parent)|Out-Null;$tmp="$Path.tmp";$Value|ConvertTo-Json -Depth 12|Set-Content -Encoding UTF8 -Path $tmp;Move-Item -Force $tmp $Path}
+function Save-JsonAtomic([string]$FilePath,$Value){$parent=Split-Path $FilePath -Parent;if([string]::IsNullOrWhiteSpace($parent)){throw "Atomic JSON parent path missing: $FilePath"};New-Item -ItemType Directory -Force -Path $parent|Out-Null;$tmp="$FilePath.tmp";$Value|ConvertTo-Json -Depth 12|Set-Content -Encoding UTF8 -Path $tmp;Move-Item -Force $tmp $FilePath}
 function Staged([string]$r){Join-Path $Staging ($r -replace '/','\')}
 function Runtime([string]$r){Join-Path $RuntimeRoot ($r -replace '/','\')}
 function Download-Overlay([string]$r){$d=Staged $r;New-Item -ItemType Directory -Force -Path (Split-Path $d -Parent)|Out-Null;Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/$Repo/$OverlayRef/$r" -OutFile $d;if(-not(Test-Path $d)-or(Get-Item $d).Length -le 0){throw "Overlay download failed: $r"}}
@@ -85,8 +85,8 @@ try{
   Start-Sleep -Seconds 2
   $afterHealth=Read-Health $nodeExe;if(-not $afterHealth -or $afterHealth.status -ne 'PASS'){throw 'v0.84 health regressed after v0.85 overlay'}
 
-  $receipt=[ordered]@{schemaVersion='voicetrader-local-edge-lab-v085-overlay';installedAt=(Get-Date).ToUniversalTime().ToString('o');dataRoot=$DataRoot;baseRuntimeRef=[string]$v084.exactRuntimeRef;overlayRef=$OverlayRef;installBootId=[string]$baseline.bootId;taskName=$TaskName;rebootRecoveryProven=$false;proofRequirement='NEW_BOOT_ID_AND_V084_HEALTH_PASS';runtimePolicy=[ordered]@{googleCloudEnabled=$false;cloudUploadEnabled=$false;orderSubmission=$false;realMoneyRouting=$false};rollback=[ordered]@{overlayBackup=$Backup;priorTaskCaptured=[bool]$oldTaskXml;dataDirectoriesPreserved=$true}}
-  Save-JsonAtomic $Receipt $receipt
+  $ReceiptRecord=[ordered]@{schemaVersion='voicetrader-local-edge-lab-v085-overlay';installedAt=(Get-Date).ToUniversalTime().ToString('o');dataRoot=$DataRoot;baseRuntimeRef=[string]$v084.exactRuntimeRef;overlayRef=$OverlayRef;installBootId=[string]$baseline.bootId;taskName=$TaskName;rebootRecoveryProven=$false;proofRequirement='NEW_BOOT_ID_AND_V084_HEALTH_PASS';runtimePolicy=[ordered]@{googleCloudEnabled=$false;cloudUploadEnabled=$false;orderSubmission=$false;realMoneyRouting=$false};rollback=[ordered]@{overlayBackup=$Backup;priorTaskCaptured=[bool]$oldTaskXml;dataDirectoriesPreserved=$true}}
+  Save-JsonAtomic $ReceiptPath $ReceiptRecord
 }catch{
   Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue;Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
   foreach($r in $overlayFiles){$dest=Runtime $r;if($hadExisting[$r]){$b=Join-Path $Backup ($r -replace '/','\');Copy-Item -Force $b $dest}else{Remove-Item -Force $dest -ErrorAction SilentlyContinue}}
