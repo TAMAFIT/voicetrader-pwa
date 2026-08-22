@@ -1,6 +1,6 @@
 param(
   [string]$DataRoot = 'X:\XVoiceTraderData',
-  [string]$RepoRef = 'feat/local-node-gmo-tick-v049'
+  [string]$RepoRef = 'e48f351891b5c2a2a45388ae2d0488583e5bf9af'
 )
 
 $ErrorActionPreference = 'Stop'
