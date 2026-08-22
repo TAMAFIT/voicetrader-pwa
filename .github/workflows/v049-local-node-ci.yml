@@ -33,10 +33,12 @@ jobs:
           node --check src/short-horizon/coinbase-boundary-windows.js
           node --check src/short-horizon/cross-venue-replication.js
           node --check src/short-horizon/cross-venue-preregistered-hypothesis.js
+          node --check src/short-horizon/cross-venue-learning-scorecard.js
           node --check scripts/local-node/coinbase-microstructure-recorder.mjs
           node --check scripts/local-node/coinbase-boundary-window-worker.mjs
           node --check scripts/local-node/cross-venue-replication-worker.mjs
           node --check scripts/local-node/cross-venue-preregistered-worker.mjs
+          node --check scripts/local-node/cross-venue-learning-scorecard-worker.mjs
           node scripts/test-short-horizon-local-node-coinbase.mjs
           node scripts/test-short-horizon-coinbase-book-integrity.mjs
           node scripts/test-short-horizon-coinbase-microstructure-features.mjs
@@ -45,6 +47,8 @@ jobs:
           node scripts/test-short-horizon-cross-venue-replication-worker.mjs
           node scripts/test-short-horizon-cross-venue-preregistered.mjs
           node scripts/test-short-horizon-cross-venue-preregistered-worker.mjs
+          node scripts/test-short-horizon-cross-venue-learning-scorecard.mjs
+          node scripts/test-short-horizon-cross-venue-learning-scorecard-worker.mjs
 
       - name: Assert cloud-cost and execution boundary
         shell: bash
@@ -59,11 +63,13 @@ jobs:
           grep -q "predictionInputAuthorized:false" src/short-horizon/coinbase-boundary-windows.js
           grep -q "predictionInputAuthorized:false" src/short-horizon/cross-venue-replication.js
           grep -q "predictionInputAuthorized:false" src/short-horizon/cross-venue-preregistered-hypothesis.js
+          grep -q "predictionInputAuthorized:false" src/short-horizon/cross-venue-learning-scorecard.js
           grep -q "adaptiveLearningAuthorized:false" src/short-horizon/cross-venue-preregistered-hypothesis.js
+          grep -q "blindResultsConsumed:false" src/short-horizon/cross-venue-learning-scorecard.js
           grep -q "crossVenueComparabilityClaim:false" src/short-horizon/cross-venue-replication.js
           grep -q "predictiveReplicationClaim:false" src/short-horizon/cross-venue-replication.js
           grep -q "predictiveReplicationClaim:false" src/short-horizon/cross-venue-preregistered-hypothesis.js
-          grep -q "actualNetEvAvailable:false" src/short-horizon/cross-venue-preregistered-hypothesis.js
+          grep -q "actualNetEvAvailable:false" src/short-horizon/cross-venue-learning-scorecard.js
           grep -q "orderSubmission:false" src/short-horizon/local-node-coinbase-wire.js
           if grep -R -E "@google-cloud|googleapis|storage\.googleapis|run\.app|pubsub|bigquery" \
             src/short-horizon/local-node-gmo-tick.js \
@@ -76,10 +82,12 @@ jobs:
             src/short-horizon/coinbase-boundary-windows.js \
             src/short-horizon/cross-venue-replication.js \
             src/short-horizon/cross-venue-preregistered-hypothesis.js \
+            src/short-horizon/cross-venue-learning-scorecard.js \
             scripts/local-node/coinbase-microstructure-recorder.mjs \
             scripts/local-node/coinbase-boundary-window-worker.mjs \
             scripts/local-node/cross-venue-replication-worker.mjs \
-            scripts/local-node/cross-venue-preregistered-worker.mjs; then
+            scripts/local-node/cross-venue-preregistered-worker.mjs \
+            scripts/local-node/cross-venue-learning-scorecard-worker.mjs; then
             echo 'Unexpected Google Cloud dependency or endpoint in Local Node runtime.' >&2
             exit 1
           fi
