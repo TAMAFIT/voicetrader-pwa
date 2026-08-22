@@ -1,0 +1,50 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {COINBASE_ADVANCED_TRADE_WS_URL,COINBASE_LOCAL_PRODUCTS,buildCoinbaseSubscriptions,buildCoinbaseWirePaths,frameCoinbaseJsonSequence,buildCoinbaseWireMeta} from '../../src/short-horizon/local-node-coinbase-wire.js';
+
+export const COINBASE_LOCAL_RECORDER_VERSION='coinbase-local-public-wire-recorder-v1';
+const GiB=1024**3;
+function parseArgs(argv){const out={warnFreeBytes:50*GiB,hardStopFreeBytes:10*GiB};for(let i=0;i<argv.length;i++){if(argv[i]==='--root')out.rootDir=argv[++i];else if(argv[i]==='--warn-free-gb')out.warnFreeBytes=Number(argv[++i])*GiB;else if(argv[i]==='--hard-stop-free-gb')out.hardStopFreeBytes=Number(argv[++i])*GiB;}return out;}
+function freeBytes(rootDir){try{const s=fs.statfsSync(path.resolve(rootDir));return Number(s.bavail)*Number(s.bsize);}catch{return null;}}
+function appendLog(rootDir,event){const p=buildCoinbaseWirePaths(rootDir,event.atMs||Date.now());fs.mkdirSync(p.logDir,{recursive:true});const f=path.join(p.logDir,`${new Date(event.atMs||Date.now()).toISOString().slice(0,10)}.ndjson`);fs.appendFileSync(f,JSON.stringify(event)+'\n','utf8');}
+function writeHealth(rootDir,state){const p=buildCoinbaseWirePaths(rootDir,Date.now());fs.mkdirSync(p.stateDir,{recursive:true});fs.writeFileSync(p.healthFile,JSON.stringify(state,null,2),'utf8');}
+
+export function persistCoinbaseWireMessage({rootDir,rawText,receivedTimestampMs=Date.now(),connectionId,sequence}){
+  const raw=String(rawText??''),paths=buildCoinbaseWirePaths(rootDir,receivedTimestampMs);fs.mkdirSync(paths.dir,{recursive:true});
+  const meta=buildCoinbaseWireMeta(raw,{receivedTimestampMs,connectionId,sequence});
+  fs.appendFileSync(paths.wireFile,frameCoinbaseJsonSequence(raw));
+  fs.appendFileSync(paths.metaFile,JSON.stringify(meta)+'\n','utf8');
+  return {meta,paths};
+}
+
+export async function runCoinbaseRecorder({rootDir,WebSocketImpl=globalThis.WebSocket,warnFreeBytes=50*GiB,hardStopFreeBytes=10*GiB,now=()=>Date.now(),sleep=(ms)=>new Promise(r=>setTimeout(r,ms)),stopSignal=()=>false}={}){
+  if(!rootDir)throw new Error('coinbase-recorder-root-required');
+  if(typeof WebSocketImpl!=='function')throw new Error('coinbase-websocket-unavailable');
+  fs.mkdirSync(path.resolve(rootDir),{recursive:true});
+  const startedAtMs=now();let sequence=0,reconnects=0,backoffMs=1000,lastMessageAtMs=null,lastLevel2AtMs=null,lastTradeAtMs=null,lastHeartbeatAtMs=null,lastConnectionId=null,lastHealthWrite=0;
+  const counts={messages:0,level2:0,marketTrades:0,heartbeats:0,subscriptions:0,parseErrors:0,bytes:0};
+  const snapshotHealth=(status,error=null)=>({schemaVersion:'voicetrader-coinbase-local-health-v1',status,recorderVersion:COINBASE_LOCAL_RECORDER_VERSION,startedAtMs,updatedAtMs:now(),rootDir:path.resolve(rootDir),endpoint:COINBASE_ADVANCED_TRADE_WS_URL,subscriptions:{products:[...COINBASE_LOCAL_PRODUCTS],channels:['level2','market_trades','heartbeats']},connection:{lastConnectionId,reconnects,lastMessageAtMs,lastLevel2AtMs,lastTradeAtMs,lastHeartbeatAtMs,backoffMs},counts:{...counts},storage:{freeBytes:freeBytes(rootDir),warnFreeBytes,hardStopFreeBytes,wireFormat:'RFC7464_JSON_TEXT_SEQUENCE_PLUS_NDJSON_META',hourlyPartition:true},integrity:{exactProviderTextPreserved:true,perMessageSha256:true,providerSequenceObservedOnly:true,providerSequenceContinuityVerified:false,orderBookSynchronizationVerified:false},semantics:{derivedFeaturesAvailable:false,crossVenueComparabilityClaim:false,predictionInputAuthorized:false},runtimePolicy:{googleCloudEnabled:false,cloudUploadEnabled:false,githubActionsRequired:false,authenticationRequired:false,orderSubmission:false,realMoneyRouting:false},error:error?String(error):null});
+  const maybeHealth=(status='RUNNING',error=null,force=false)=>{const t=now();if(force||t-lastHealthWrite>=5000){writeHealth(rootDir,snapshotHealth(status,error));lastHealthWrite=t;}};
+  for(;;){
+    if(stopSignal()){maybeHealth('STOPPED',null,true);return snapshotHealth('STOPPED');}
+    const free=freeBytes(rootDir);if(Number.isFinite(free)&&free<hardStopFreeBytes){const e=`disk-free-hard-stop:${free}`;appendLog(rootDir,{atMs:now(),type:'HARD_STOP',message:e});maybeHealth('DISK_HARD_STOP',e,true);return snapshotHealth('DISK_HARD_STOP',e);}if(Number.isFinite(free)&&free<warnFreeBytes)appendLog(rootDir,{atMs:now(),type:'DISK_WARNING',freeBytes:free,warnFreeBytes});
+    const connectionId=crypto.randomUUID();lastConnectionId=connectionId;let terminalError=null,closed=false;
+    try{
+      await new Promise((resolve,reject)=>{
+        const ws=new WebSocketImpl(COINBASE_ADVANCED_TRADE_WS_URL);
+        const finish=(err)=>{if(closed)return;closed=true;try{ws.close();}catch{};err?reject(err):resolve();};
+        const on=(name,handler)=>{if(typeof ws.addEventListener==='function')ws.addEventListener(name,handler);else ws[`on${name}`]=handler;};
+        on('open',()=>{backoffMs=1000;for(const subscription of buildCoinbaseSubscriptions())ws.send(JSON.stringify(subscription));appendLog(rootDir,{atMs:now(),type:'CONNECTED',connectionId,endpoint:COINBASE_ADVANCED_TRADE_WS_URL});maybeHealth('RUNNING',null,true);});
+        on('message',(event)=>{const received=now(),raw=typeof event?.data==='string'?event.data:String(event?.data??'');if(!raw)return;sequence++;const persisted=persistCoinbaseWireMessage({rootDir,rawText:raw,receivedTimestampMs:received,connectionId,sequence});counts.messages++;counts.bytes+=persisted.meta.byteLength;if(!persisted.meta.parseOk)counts.parseErrors++;if(persisted.meta.isLevel2){counts.level2++;lastLevel2AtMs=received;}if(persisted.meta.isMarketTrades){counts.marketTrades++;lastTradeAtMs=received;}if(persisted.meta.isHeartbeat){counts.heartbeats++;lastHeartbeatAtMs=received;}if(persisted.meta.isSubscriptions)counts.subscriptions++;lastMessageAtMs=received;const freeNow=freeBytes(rootDir);if(Number.isFinite(freeNow)&&freeNow<hardStopFreeBytes){terminalError=new Error(`disk-free-hard-stop:${freeNow}`);finish(terminalError);return;}maybeHealth('RUNNING');if(stopSignal())finish(null);});
+        on('error',()=>finish(new Error('coinbase-websocket-error')));on('close',()=>finish(null));
+      });
+    }catch(error){terminalError=error;}
+    if(stopSignal()){maybeHealth('STOPPED',terminalError,true);return snapshotHealth('STOPPED',terminalError);}
+    reconnects++;appendLog(rootDir,{atMs:now(),type:'DISCONNECTED',connectionId,error:terminalError?String(terminalError?.message||terminalError):null,reconnectInMs:backoffMs});maybeHealth('RECONNECTING',terminalError,true);if(terminalError&&String(terminalError.message||terminalError).startsWith('disk-free-hard-stop:'))return snapshotHealth('DISK_HARD_STOP',terminalError);await sleep(backoffMs);backoffMs=Math.min(backoffMs*2,60_000);
+  }
+}
+
+async function main(){const result=await runCoinbaseRecorder(parseArgs(process.argv.slice(2)));console.log(JSON.stringify(result,null,2));}
+const direct=process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url);if(direct)main().catch(e=>{console.error(e?.stack||e);process.exitCode=1;});
