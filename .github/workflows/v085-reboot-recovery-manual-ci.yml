@@ -1,0 +1,39 @@
+name: v0.85 Reboot Recovery Manual CI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact ref
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Validate reboot recovery source
+        shell: pwsh
+        run: |
+          node --check src/short-horizon/local-edge-lab-reboot-recovery.js
+          node --check scripts/local-node/v085-reboot-witness.mjs
+          node scripts/test-short-horizon-v085-reboot-recovery.mjs
+          $null = [scriptblock]::Create((Get-Content -Raw scripts/local-node/configure-v085-reboot-recovery.ps1))
+          $null = [scriptblock]::Create((Get-Content -Raw scripts/local-node/status-v085-reboot-recovery.ps1))
+
+      - name: Assert operations-only boundary
+        shell: pwsh
+        run: |
+          Select-String -Path src/short-horizon/local-edge-lab-reboot-recovery.js -Pattern 'predictionInputAuthorized:false' -Quiet | Out-Null
+          Select-String -Path src/short-horizon/local-edge-lab-reboot-recovery.js -Pattern 'realMoneyRouting:false' -Quiet | Out-Null
+          Select-String -Path scripts/local-node/configure-v085-reboot-recovery.ps1 -Pattern 'VoiceTrader-LocalNode-RebootWitness' -Quiet | Out-Null
+          $x = Get-Content -Raw scripts/local-node/configure-v085-reboot-recovery.ps1
+          if ($x -match 'BlindReveal|blind-sealed|orderSubmission=\$true|realMoneyRouting=\$true') { throw 'Unexpected research/execution mutation surface' }
+          if ($x -notmatch 'Current v0.84 live health is not PASS') { throw 'v0.84 live-health prerequisite missing' }
