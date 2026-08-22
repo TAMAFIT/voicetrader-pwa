@@ -1,0 +1,58 @@
+name: v0.84 Windows RC Manual CI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact ref
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Validate v0.84 source
+        shell: pwsh
+        run: |
+          node --check src/short-horizon/local-edge-lab-v084-health.js
+          node --check scripts/local-node/v084-health-gate.mjs
+          node scripts/test-short-horizon-v084-health-gate.mjs
+          node scripts/test-short-horizon-v084-upgrader-contract.mjs
+          $null = [scriptblock]::Create((Get-Content -Raw scripts/local-node/upgrade-v084-windows.ps1))
+          $null = [scriptblock]::Create((Get-Content -Raw scripts/local-node/status-v084-windows.ps1))
+
+      - name: Validate cross-venue regressions
+        shell: pwsh
+        run: |
+          node scripts/test-short-horizon-local-node-coinbase.mjs
+          node scripts/test-short-horizon-coinbase-book-integrity.mjs
+          node scripts/test-short-horizon-coinbase-microstructure-features.mjs
+          node scripts/test-short-horizon-coinbase-provider-windows.mjs
+          node scripts/test-short-horizon-cross-venue-replication.mjs
+          node scripts/test-short-horizon-cross-venue-replication-worker.mjs
+          node scripts/test-short-horizon-cross-venue-preregistered.mjs
+          node scripts/test-short-horizon-cross-venue-preregistered-worker.mjs
+          node scripts/test-short-horizon-cross-venue-learning-scorecard.mjs
+          node scripts/test-short-horizon-cross-venue-learning-scorecard-worker.mjs
+          node scripts/test-short-horizon-cross-venue-blind-manifest.mjs
+          node scripts/test-short-horizon-cross-venue-blind-reveal.mjs
+          node scripts/test-short-horizon-cross-venue-blind-stability.mjs
+
+      - name: Assert fail-closed boundaries
+        shell: pwsh
+        run: |
+          $u = Get-Content -Raw scripts/local-node/upgrade-v084-windows.ps1
+          if ($u -notmatch "Assert-ExactCommit \$RuntimeRef") { throw 'Exact runtime pin missing' }
+          if ($u -match "Name='VoiceTrader-LocalNode-[^']*Blind") { throw 'Blind worker must not be scheduled' }
+          if ($u -notmatch 'Restore-PreviousRuntime') { throw 'Rollback missing' }
+          Select-String -Path src/short-horizon/local-edge-lab-v084-health.js -Pattern 'realMoneyRouting:false' -Quiet | Out-Null
+          Select-String -Path src/short-horizon/cross-venue-learning-scorecard.js -Pattern 'blindResultsConsumed:false' -Quiet | Out-Null
+          Select-String -Path src/short-horizon/cross-venue-blind-reveal.js -Pattern 'noTopUpAfterReveal:true' -Quiet | Out-Null
