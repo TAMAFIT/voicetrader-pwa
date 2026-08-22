@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { createAdaptiveState,buildAdaptiveSignal,updateAdaptiveState,buildPostMortem } from '../src/short-horizon/adaptive-experiment.js';
+import { processProspectiveOnce } from './local-node/short-horizon-prospective-worker.mjs';
+
+const end=Date.parse('2026-08-22T00:04:55Z');
+const window={windowId:'w',symbol:'BTC/USD',windowSec:5,endTimestampMs:end,timing:{boundary:{'5m':{secondsToBoundary:5,secondsSinceBoundary:295,atBoundary:false}}},price:{closeMid:100,micropriceMinusMidLast:.1},orderFlow:{ofiNormalizedByMeanDepth:.2,depthImbalanceLast:.3},trades:{signedNotionalSum:100},semantics:{derivedFromTrustedL2Only:true}};
+const adaptive=createAdaptiveState();
+const signal=buildAdaptiveSignal(window,adaptive,{generatedAtMs:end});
+assert.equal(signal.decision,'LONG');
+assert.equal(signal.evidence.adaptiveStateVersion,0);
+const loss={outcomeId:'o',experimentId:'BOUNDARY_ADAPTIVE_V1',horizonSec:15,marketReturnBps:-5,result:'LOSS',directionalReturnBps:-5};
+updateAdaptiveState(adaptive,signal,loss);
+assert.equal(adaptive.stateVersion,1);
+assert.ok(adaptive.features.OFI_NORMALIZED.weight<1);
+const pm=buildPostMortem(signal,loss);
+assert.equal(pm.diagnostics.classification,'DIRECTIONAL_MISS');
+assert.equal(pm.governance.descriptiveNotCausal,true);
+
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'vt-v056-'));
+const dir5=path.join(root,'derived','kraken','windows','BTCUSD','5s','2026','08','22');
+const dir1=path.join(root,'derived','kraken','windows','BTCUSD','1s','2026','08','22');
+fs.mkdirSync(dir5,{recursive:true});fs.mkdirSync(dir1,{recursive:true});
+fs.writeFileSync(path.join(dir5,'00.ndjson'),JSON.stringify(window)+'\n','utf8');
+const futureRows=[5,15,30,60].map((h,i)=>({windowId:`w1-${h}`,symbol:'BTC/USD',windowSec:1,endTimestampMs:end+h*1000,price:{closeMid:[101,99,102,100.5][i]},semantics:{derivedFromTrustedL2Only:true}}));
+fs.writeFileSync(path.join(dir1,'00.ndjson'),futureRows.map(JSON.stringify).join('\n')+'\n','utf8');
+const state={schemaVersion:'short-horizon-prospective-worker-state-v2',files5:{},files1:{},pending:{},recent1s:{},adaptiveState:createAdaptiveState(),adaptiveLearned:{},counts:{eligibleSignals:0,signalsWritten:0,outcomesWritten:0,postMortemsWritten:0,adaptiveUpdates:0,duplicatesSkipped:0,parseErrors:0,expiredPending:0}};
+processProspectiveOnce(root,state,end+65_000);
+assert.equal(state.counts.signalsWritten,3);
+assert.equal(state.counts.outcomesWritten,12);
+assert.equal(state.counts.postMortemsWritten,12);
+assert.equal(state.counts.adaptiveUpdates,1);
+assert.equal(state.adaptiveState.stateVersion,1);
+assert.equal(state.counts.parseErrors,0);
+console.log('v0.56 adaptive/post-mortem tests PASS');
