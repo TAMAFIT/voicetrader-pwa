@@ -17,7 +17,7 @@ assert.match(text,/Administrator privileges are required/);
 assert.match(text,/Coinbase fix: sequence continuity tracked PER PRODUCT/);
 assert.match(text,/fixed v0\.84 did not complete\. v0\.85\/v0\.86 were not attempted/);
 assert.ok(text.indexOf('[1/3]')<text.indexOf('[2/3]')&&text.indexOf('[2/3]')<text.indexOf('[3/3]'));
-assert.doesNotMatch(text,/Restart-Computer|shutdown(?:\.exe)?\s+[\/-]r|reboot/i);
+assert.doesNotMatch(text,/Restart-Computer|shutdown(?:\.exe)?\s+[\/-]r/i);
 assert.match(text,/A later genuine Windows reboot is required/);
 assert.match(text,/Real money \/ orders \/ cloud upload remain OFF/);
 assert.match(text,/VOICEDEV_NONINTERACTIVE/);
