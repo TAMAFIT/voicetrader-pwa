@@ -16,6 +16,7 @@ import { setupModelExperimentUI } from './research/model-experiment-ui.js';
 import { setupWalkForwardUI } from './research/walk-forward-ui.js';
 import { setupForwardDemoUI } from './research/forward-demo-ui.js';
 import { setupLiveForwardTradingUI } from './live/live-forward-ui.js';
+import { setupShortHorizonSignalPaperConsoleUI } from './short-horizon/signal-paper-console-ui.js';
 
 let deferredInstallPrompt = null;
 
@@ -43,6 +44,7 @@ export function setupPWA() {
   setupWalkForwardUI();
   setupForwardDemoUI();
   setupLiveForwardTradingUI();
+  setupShortHorizonSignalPaperConsoleUI();
 
   const updateOnlineStatus = () => {
     const online = navigator.onLine;
