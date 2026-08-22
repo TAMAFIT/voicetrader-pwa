@@ -1,0 +1,72 @@
+name: VoiceTrader v0.49 Short-Horizon Signal/Paper Console CI
+
+on:
+  pull_request:
+    paths:
+      - 'docs/SHORT_HORIZON_SIGNAL_PAPER_CONSOLE.md'
+      - 'src/short-horizon/signal-paper-console-remote.js'
+      - 'src/short-horizon/signal-paper-console-ui.js'
+      - 'short-horizon-signal-paper-console.css'
+      - 'src/pwa.js'
+      - 'sw.js'
+      - 'scripts/test-short-horizon-signal-paper-console.mjs'
+      - 'scripts/validate-short-horizon-signal-paper-console.mjs'
+      - '.github/workflows/v049-short-horizon-signal-paper-console-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/short-horizon/signal-paper-console-remote.js'
+      - 'src/short-horizon/signal-paper-console-ui.js'
+      - 'short-horizon-signal-paper-console.css'
+      - 'src/pwa.js'
+      - 'sw.js'
+      - '.github/workflows/v049-short-horizon-signal-paper-console-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: v0.49 syntax checks
+        run: |
+          node --check src/short-horizon/signal-paper-console-remote.js
+          node --check src/short-horizon/signal-paper-console-ui.js
+          node --check scripts/test-short-horizon-signal-paper-console.mjs
+          node --check scripts/validate-short-horizon-signal-paper-console.mjs
+
+      - name: v0.49 deterministic remote/read-only tests
+        run: node scripts/test-short-horizon-signal-paper-console.mjs
+
+      - name: v0.49 UI and authority guardrails
+        run: node scripts/validate-short-horizon-signal-paper-console.mjs
+
+      - name: PWA integration validation
+        run: node scripts/validate-pwa.mjs
+
+      - name: v0.48 GMO quote/paper regression
+        run: |
+          node scripts/test-gmo-fx-public-paper.mjs
+          node scripts/validate-gmo-fx-public-paper.mjs
+
+      - name: v0.43 prospective signal regression
+        run: |
+          node scripts/test-short-horizon-prospective-signals.mjs
+          node scripts/validate-short-horizon-prospective-signals.mjs
+
+      - name: Frozen Human Canon regression
+        run: |
+          node scripts/test-short-horizon-human-canon.mjs
+          node scripts/test-short-horizon-signal-contract.mjs
+          node scripts/validate-short-horizon-human-canon.mjs
+
+      - name: Legacy v0.39 release guardrail remains intact
+        run: node scripts/validate-v039-release-integrity.mjs
