@@ -1,0 +1,35 @@
+name: v0.86 Soak Certification Manual CI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Validate v0.86
+        shell: pwsh
+        run: |
+          node --check src/short-horizon/local-edge-lab-soak-certifier.js
+          node --check scripts/local-node/v086-soak-certifier.mjs
+          node scripts/test-short-horizon-v086-soak-certification.mjs
+          $null=[scriptblock]::Create((Get-Content -Raw scripts/local-node/configure-v086-soak-certification.ps1))
+          $null=[scriptblock]::Create((Get-Content -Raw scripts/local-node/status-v086-soak-certification.ps1))
+      - name: Assert operations-only boundary
+        shell: pwsh
+        run: |
+          $s=Get-Content -Raw src/short-horizon/local-edge-lab-soak-certifier.js
+          if($s -notmatch 'requiredConsecutiveHours:24'){throw '24h requirement missing'}
+          if($s -notmatch 'blindResultsRead:false'){throw 'Blind exclusion missing'}
+          if($s -match 'profitabilityClaim:true|predictionInputAuthorized:true|realMoneyRouting:true'){throw 'Unexpected research/execution claim'}
+          $p=Get-Content -Raw scripts/local-node/configure-v086-soak-certification.ps1
+          if($p -notmatch 'VoiceTrader-LocalNode-SoakCertifier'){throw 'Scheduled task contract missing'}
+          if($p -notmatch 'v0.84 live health must PASS'){throw 'health prerequisite missing'}
