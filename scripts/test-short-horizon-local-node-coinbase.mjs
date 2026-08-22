@@ -26,17 +26,21 @@ const heartbeat='{"channel":"heartbeats","timestamp":"2026-08-22T03:00:01Z","seq
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'voicetrader-v074-coinbase-'));
 const persisted=persistCoinbaseWireMessage({rootDir:root,rawText:trade,receivedTimestampMs:Date.UTC(2026,7,22,3,0,1),connectionId:'c1',sequence:1});
 assert.ok(persisted.paths.wireFile.includes(path.join('raw','coinbase','advanced-trade','2026','08','22')));const wire=fs.readFileSync(persisted.paths.wireFile);assert.equal(wire[0],0x1e);assert.equal(wire.subarray(1,-1).toString('utf8'),trade);const metaRecord=JSON.parse(fs.readFileSync(persisted.paths.metaFile,'utf8').trim());assert.equal(metaRecord.sourceSha256,persisted.meta.sourceSha256);assert.equal(metaRecord.semantics.exactProviderTextPreserved,true);
-
 assert.throws(()=>buildCoinbaseWireMeta(l2,{receivedTimestampMs:1,connectionId:'x',sequence:0}),/coinbase-local-sequence-invalid/);
 
-const integrationRoot=fs.mkdtempSync(path.join(os.tmpdir(),'voicetrader-v074-coinbase-integration-'));
+const l2Snapshot=JSON.stringify({channel:'l2_data',timestamp:'2026-08-22T03:10:00Z',sequence_num:0,events:[
+  {type:'snapshot',product_id:'BTC-USD',updates:[{side:'bid',event_time:'2026-08-22T03:10:00Z',price_level:'117000',new_quantity:'1'},{side:'offer',event_time:'2026-08-22T03:10:00Z',price_level:'117001',new_quantity:'1'}]},
+  {type:'snapshot',product_id:'ETH-USD',updates:[{side:'bid',event_time:'2026-08-22T03:10:00Z',price_level:'4200',new_quantity:'2'},{side:'offer',event_time:'2026-08-22T03:10:00Z',price_level:'4201',new_quantity:'2'}]},
+]});
+const l2Update=JSON.stringify({channel:'l2_data',timestamp:'2026-08-22T03:10:00.100Z',sequence_num:1,events:[{type:'update',product_id:'BTC-USD',updates:[{side:'bid',event_time:'2026-08-22T03:10:00.100Z',price_level:'117000',new_quantity:'1.5'}]}]});
+const integrationRoot=fs.mkdtempSync(path.join(os.tmpdir(),'voicetrader-v075-coinbase-integration-'));
 const sent=[];let shouldStop=false,clock=Date.UTC(2026,7,22,3,10,0);
 class FakeWebSocket{
   constructor(url){this.url=url;this.handlers={};queueMicrotask(()=>this.handlers.open?.({}));}
   addEventListener(name,handler){this.handlers[name]=handler;}
-  send(raw){sent.push(JSON.parse(raw));if(sent.length===3)queueMicrotask(()=>{this.handlers.message?.({data:l2});shouldStop=true;this.handlers.message?.({data:heartbeat});});}
+  send(raw){sent.push(JSON.parse(raw));if(sent.length===3)queueMicrotask(()=>{this.handlers.message?.({data:l2Snapshot});this.handlers.message?.({data:l2Update});shouldStop=true;this.handlers.message?.({data:heartbeat});});}
   close(){}
 }
 const integration=await runCoinbaseRecorder({rootDir:integrationRoot,WebSocketImpl:FakeWebSocket,now:()=>clock++,sleep:async()=>{},stopSignal:()=>shouldStop,warnFreeBytes:0,hardStopFreeBytes:0});
-assert.equal(integration.status,'STOPPED');assert.equal(integration.counts.messages,2);assert.equal(integration.counts.level2,1);assert.equal(integration.counts.heartbeats,1);assert.deepEqual(sent,subscriptions);assert.equal(integration.runtimePolicy.authenticationRequired,false);
-console.log('PASS v0.74 Coinbase public exact-wire capture');
+assert.equal(integration.status,'STOPPED');assert.equal(integration.counts.messages,3);assert.equal(integration.counts.level2,2);assert.equal(integration.counts.heartbeats,1);assert.equal(integration.counts.trustedSnapshots,2);assert.equal(integration.counts.trustedUpdates,1);assert.equal(integration.integrity.providerSequenceContinuityVerified,true);assert.equal(integration.integrity.orderBookSynchronizationVerified,true);assert.deepEqual(sent,subscriptions);assert.equal(integration.runtimePolicy.authenticationRequired,false);
+console.log('PASS v0.75 Coinbase public raw + L2 integrity recorder');
