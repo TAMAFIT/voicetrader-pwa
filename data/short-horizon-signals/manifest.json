@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-signal-manifest-v1",
   "archiveVersion": "short-horizon-signal-archive-v1",
-  "updatedAtMs": 1787389343163,
+  "updatedAtMs": 1787391581779,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-signal-data",
@@ -17,10 +17,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 402,
+    "recordCount": 406,
     "fileCount": 16,
     "duplicateSignalIdCount": 0,
-    "contentSha256": "a0035caa3a500a881af55e7c4f547d1f3f6700a9089f80d2d0c65073111d0573",
+    "contentSha256": "b872b212a088a68c2a16617cc6ebfdb737db6c5708712fc13ee6307f0660fa65",
     "streams": [
       {
         "id": "BTCUSD-1m",
@@ -28,23 +28,23 @@
         "instrument": "BTCUSD",
         "venue": "kraken",
         "timeframeMinutes": 1,
-        "recordCount": 76,
+        "recordCount": 77,
         "counts": {
           "LONG": 20,
-          "SHORT": 13,
+          "SHORT": 14,
           "WAIT": 43
         },
         "firstSourceTimestampMs": 1787232180000,
-        "lastSourceTimestampMs": 1787389260000,
+        "lastSourceTimestampMs": 1787391480000,
         "primarySessions": {
           "LONDON_NEW_YORK_OVERLAP": 10,
           "NEW_YORK": 20,
           "OFF_HOURS": 15,
           "TOKYO": 17,
           "TOKYO_LONDON_OVERLAP": 7,
-          "LONDON": 7
+          "LONDON": 8
         },
-        "contentSha256": "7d9e4d9b603ab9926019fb51b9769d6d2ac0e3d719e054c0a7da20a42f20f4fc"
+        "contentSha256": "bb8402139f148fdc370238189e9386e7462347f29e81ff785ac0d81b60eb0e57"
       },
       {
         "id": "BTCUSD-5m",
@@ -52,23 +52,23 @@
         "instrument": "BTCUSD",
         "venue": "kraken",
         "timeframeMinutes": 5,
-        "recordCount": 76,
+        "recordCount": 77,
         "counts": {
           "LONG": 17,
           "SHORT": 7,
-          "WAIT": 52
+          "WAIT": 53
         },
         "firstSourceTimestampMs": 1787231700000,
-        "lastSourceTimestampMs": 1787388900000,
+        "lastSourceTimestampMs": 1787391000000,
         "primarySessions": {
           "LONDON_NEW_YORK_OVERLAP": 11,
           "NEW_YORK": 20,
           "OFF_HOURS": 14,
           "TOKYO": 17,
           "TOKYO_LONDON_OVERLAP": 8,
-          "LONDON": 6
+          "LONDON": 7
         },
-        "contentSha256": "a7a670563df99a99ff2b2ee1e5b3b76fdf259a17e798aa63243b822e6dca7ea0"
+        "contentSha256": "95d072a3b569309213ac529aae33b124174f5e9c0d3e5103161a7026d74e37d7"
       },
       {
         "id": "ETHUSD-1m",
@@ -76,23 +76,23 @@
         "instrument": "ETHUSD",
         "venue": "kraken",
         "timeframeMinutes": 1,
-        "recordCount": 76,
+        "recordCount": 77,
         "counts": {
           "LONG": 16,
           "SHORT": 14,
-          "WAIT": 46
+          "WAIT": 47
         },
         "firstSourceTimestampMs": 1787232180000,
-        "lastSourceTimestampMs": 1787389260000,
+        "lastSourceTimestampMs": 1787391480000,
         "primarySessions": {
           "LONDON_NEW_YORK_OVERLAP": 10,
           "NEW_YORK": 20,
           "OFF_HOURS": 15,
           "TOKYO": 17,
           "TOKYO_LONDON_OVERLAP": 7,
-          "LONDON": 7
+          "LONDON": 8
         },
-        "contentSha256": "7c11467658891a7e0da5260ee21f0fab8bbf53b9114f679af8469c92bbbbc25d"
+        "contentSha256": "f8b70c8d74c8f9d173a9ec64719bd66e832942d9fa8ebef737d90658e9b797f1"
       },
       {
         "id": "ETHUSD-5m",
@@ -100,23 +100,23 @@
         "instrument": "ETHUSD",
         "venue": "kraken",
         "timeframeMinutes": 5,
-        "recordCount": 76,
+        "recordCount": 77,
         "counts": {
           "LONG": 15,
           "SHORT": 10,
-          "WAIT": 51
+          "WAIT": 52
         },
         "firstSourceTimestampMs": 1787231700000,
-        "lastSourceTimestampMs": 1787388900000,
+        "lastSourceTimestampMs": 1787391000000,
         "primarySessions": {
           "LONDON_NEW_YORK_OVERLAP": 11,
           "NEW_YORK": 20,
           "OFF_HOURS": 14,
           "TOKYO": 17,
           "TOKYO_LONDON_OVERLAP": 8,
-          "LONDON": 6
+          "LONDON": 7
         },
-        "contentSha256": "35c2158c98973303224c1c84a62a03a759e80523d19764de16cd4b606d564a11"
+        "contentSha256": "a4f44ad504e0450e45fdebc43e7f82aa6a67a893b2fadd31824266f485f6cb2a"
       },
       {
         "id": "USDJPY-1m",
@@ -171,13 +171,13 @@
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-prospective-signal-collector-v1",
-    "startedAtMs": 1787389342380,
-    "finishedAtMs": 1787389343132,
-    "durationMs": 752,
+    "startedAtMs": 1787391580414,
+    "finishedAtMs": 1787391581755,
+    "durationMs": 1341,
     "cadenceMinutes": 15,
     "fixedAnalysisWindowBars": 160,
     "fxLookbackHours": 72,
-    "githubRunId": "32563863383",
+    "githubRunId": "32565528322",
     "githubRunAttempt": "1",
     "aggregate": {
       "streams": 6,
@@ -195,8 +195,8 @@
         "status": "RECORDED",
         "reason": null,
         "fetchedEventCount": 720,
-        "latestSourceTimestampMs": 1787389260000,
-        "latestClose": 77137.8,
+        "latestSourceTimestampMs": 1787391480000,
+        "latestClose": 77165.2,
         "freshness": {
           "version": "short-horizon-freshness-gate-v1",
           "stream": {
@@ -207,18 +207,18 @@
           },
           "eventCount": 720,
           "minimumHistoryBars": 160,
-          "latestSourceTimestampMs": 1787389260000,
-          "latestBarCloseTimestampMs": 1787389320000,
-          "observedAtMs": 1787389342380,
-          "lagMs": 22380,
-          "lagMinutes": 0.373,
+          "latestSourceTimestampMs": 1787391480000,
+          "latestBarCloseTimestampMs": 1787391540000,
+          "observedAtMs": 1787391580414,
+          "lagMs": 40414,
+          "lagMinutes": 0.6735666666666666,
           "maxLagMinutes": 5,
           "status": "FRESH",
           "fresh": true,
           "reason": null
         },
-        "signal": "WAIT",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787389260000",
+        "signal": "SHORT",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787391480000",
         "intendedHorizonMinutes": 5,
         "primarySession": "LONDON"
       },
@@ -228,8 +228,8 @@
         "status": "RECORDED",
         "reason": null,
         "fetchedEventCount": 720,
-        "latestSourceTimestampMs": 1787388900000,
-        "latestClose": 77189.9,
+        "latestSourceTimestampMs": 1787391000000,
+        "latestClose": 77183,
         "freshness": {
           "version": "short-horizon-freshness-gate-v1",
           "stream": {
@@ -240,20 +240,20 @@
           },
           "eventCount": 720,
           "minimumHistoryBars": 160,
-          "latestSourceTimestampMs": 1787388900000,
-          "latestBarCloseTimestampMs": 1787389200000,
-          "observedAtMs": 1787389342380,
-          "lagMs": 142380,
-          "lagMinutes": 2.373,
+          "latestSourceTimestampMs": 1787391000000,
+          "latestBarCloseTimestampMs": 1787391300000,
+          "observedAtMs": 1787391580414,
+          "lagMs": 280414,
+          "lagMinutes": 4.673566666666667,
           "maxLagMinutes": 10,
           "status": "FRESH",
           "fresh": true,
           "reason": null
         },
-        "signal": "SHORT",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787388900000",
+        "signal": "WAIT",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787391000000",
         "intendedHorizonMinutes": 15,
-        "primarySession": "TOKYO_LONDON_OVERLAP"
+        "primarySession": "LONDON"
       },
       {
         "id": "ETHUSD-1m",
@@ -261,8 +261,8 @@
         "status": "RECORDED",
         "reason": null,
         "fetchedEventCount": 720,
-        "latestSourceTimestampMs": 1787389260000,
-        "latestClose": 2422.67,
+        "latestSourceTimestampMs": 1787391480000,
+        "latestClose": 2421.48,
         "freshness": {
           "version": "short-horizon-freshness-gate-v1",
           "stream": {
@@ -273,18 +273,18 @@
           },
           "eventCount": 720,
           "minimumHistoryBars": 160,
-          "latestSourceTimestampMs": 1787389260000,
-          "latestBarCloseTimestampMs": 1787389320000,
-          "observedAtMs": 1787389342380,
-          "lagMs": 22380,
-          "lagMinutes": 0.373,
+          "latestSourceTimestampMs": 1787391480000,
+          "latestBarCloseTimestampMs": 1787391540000,
+          "observedAtMs": 1787391580414,
+          "lagMs": 40414,
+          "lagMinutes": 0.6735666666666666,
           "maxLagMinutes": 5,
           "status": "FRESH",
           "fresh": true,
           "reason": null
         },
         "signal": "WAIT",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787389260000",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787391480000",
         "intendedHorizonMinutes": 5,
         "primarySession": "LONDON"
       },
@@ -294,8 +294,8 @@
         "status": "RECORDED",
         "reason": null,
         "fetchedEventCount": 720,
-        "latestSourceTimestampMs": 1787388900000,
-        "latestClose": 2425.32,
+        "latestSourceTimestampMs": 1787391000000,
+        "latestClose": 2422.86,
         "freshness": {
           "version": "short-horizon-freshness-gate-v1",
           "stream": {
@@ -306,27 +306,27 @@
           },
           "eventCount": 720,
           "minimumHistoryBars": 160,
-          "latestSourceTimestampMs": 1787388900000,
-          "latestBarCloseTimestampMs": 1787389200000,
-          "observedAtMs": 1787389342380,
-          "lagMs": 142380,
-          "lagMinutes": 2.373,
+          "latestSourceTimestampMs": 1787391000000,
+          "latestBarCloseTimestampMs": 1787391300000,
+          "observedAtMs": 1787391580414,
+          "lagMs": 280414,
+          "lagMinutes": 4.673566666666667,
           "maxLagMinutes": 10,
           "status": "FRESH",
           "fresh": true,
           "reason": null
         },
         "signal": "WAIT",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787388900000",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787391000000",
         "intendedHorizonMinutes": 15,
-        "primarySession": "TOKYO_LONDON_OVERLAP"
+        "primarySession": "LONDON"
       },
       {
         "id": "USDJPY-1m",
         "provider": "short-horizon-dukascopy-fx-v1",
         "status": "SKIPPED",
         "reason": "latest-closed-bar-too-old",
-        "fetchedEventCount": 3595,
+        "fetchedEventCount": 3558,
         "latestSourceTimestampMs": 1787345940000,
         "latestClose": 158.94,
         "freshness": {
@@ -337,13 +337,13 @@
             "venue": "dukascopy",
             "timeframeMinutes": 1
           },
-          "eventCount": 3595,
+          "eventCount": 3558,
           "minimumHistoryBars": 160,
           "latestSourceTimestampMs": 1787345940000,
           "latestBarCloseTimestampMs": 1787346000000,
-          "observedAtMs": 1787389342380,
-          "lagMs": 43342380,
-          "lagMinutes": 722.373,
+          "observedAtMs": 1787391580414,
+          "lagMs": 45580414,
+          "lagMinutes": 759.6735666666667,
           "maxLagMinutes": 5,
           "status": "STALE",
           "fresh": false,
@@ -359,7 +359,7 @@
         "provider": "short-horizon-dukascopy-fx-v1",
         "status": "SKIPPED",
         "reason": "latest-closed-bar-too-old",
-        "fetchedEventCount": 717,
+        "fetchedEventCount": 710,
         "latestSourceTimestampMs": 1787345700000,
         "latestClose": 158.94,
         "freshness": {
@@ -370,13 +370,13 @@
             "venue": "dukascopy",
             "timeframeMinutes": 5
           },
-          "eventCount": 717,
+          "eventCount": 710,
           "minimumHistoryBars": 160,
           "latestSourceTimestampMs": 1787345700000,
           "latestBarCloseTimestampMs": 1787346000000,
-          "observedAtMs": 1787389342380,
-          "lagMs": 43342380,
-          "lagMinutes": 722.373,
+          "observedAtMs": 1787391580414,
+          "lagMs": 45580414,
+          "lagMinutes": 759.6735666666667,
           "maxLagMinutes": 10,
           "status": "STALE",
           "fresh": false,
