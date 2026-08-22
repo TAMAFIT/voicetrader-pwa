@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-manifest-v1",
   "archiveVersion": "short-horizon-archive-v1",
-  "updatedAtMs": 1787384576277,
+  "updatedAtMs": 1787388279181,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-data",
@@ -21,16 +21,16 @@
       "venue": "kraken",
       "timeframeMinutes": 1,
       "continuityMode": "continuous-24x7",
-      "recordCount": 3478,
+      "recordCount": 3540,
       "fileCount": 4,
       "firstSourceTimestampMs": 1787175840000,
-      "lastSourceTimestampMs": 1787384460000,
+      "lastSourceTimestampMs": 1787388180000,
       "gapCount": 0,
       "missingBars": 0,
       "rawGapCount": 0,
       "largestGapMinutes": 0,
       "duplicateKeyCount": 0,
-      "contentSha256": "fdfc569b597cd8e16101c89b82723cb08953e1fd8dadd2c5345da49a28804e8d"
+      "contentSha256": "b9e95c1335c6fc3950c412db66d8309e55b27821874c37bce25d64486869018f"
     },
     {
       "id": "BTCUSD-5m",
@@ -39,16 +39,16 @@
       "venue": "kraken",
       "timeframeMinutes": 5,
       "continuityMode": "continuous-24x7",
-      "recordCount": 1272,
+      "recordCount": 1284,
       "fileCount": 6,
       "firstSourceTimestampMs": 1787002800000,
-      "lastSourceTimestampMs": 1787384100000,
+      "lastSourceTimestampMs": 1787387700000,
       "gapCount": 0,
       "missingBars": 0,
       "rawGapCount": 0,
       "largestGapMinutes": 0,
       "duplicateKeyCount": 0,
-      "contentSha256": "9562d8f47515a2c8740adce32c264368b85c6704dad5953a9642b518838cc2c2"
+      "contentSha256": "d4a84fa1100e4398e6092aa177d71d4d6188642bccd163e4ae919e3745e22677"
     },
     {
       "id": "ETHUSD-1m",
@@ -57,16 +57,16 @@
       "venue": "kraken",
       "timeframeMinutes": 1,
       "continuityMode": "continuous-24x7",
-      "recordCount": 3478,
+      "recordCount": 3540,
       "fileCount": 4,
       "firstSourceTimestampMs": 1787175840000,
-      "lastSourceTimestampMs": 1787384460000,
+      "lastSourceTimestampMs": 1787388180000,
       "gapCount": 0,
       "missingBars": 0,
       "rawGapCount": 0,
       "largestGapMinutes": 0,
       "duplicateKeyCount": 0,
-      "contentSha256": "0f12b66639d4d091e5b031054d578844ecb55a6064de3425437d2c360b25ad13"
+      "contentSha256": "47f31ed756401ba5f75436eae8fef3a0274b192d87af194562d0750fdf3d4c22"
     },
     {
       "id": "ETHUSD-5m",
@@ -75,31 +75,31 @@
       "venue": "kraken",
       "timeframeMinutes": 5,
       "continuityMode": "continuous-24x7",
-      "recordCount": 1272,
+      "recordCount": 1284,
       "fileCount": 6,
       "firstSourceTimestampMs": 1787002800000,
-      "lastSourceTimestampMs": 1787384100000,
+      "lastSourceTimestampMs": 1787387700000,
       "gapCount": 0,
       "missingBars": 0,
       "rawGapCount": 0,
       "largestGapMinutes": 0,
       "duplicateKeyCount": 0,
-      "contentSha256": "3b5220735598b15c8ec61a4d98333798f6f2c1254aea5c3ba17d183df9ca02dc"
+      "contentSha256": "610105ff48b66d0bd9f56d83d8a47e5a49b5e44524faea8eb2f9bbe610dbce74"
     }
   ],
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-crypto-collector-v1",
     "providerVersion": "short-horizon-kraken-ohlc-v1",
-    "startedAtMs": 1787384575327,
-    "finishedAtMs": 1787384576210,
-    "durationMs": 883,
-    "githubRunId": "32560329319",
+    "startedAtMs": 1787388278475,
+    "finishedAtMs": 1787388279103,
+    "durationMs": 628,
+    "githubRunId": "32563075644",
     "githubRunAttempt": "1",
     "aggregate": {
       "fetched": 2880,
-      "added": 110,
-      "duplicates": 2770,
+      "added": 148,
+      "duplicates": 2732,
       "conflicts": 0,
       "filesTouched": 4
     },
@@ -107,37 +107,37 @@
       {
         "id": "BTCUSD-1m",
         "fetched": 720,
-        "firstSourceTimestampMs": 1787341320000,
-        "lastSourceTimestampMs": 1787384460000,
-        "added": 46,
-        "duplicates": 674,
+        "firstSourceTimestampMs": 1787345040000,
+        "lastSourceTimestampMs": 1787388180000,
+        "added": 62,
+        "duplicates": 658,
         "filesTouched": 1
       },
       {
         "id": "BTCUSD-5m",
         "fetched": 720,
-        "firstSourceTimestampMs": 1787168400000,
-        "lastSourceTimestampMs": 1787384100000,
-        "added": 9,
-        "duplicates": 711,
+        "firstSourceTimestampMs": 1787172000000,
+        "lastSourceTimestampMs": 1787387700000,
+        "added": 12,
+        "duplicates": 708,
         "filesTouched": 1
       },
       {
         "id": "ETHUSD-1m",
         "fetched": 720,
-        "firstSourceTimestampMs": 1787341320000,
-        "lastSourceTimestampMs": 1787384460000,
-        "added": 46,
-        "duplicates": 674,
+        "firstSourceTimestampMs": 1787345040000,
+        "lastSourceTimestampMs": 1787388180000,
+        "added": 62,
+        "duplicates": 658,
         "filesTouched": 1
       },
       {
         "id": "ETHUSD-5m",
         "fetched": 720,
-        "firstSourceTimestampMs": 1787168400000,
-        "lastSourceTimestampMs": 1787384100000,
-        "added": 9,
-        "duplicates": 711,
+        "firstSourceTimestampMs": 1787172000000,
+        "lastSourceTimestampMs": 1787387700000,
+        "added": 12,
+        "duplicates": 708,
         "filesTouched": 1
       }
     ]
