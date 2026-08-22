@@ -1,12 +1,13 @@
 @echo off
 setlocal EnableExtensions
-set "SOURCE_REF=263ed6076c3198b66964c98e121806daf411a444"
-set "OVERLAY_REF=263ed6076c3198b66964c98e121806daf411a444"
+set "SOURCE_REF=8b283a0b72770702ef71a5753cac1813223c6e51"
+set "OVERLAY_REF=8b283a0b72770702ef71a5753cac1813223c6e51"
 set "URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%SOURCE_REF%/scripts/local-node/configure-v086-soak-certification.ps1"
 set "FILE=%TEMP%\voicetrader-v086-soak-%RANDOM%%RANDOM%.ps1"
 echo VoiceTrader Local Edge Lab v0.86 24h Soak Certification
 echo Exact overlay: %OVERLAY_REF%
 echo Receipt path collision fix: ON
+echo PowerShell alias collision fix: ON
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri '%URL%' -OutFile '%FILE%'"
 if errorlevel 1 exit /b 1
 if not exist "%FILE%" exit /b 1
