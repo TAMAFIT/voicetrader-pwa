@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {COINBASE_ADVANCED_TRADE_WS_URL,buildCoinbaseSubscriptions,classifyCoinbaseWire,buildCoinbaseWireMeta,frameCoinbaseJsonSequence} from '../src/short-horizon/local-node-coinbase-wire.js';
-import {persistCoinbaseWireMessage} from './local-node/coinbase-microstructure-recorder.mjs';
+import {persistCoinbaseWireMessage,runCoinbaseRecorder} from './local-node/coinbase-microstructure-recorder.mjs';
 
 const subscriptions=buildCoinbaseSubscriptions();
 assert.deepEqual(subscriptions,[
@@ -28,4 +28,15 @@ const persisted=persistCoinbaseWireMessage({rootDir:root,rawText:trade,receivedT
 assert.ok(persisted.paths.wireFile.includes(path.join('raw','coinbase','advanced-trade','2026','08','22')));const wire=fs.readFileSync(persisted.paths.wireFile);assert.equal(wire[0],0x1e);assert.equal(wire.subarray(1,-1).toString('utf8'),trade);const metaRecord=JSON.parse(fs.readFileSync(persisted.paths.metaFile,'utf8').trim());assert.equal(metaRecord.sourceSha256,persisted.meta.sourceSha256);assert.equal(metaRecord.semantics.exactProviderTextPreserved,true);
 
 assert.throws(()=>buildCoinbaseWireMeta(l2,{receivedTimestampMs:1,connectionId:'x',sequence:0}),/coinbase-local-sequence-invalid/);
+
+const integrationRoot=fs.mkdtempSync(path.join(os.tmpdir(),'voicetrader-v074-coinbase-integration-'));
+const sent=[];let shouldStop=false,clock=Date.UTC(2026,7,22,3,10,0);
+class FakeWebSocket{
+  constructor(url){this.url=url;this.handlers={};queueMicrotask(()=>this.handlers.open?.({}));}
+  addEventListener(name,handler){this.handlers[name]=handler;}
+  send(raw){sent.push(JSON.parse(raw));if(sent.length===3)queueMicrotask(()=>{this.handlers.message?.({data:l2});shouldStop=true;this.handlers.message?.({data:heartbeat});});}
+  close(){}
+}
+const integration=await runCoinbaseRecorder({rootDir:integrationRoot,WebSocketImpl:FakeWebSocket,now:()=>clock++,sleep:async()=>{},stopSignal:()=>shouldStop,warnFreeBytes:0,hardStopFreeBytes:0});
+assert.equal(integration.status,'STOPPED');assert.equal(integration.counts.messages,2);assert.equal(integration.counts.level2,1);assert.equal(integration.counts.heartbeats,1);assert.deepEqual(sent,subscriptions);assert.equal(integration.runtimePolicy.authenticationRequired,false);
 console.log('PASS v0.74 Coinbase public exact-wire capture');
