@@ -29,9 +29,11 @@ jobs:
           node scripts/test-short-horizon-local-node-kraken.mjs
           node --check src/short-horizon/local-node-coinbase-wire.js
           node --check src/short-horizon/coinbase-book-integrity.js
+          node --check src/short-horizon/coinbase-microstructure-features.js
           node --check scripts/local-node/coinbase-microstructure-recorder.mjs
           node scripts/test-short-horizon-local-node-coinbase.mjs
           node scripts/test-short-horizon-coinbase-book-integrity.mjs
+          node scripts/test-short-horizon-coinbase-microstructure-features.mjs
 
       - name: Assert cloud-cost and execution boundary
         shell: bash
@@ -42,7 +44,8 @@ jobs:
           grep -q "githubActionsRequired:false" src/short-horizon/local-node-gmo-tick.js
           grep -q "authenticationRequired:false" src/short-horizon/local-node-coinbase-wire.js
           grep -q "predictionInputAuthorized:false" src/short-horizon/local-node-coinbase-wire.js
-          grep -q "derivedMicrostructureAuthorized:false" src/short-horizon/coinbase-book-integrity.js
+          grep -q "predictionInputAuthorized:false" src/short-horizon/coinbase-microstructure-features.js
+          grep -q "crossVenueComparabilityClaim:false" src/short-horizon/coinbase-microstructure-features.js
           grep -q "orderSubmission:false" src/short-horizon/local-node-coinbase-wire.js
           if grep -R -E "@google-cloud|googleapis|storage\.googleapis|run\.app|pubsub|bigquery" \
             src/short-horizon/local-node-gmo-tick.js \
@@ -51,6 +54,7 @@ jobs:
             scripts/local-node/kraken-microstructure-recorder.mjs \
             src/short-horizon/local-node-coinbase-wire.js \
             src/short-horizon/coinbase-book-integrity.js \
+            src/short-horizon/coinbase-microstructure-features.js \
             scripts/local-node/coinbase-microstructure-recorder.mjs; then
             echo 'Unexpected Google Cloud dependency or endpoint in Local Node runtime.' >&2
             exit 1
