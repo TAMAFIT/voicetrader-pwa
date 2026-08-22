@@ -2,8 +2,10 @@ import path from 'node:path';
 
 export const LOCAL_NODE_GMO_TICK_SCHEMA = 'voicetrader-local-gmo-tick-v1';
 export const LOCAL_NODE_GMO_TICK_COLLECTOR = 'voicetrader-local-node-gmo-tick-v1';
+export const LOCAL_NODE_RUNTIME_POLICY_ID = 'local-only-gmo-public-v1';
 
 export const LOCAL_NODE_NETWORK_POLICY = Object.freeze({
+  policyId:LOCAL_NODE_RUNTIME_POLICY_ID,
   googleCloudEnabled:false,
   cloudUploadEnabled:false,
   githubActionsRequired:false,
@@ -65,9 +67,9 @@ export function buildLocalNodeTickRecord(quote, {
       receivedTimestampMs:Number(quote.timing.receivedTimestampMs),
       storageTimeBasis:'RECEIVED_UTC_HOURLY',
       immutableRaw:true,
+      runtimePolicyId:LOCAL_NODE_RUNTIME_POLICY_ID,
     },
     quote,
-    runtimePolicy:LOCAL_NODE_NETWORK_POLICY,
   };
   validateLocalNodeTickRecord(record);
   return record;
@@ -79,11 +81,7 @@ export function validateLocalNodeTickRecord(record) {
   if (!Number.isInteger(record.capture?.sequence) || record.capture.sequence < 1) throw new Error('local-node-sequence-invalid');
   if (!Number.isFinite(record.capture?.receivedTimestampMs)) throw new Error('local-node-received-time-invalid');
   if (!record.quote?.quoteId || record.quote?.provider?.providerId !== 'gmo-coin-fx-public-v1') throw new Error('local-node-provider-invalid');
-  if (record.runtimePolicy?.googleCloudEnabled !== false || record.runtimePolicy?.cloudUploadEnabled !== false || record.runtimePolicy?.githubActionsRequired !== false || record.runtimePolicy?.telemetryEnabled !== false) {
-    throw new Error('local-node-cloud-policy-invalid');
-  }
-  const endpoints = record.runtimePolicy?.allowedRuntimeEndpoints;
-  if (!Array.isArray(endpoints) || endpoints.length !== 1 || endpoints[0] !== 'wss://forex-api.coin.z.com/ws/public/v1') throw new Error('local-node-runtime-endpoint-invalid');
+  if (record.capture?.runtimePolicyId !== LOCAL_NODE_RUNTIME_POLICY_ID) throw new Error('local-node-cloud-policy-invalid');
   if (record.capture?.immutableRaw !== true || record.capture?.storageTimeBasis !== 'RECEIVED_UTC_HOURLY') throw new Error('local-node-storage-contract-invalid');
   return true;
 }
