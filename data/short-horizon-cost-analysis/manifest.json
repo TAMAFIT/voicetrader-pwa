@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-cost-analysis-manifest-v1",
   "archiveVersion": "short-horizon-cost-analysis-archive-v1",
-  "updatedAtMs": 1787370096692,
+  "updatedAtMs": 1787372261790,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-cost-analysis-data",
@@ -19,10 +19,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 709,
+    "recordCount": 717,
     "fileCount": 16,
     "duplicateAnalysisIdCount": 0,
-    "contentSha256": "4e506d8377f98a098fbc74a30003f423b71064bd6ab89475f9411d843ef5e4b0",
+    "contentSha256": "44c5a09f8b3bbfe0efc1223496fdae48e4a3a710ba3583894645dfdd6bb9b8ca",
     "groups": [
       {
         "id": "BTCUSD-1m-primary-5m-LONDON_NEW_YORK_OVERLAP-COMPRESSION",
@@ -634,9 +634,9 @@
         "horizonMinutes": 5,
         "primarySession": "TOKYO",
         "regime": "COMPRESSION",
-        "recordCount": 1,
+        "recordCount": 2,
         "directionalCount": 0,
-        "waitCount": 1,
+        "waitCount": 2,
         "directionalOutcomeCounts": {
           "WIN": 0,
           "LOSS": 0,
@@ -661,8 +661,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787288220000,
-        "lastTargetCloseTimestampMs": 1787288220000,
-        "contentSha256": "50e460e6fb397648092bf876351b9814ac9d6bf4ba428ccc847597a86572f502"
+        "lastTargetCloseTimestampMs": 1787371140000,
+        "contentSha256": "923fcdb13356a3e0f983c1c9ace14683295c64d538b7f78228a9e17c0f6f8145"
       },
       {
         "id": "BTCUSD-1m-primary-5m-TOKYO-RANGE",
@@ -1394,9 +1394,9 @@
         "horizonMinutes": 15,
         "primarySession": "TOKYO",
         "regime": "COMPRESSION",
-        "recordCount": 1,
+        "recordCount": 2,
         "directionalCount": 0,
-        "waitCount": 1,
+        "waitCount": 2,
         "directionalOutcomeCounts": {
           "WIN": 0,
           "LOSS": 0,
@@ -1421,8 +1421,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787288820000,
-        "lastTargetCloseTimestampMs": 1787288820000,
-        "contentSha256": "5619e0470be2fc2513da4fba28101240a780f34e0fd79c6ec1d7f1c92709437d"
+        "lastTargetCloseTimestampMs": 1787371740000,
+        "contentSha256": "b1836ab43b4ca158b2e2b754a2104e651dc936f7a1e20db7a09ee1b9f42d194e"
       },
       {
         "id": "BTCUSD-1m-secondary-15m-TOKYO-RANGE",
@@ -2314,9 +2314,9 @@
         "horizonMinutes": 15,
         "primarySession": "TOKYO",
         "regime": "TREND",
-        "recordCount": 6,
+        "recordCount": 7,
         "directionalCount": 3,
-        "waitCount": 3,
+        "waitCount": 4,
         "directionalOutcomeCounts": {
           "WIN": 2,
           "LOSS": 1,
@@ -2341,8 +2341,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787283600000,
-        "lastTargetCloseTimestampMs": 1787368800000,
-        "contentSha256": "504875f6d92eb947947fd3fac28d0dde2eb2e6199442daf967951212bcca69a6"
+        "lastTargetCloseTimestampMs": 1787371500000,
+        "contentSha256": "b2c3662beed6d3d4bfab342943e1078c1f05b271caf2283129038e82fe843b49"
       },
       {
         "id": "BTCUSD-5m-primary-15m-TOKYO-VOLATILE",
@@ -3154,24 +3154,24 @@
         "horizonMinutes": 30,
         "primarySession": "TOKYO",
         "regime": "TREND",
-        "recordCount": 5,
-        "directionalCount": 2,
+        "recordCount": 6,
+        "directionalCount": 3,
         "waitCount": 3,
         "directionalOutcomeCounts": {
-          "WIN": 1,
+          "WIN": 2,
           "LOSS": 1,
           "FLAT": 0
         },
         "breakEvenEvidence": {
-          "positiveCostBudgetCount": 1,
-          "positiveCostBudgetRate": 0.5,
-          "meanGrossDirectionalReturnBps": -6.725971,
-          "medianGrossDirectionalReturnBps": -6.725971,
-          "meanBreakEvenRoundTripCostBps": 4.197841,
-          "p25BreakEvenRoundTripCostBps": 2.09892,
-          "medianBreakEvenRoundTripCostBps": 4.197841,
-          "p75BreakEvenRoundTripCostBps": 6.296761,
-          "maximumObservedBreakEvenRoundTripCostBps": 8.395681
+          "positiveCostBudgetCount": 2,
+          "positiveCostBudgetRate": 0.666667,
+          "meanGrossDirectionalReturnBps": -1.603894,
+          "medianGrossDirectionalReturnBps": 8.395681,
+          "meanBreakEvenRoundTripCostBps": 5.678647,
+          "p25BreakEvenRoundTripCostBps": 4.197841,
+          "medianBreakEvenRoundTripCostBps": 8.395681,
+          "p75BreakEvenRoundTripCostBps": 8.517971,
+          "maximumObservedBreakEvenRoundTripCostBps": 8.64026
         },
         "costBinding": {
           "status": "UNBOUND",
@@ -3181,8 +3181,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787284500000,
-        "lastTargetCloseTimestampMs": 1787362200000,
-        "contentSha256": "6f9e0c3ac684a67e8d560424146871724941551b75ff17bbad70149fa2639934"
+        "lastTargetCloseTimestampMs": 1787369700000,
+        "contentSha256": "fb02c0db1071d66ebf14fd2f71ed91c9036f2cecaa59ff01c5299113291f3093"
       },
       {
         "id": "BTCUSD-5m-secondary-30m-TOKYO-VOLATILE",
@@ -3914,9 +3914,9 @@
         "horizonMinutes": 5,
         "primarySession": "TOKYO",
         "regime": "COMPRESSION",
-        "recordCount": 2,
+        "recordCount": 3,
         "directionalCount": 1,
-        "waitCount": 1,
+        "waitCount": 2,
         "directionalOutcomeCounts": {
           "WIN": 0,
           "LOSS": 1,
@@ -3941,8 +3941,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787279100000,
-        "lastTargetCloseTimestampMs": 1787283180000,
-        "contentSha256": "5d82ce5af44f47591d4a2fe47a87b3368205ccc10cd7b7c0e101d45e520b195b"
+        "lastTargetCloseTimestampMs": 1787371140000,
+        "contentSha256": "6179ebd226adf84f3442038d738f9ed79cc9b92e6fff971e5ec6e0296f6f347f"
       },
       {
         "id": "ETHUSD-1m-primary-5m-TOKYO-RANGE",
@@ -4754,9 +4754,9 @@
         "horizonMinutes": 15,
         "primarySession": "TOKYO",
         "regime": "COMPRESSION",
-        "recordCount": 2,
+        "recordCount": 3,
         "directionalCount": 1,
-        "waitCount": 1,
+        "waitCount": 2,
         "directionalOutcomeCounts": {
           "WIN": 0,
           "LOSS": 1,
@@ -4781,8 +4781,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787279700000,
-        "lastTargetCloseTimestampMs": 1787283780000,
-        "contentSha256": "9b6a55b40724ef0fb1c165b5f839add162ff233c74dfa5e612b9b8262c1c326a"
+        "lastTargetCloseTimestampMs": 1787371740000,
+        "contentSha256": "2f6eed5a8264f4f3f17b1f63addfe8f4c5c32f97acd54aa2bc49379d4ee2418e"
       },
       {
         "id": "ETHUSD-1m-secondary-15m-TOKYO-RANGE",
@@ -5514,9 +5514,9 @@
         "horizonMinutes": 15,
         "primarySession": "TOKYO",
         "regime": "COMPRESSION",
-        "recordCount": 3,
+        "recordCount": 4,
         "directionalCount": 1,
-        "waitCount": 2,
+        "waitCount": 3,
         "directionalOutcomeCounts": {
           "WIN": 1,
           "LOSS": 0,
@@ -5541,8 +5541,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787288700000,
-        "lastTargetCloseTimestampMs": 1787368800000,
-        "contentSha256": "4ea89d829824e08957f4c4dd71046e978dc6486e24d05eb77843504c11dfc510"
+        "lastTargetCloseTimestampMs": 1787371500000,
+        "contentSha256": "85c8101939760af03d7f53ed268029543d4de9d3448202aa0b85f110a354e826"
       },
       {
         "id": "ETHUSD-5m-primary-15m-TOKYO-RANGE",
@@ -6274,24 +6274,24 @@
         "horizonMinutes": 30,
         "primarySession": "TOKYO",
         "regime": "COMPRESSION",
-        "recordCount": 2,
-        "directionalCount": 0,
+        "recordCount": 3,
+        "directionalCount": 1,
         "waitCount": 2,
         "directionalOutcomeCounts": {
-          "WIN": 0,
+          "WIN": 1,
           "LOSS": 0,
           "FLAT": 0
         },
         "breakEvenEvidence": {
-          "positiveCostBudgetCount": 0,
-          "positiveCostBudgetRate": null,
-          "meanGrossDirectionalReturnBps": null,
-          "medianGrossDirectionalReturnBps": null,
-          "meanBreakEvenRoundTripCostBps": null,
-          "p25BreakEvenRoundTripCostBps": null,
-          "medianBreakEvenRoundTripCostBps": null,
-          "p75BreakEvenRoundTripCostBps": null,
-          "maximumObservedBreakEvenRoundTripCostBps": null
+          "positiveCostBudgetCount": 1,
+          "positiveCostBudgetRate": 1,
+          "meanGrossDirectionalReturnBps": 2.661804,
+          "medianGrossDirectionalReturnBps": 2.661804,
+          "meanBreakEvenRoundTripCostBps": 2.661804,
+          "p25BreakEvenRoundTripCostBps": 2.661804,
+          "medianBreakEvenRoundTripCostBps": 2.661804,
+          "p75BreakEvenRoundTripCostBps": 2.661804,
+          "maximumObservedBreakEvenRoundTripCostBps": 2.661804
         },
         "costBinding": {
           "status": "UNBOUND",
@@ -6301,8 +6301,8 @@
           "profitabilityClaim": false
         },
         "firstTargetCloseTimestampMs": 1787289600000,
-        "lastTargetCloseTimestampMs": 1787366700000,
-        "contentSha256": "6ddeab2cc846e5827fc567847c3eafa2a3e2110268daa2de78add318272c405e"
+        "lastTargetCloseTimestampMs": 1787369700000,
+        "contentSha256": "67f0ade94bf5dc62bc7b4206833e1f09019c7ff9f8cdb80d31b65575fff125d9"
       },
       {
         "id": "ETHUSD-5m-secondary-30m-TOKYO-RANGE",
@@ -9389,18 +9389,18 @@
   "lastRun": {
     "status": "success",
     "collectorVersion": "short-horizon-cost-analysis-collector-v1",
-    "startedAtMs": 1787370096624,
-    "finishedAtMs": 1787370096668,
-    "durationMs": 44,
+    "startedAtMs": 1787372261613,
+    "finishedAtMs": 1787372261759,
+    "durationMs": 146,
     "cadenceMinutes": 15,
-    "githubRunId": "32549663929",
+    "githubRunId": "32551307791",
     "githubRunAttempt": "1",
     "aggregate": {
-      "outcomesRead": 709,
-      "existingAnalyses": 701,
+      "outcomesRead": 717,
+      "existingAnalyses": 709,
       "newAnalyses": 8,
-      "newDirectionalAnalyses": 6,
-      "newWaitAnalyses": 2,
+      "newDirectionalAnalyses": 2,
+      "newWaitAnalyses": 6,
       "positiveCostBudgetNew": 2,
       "archiveAdded": 8,
       "archiveDuplicates": 0,
