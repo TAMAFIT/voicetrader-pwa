@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const text=fs.readFileSync(new URL('./local-node/install-local-edge-lab-current.cmd',import.meta.url),'utf8');
+const v84=text.match(/set "V084_SOURCE=([0-9a-f]{40})"/)?.[1]??null;
+const v85=text.match(/set "V085_SOURCE=([0-9a-f]{40})"/)?.[1]??null;
+assert.ok(v84);assert.ok(v85);
+assert.doesNotMatch(text,/refs\/heads|\/main\/|feat\/local-edge/);
+assert.match(text,/install-v084-windows\.cmd/);
+assert.match(text,/install-v085-reboot-recovery\.cmd/);
+assert.match(text,/if not "%RC%"=="0" \(\s*echo ERROR: v0\.84 base installation did not complete\. v0\.85 was not attempted\./s);
+assert.ok(text.indexOf('call "%V084_FILE%"')<text.indexOf('call "%V085_FILE%"'));
+assert.doesNotMatch(text,/Restart-Computer|shutdown(?:\.exe)?\s+[\/-]r|reboot/i);
+assert.match(text,/A later genuine Windows reboot is required/);
+assert.match(text,/Real money \/ orders \/ cloud upload: OFF/);
+console.log(`PASS current Local Edge Lab installer contract; v0.84=${v84} v0.85=${v85}`);
