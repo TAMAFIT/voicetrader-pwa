@@ -19,5 +19,15 @@ assert.match(engine,/--initialize --runtime-ref \$OverlayRef/);
 assert.match(engine,/proofRequirement='NEW_BOOT_ID_AND_V084_HEALTH_PASS'/);
 assert.match(engine,/rebootRecoveryProven=\$false/);
 assert.match(engine,/dataDirectoriesPreserved=\$true/);
+
+// PowerShell variables are case-insensitive. Keep receipt path and payload under
+// unambiguously different names so $Receipt/$receipt can never collide again.
+assert.match(engine,/\$ReceiptPath=Join-Path \$DataRoot 'state\\local-edge-lab-v085-config\.json'/);
+assert.match(engine,/\$ReceiptRecord=\[ordered\]@\{/);
+assert.match(engine,/Save-JsonAtomic \$ReceiptPath \$ReceiptRecord/);
+assert.doesNotMatch(engine,/\$Receipt=Join-Path/);
+assert.doesNotMatch(engine,/\$receipt=\[ordered\]@\{/);
+assert.match(engine,/Atomic JSON parent path missing/);
+
 assert.doesNotMatch(engine,/BlindReveal|blind-sealed|orderSubmission=\$true|realMoneyRouting=\$true/);
-console.log(`PASS v0.85 overlay contract; pinned overlay ${overlay}`);
+console.log(`PASS v0.85 overlay contract + receipt path collision guard; pinned overlay ${overlay}`);
