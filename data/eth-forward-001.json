@@ -6750,17 +6750,26 @@
         "c": 2432.22,
         "volume": 8695.9748958,
         "trades": 9075
+      },
+      {
+        "t": 1787385600,
+        "o": 2432.23,
+        "h": 2439.99,
+        "l": 2389.21,
+        "c": 2423.45,
+        "volume": 4308.96123486,
+        "trades": 4010
       }
     ],
     "continuity": {
-      "barCount": 749,
+      "barCount": 750,
       "gapCount": 0,
       "missingBarTimes": []
     },
-    "signature": "kraken-spot-ethusd-4h-v1:1776600000:1787371200:749",
+    "signature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
     "firstBarTime": 1776600000,
-    "lastBarTime": 1787371200,
-    "closedBarCount": 749
+    "lastBarTime": 1787385600,
+    "closedBarCount": 750
   },
   "evidenceArchive": {
     "archiveVersion": "eth-forward-store-0.1",
@@ -6815,7 +6824,8 @@
       1787328000,
       1787342400,
       1787356800,
-      1787371200
+      1787371200,
+      1787385600
     ],
     "dataSignatures": [
       "kraken-spot-ethusd-4h-v1:1776600000:1786953600:720",
@@ -6847,7 +6857,8 @@
       "kraken-spot-ethusd-4h-v1:1776600000:1787328000:746",
       "kraken-spot-ethusd-4h-v1:1776600000:1787342400:747",
       "kraken-spot-ethusd-4h-v1:1776600000:1787356800:748",
-      "kraken-spot-ethusd-4h-v1:1776600000:1787371200:749"
+      "kraken-spot-ethusd-4h-v1:1776600000:1787371200:749",
+      "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750"
     ],
     "decisions": [
       {
@@ -10853,6 +10864,149 @@
           "dailyDirection": 1,
           "lastDailyBarCloseTime": 1787356800
         }
+      },
+      {
+        "decisionKey": "eth-forward-001:candidate-consensus:1787385600",
+        "epochId": "eth-forward-001",
+        "instrument": "ETHUSD",
+        "sourceId": "candidate-consensus",
+        "role": "candidate",
+        "barIndex": 749,
+        "candleTime": 1787385600,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-consensus",
+          "decision": "ENTER_LONG",
+          "wave1Decision": "ENTER_LONG",
+          "wave1KnowledgeScore": 33.19,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 87.64,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "volatile",
+          "riskGate": "CAUTION"
+        }
+      },
+      {
+        "decisionKey": "eth-forward-001:candidate-playbook-reference:1787385600",
+        "epochId": "eth-forward-001",
+        "instrument": "ETHUSD",
+        "sourceId": "candidate-playbook-reference",
+        "role": "candidate",
+        "barIndex": 749,
+        "candleTime": 1787385600,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-playbook-reference",
+          "decision": "ENTER_LONG",
+          "wave1Decision": "ENTER_LONG",
+          "wave1KnowledgeScore": 33.19,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 87.64,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "volatile",
+          "riskGate": "CAUTION"
+        }
+      },
+      {
+        "decisionKey": "eth-forward-001:candidate-playbook-wave1-veto:1787385600",
+        "epochId": "eth-forward-001",
+        "instrument": "ETHUSD",
+        "sourceId": "candidate-playbook-wave1-veto",
+        "role": "candidate",
+        "barIndex": 749,
+        "candleTime": 1787385600,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-playbook-wave1-veto",
+          "decision": "ENTER_LONG",
+          "wave1Decision": "ENTER_LONG",
+          "wave1KnowledgeScore": 33.19,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 87.64,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "volatile",
+          "riskGate": "CAUTION"
+        }
+      },
+      {
+        "decisionKey": "eth-forward-001:candidate-wave1-reference:1787385600",
+        "epochId": "eth-forward-001",
+        "instrument": "ETHUSD",
+        "sourceId": "candidate-wave1-reference",
+        "role": "candidate",
+        "barIndex": 749,
+        "candleTime": 1787385600,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "candidateId": "candidate-wave1-reference",
+          "decision": "ENTER_LONG",
+          "wave1Decision": "ENTER_LONG",
+          "wave1KnowledgeScore": 33.19,
+          "wave1FamilyAgreement": 0.8,
+          "wave2Decision": "ENTER_LONG",
+          "wave2PlaybookScore": 87.64,
+          "wave2ArchetypeAgreement": 1,
+          "regime": "volatile",
+          "riskGate": "CAUTION"
+        }
+      },
+      {
+        "decisionKey": "eth-forward-001:champion-001:1787385600",
+        "epochId": "eth-forward-001",
+        "instrument": "ETHUSD",
+        "sourceId": "champion-001",
+        "role": "benchmark",
+        "barIndex": 749,
+        "candleTime": 1787385600,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "0.4-fixed-experts-policy",
+          "rawAlphaScore": 34.40428966158727,
+          "decisionScore": 88.33999999999999,
+          "confidenceScore": 84
+        }
+      },
+      {
+        "decisionKey": "eth-forward-001:higher-timeframe-wave3-reference:1787385600",
+        "epochId": "eth-forward-001",
+        "instrument": "ETHUSD",
+        "sourceId": "higher-timeframe-wave3-reference",
+        "role": "candidate",
+        "barIndex": 749,
+        "candleTime": 1787385600,
+        "decision": "ENTER_LONG",
+        "dataSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
+        "observedProspectively": true,
+        "usedFutureOutcomeAtDecision": false,
+        "details": {
+          "engineVersion": "higher-timeframe-engine-0.1",
+          "registryVersion": "higher-timeframe-registry-0.1",
+          "rawContextScore": 81.09,
+          "activeAlphaCount": 1,
+          "alphaAgreement": 1,
+          "gateReason": null,
+          "dailyRegime": "trend",
+          "dailyDirection": 1,
+          "lastDailyBarCloseTime": 1787356800
+        }
       }
     ],
     "evidence": [
@@ -11854,26 +12008,61 @@
         "exitPrice": 2432.22,
         "grossReturnBps": 80.74,
         "netReturnBps": 56.5
+      },
+      {
+        "evidenceKey": "eth-forward-001:higher-timeframe-wave3-reference:1787342400:1787385600:LONG",
+        "epochId": "eth-forward-001",
+        "instrument": "ETHUSD",
+        "sourceId": "higher-timeframe-wave3-reference",
+        "role": "candidate",
+        "decision": "ENTER_LONG",
+        "side": "LONG",
+        "entryIndex": 746,
+        "exitIndex": 749,
+        "entryTime": 1787342400,
+        "exitTime": 1787385600,
+        "holdingBars": 3,
+        "estimatedRoundTripCostBps": 23.5851,
+        "costModelVersion": "research-cost-v0.1",
+        "costUsesEntryBarInformationOnly": true,
+        "dataSignature": "kraken-spot-ethusd-4h-v1:1776600000:1787385600:750",
+        "observedProspectively": true,
+        "futureOutcomeUsedByDecision": false,
+        "details": {
+          "engineVersion": "higher-timeframe-engine-0.1",
+          "registryVersion": "higher-timeframe-registry-0.1",
+          "rawContextScore": 89.34,
+          "activeAlphaCount": 1,
+          "alphaAgreement": 1,
+          "gateReason": null,
+          "dailyRegime": "trend",
+          "dailyDirection": 1,
+          "lastDailyBarCloseTime": 1787356800
+        },
+        "entryPrice": 2515.72,
+        "exitPrice": 2423.45,
+        "grossReturnBps": -366.77,
+        "netReturnBps": -390.36
       }
     ],
     "mergeConflicts": [],
-    "updatedAt": "2026-08-22T11:48:56.286Z"
+    "updatedAt": "2026-08-22T13:10:35.032Z"
   },
   "collector": {
     "version": "autonomous-eth-forward-collector-0.1",
     "status": "success",
-    "lastRunAt": "2026-08-22T11:48:56.286Z",
-    "workflowRunId": "32571286946",
+    "lastRunAt": "2026-08-22T13:10:35.032Z",
+    "workflowRunId": "32575003855",
     "workflowRunAttempt": "1",
     "strategyCommit": "0d330101f413cb19b8cd47fdd005d2230152e8db",
-    "marketBarsAdded": 0,
+    "marketBarsAdded": 1,
     "marketConflicts": [],
     "incomingClosedBars": 720,
-    "totalMarketBars": 749,
-    "prospectiveDecisionRecords": 168,
-    "prospectiveEvidenceRecords": 29,
-    "archivedDecisionRecords": 168,
-    "archivedEvidenceRecords": 29,
+    "totalMarketBars": 750,
+    "prospectiveDecisionRecords": 174,
+    "prospectiveEvidenceRecords": 30,
+    "archivedDecisionRecords": 174,
+    "archivedEvidenceRecords": 30,
     "browserRequired": false,
     "paidApiRequired": false,
     "replayAuditRequiredOnceProspectiveBarsExist": true
@@ -11883,12 +12072,12 @@
     "status": "pass",
     "pass": true,
     "checked": {
-      "marketBars": 749,
-      "observedBars": 28,
-      "decisions": 168,
-      "evidence": 29,
-      "expectedDecisions": 168,
-      "expectedEvidence": 29,
+      "marketBars": 750,
+      "observedBars": 29,
+      "decisions": 174,
+      "evidence": 30,
+      "expectedDecisions": 174,
+      "expectedEvidence": 30,
       "sources": 6
     },
     "errorCount": 0,
@@ -11905,6 +12094,6 @@
       "changesFrozenStrategy": false,
       "usedByLiveDecisionEngine": false
     },
-    "checkedAt": "2026-08-22T11:48:56.286Z"
+    "checkedAt": "2026-08-22T13:10:35.032Z"
   }
 }
