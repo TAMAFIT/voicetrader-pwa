@@ -13,47 +13,33 @@ function snapshotBook(book,depth=10){const bids=top(book.bids,{desc:true,limit:d
 function evidenceBase({status,productId=null,providerSequenceNum=null,previousSequenceNum=null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired=false,details=null}){return {schemaVersion:COINBASE_BOOK_INTEGRITY_SCHEMA,evidenceId:crypto.createHash('sha256').update([connectionId,providerSequenceNum,status,productId,sourceSha256].join('|')).digest('hex'),status,productId,providerSequenceNum,previousSequenceNum,receivedTimestampMs:Number(receivedTimestampMs),sourceSha256:String(sourceSha256||''),connectionId:String(connectionId||''),reconnectRequired,details,governance:{observationOnly:true,predictionInputAuthorized:false,derivedMicrostructureAuthorized:false,automaticPromotion:false,orderSubmission:false,realMoneyRouting:false}};}
 
 export class CoinbaseBookIntegrityTracker{
-  constructor({depth=10}={}){this.depth=depth;this.books=new Map();this.lastProviderSequenceNumByProduct=new Map();}
-  reset(){this.books.clear();this.lastProviderSequenceNumByProduct.clear();}
+  constructor({depth=10}={}){this.depth=depth;this.books=new Map();}
+  reset(){this.books.clear();}
   state(productId){if(!this.books.has(productId))this.books.set(productId,createBook(productId));return this.books.get(productId);}
   snapshot(){return Object.fromEntries([...this.books.entries()].map(([k,v])=>[k,snapshotBook(v,this.depth)]));}
-  applyRawMessage(rawText,{receivedTimestampMs=Date.now(),sourceSha256='',connectionId=''}={}){
+  applyRawMessage(rawText,{receivedTimestampMs=Date.now(),sourceSha256='',connectionId='',providerSequence=null}={}){
     let p;try{p=JSON.parse(String(rawText??''));}catch{return [evidenceBase({status:'MALFORMED_JSON',receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true})];}
     if(p?.channel!=='l2_data'&&p?.channel!=='level2')return [];
     const seq=Number(p?.sequence_num);
-    if(!Number.isInteger(seq)||seq<0){for(const b of this.books.values())b.trusted=false;return [evidenceBase({status:'SEQUENCE_INVALID',providerSequenceNum:Number.isFinite(seq)?seq:null,previousSequenceNum:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true})];}
-
-    const grouped=new Map();
-    for(const event of Array.isArray(p?.events)?p.events:[]){
-      const productId=String(event?.product_id||'');
-      if(!allowedProducts.has(productId))continue;
-      if(!grouped.has(productId))grouped.set(productId,[]);
-      grouped.get(productId).push(event);
-    }
+    if(!Number.isInteger(seq)||seq<0){for(const b of this.books.values())b.trusted=false;return [evidenceBase({status:'SEQUENCE_INVALID',providerSequenceNum:Number.isFinite(seq)?seq:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{validationLayer:'RAW_CONNECTION'}})];}
+    if(providerSequence?.verified!==true||!['BASELINE','CONTIGUOUS'].includes(String(providerSequence?.status||''))){for(const b of this.books.values())b.trusted=false;return [evidenceBase({status:'PROVIDER_SEQUENCE_UNVERIFIED',providerSequenceNum:seq,previousSequenceNum:Number.isInteger(providerSequence?.previous)?providerSequence.previous:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{providerSequenceStatus:providerSequence?.status??null,validationLayer:'RAW_CONNECTION'}})];}
 
     const out=[];
-    for(const [productId,events] of grouped.entries()){
-      const previous=this.lastProviderSequenceNumByProduct.has(productId)?this.lastProviderSequenceNumByProduct.get(productId):null;
-      const book=this.state(productId);
-      if(previous!=null&&seq<=previous){book.trusted=false;out.push(evidenceBase({status:'SEQUENCE_OUT_OF_ORDER',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true}));continue;}
-      if(previous!=null&&seq!==previous+1){book.trusted=false;out.push(evidenceBase({status:'SEQUENCE_GAP',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{missingFrom:previous+1,missingTo:seq-1}}));continue;}
-      this.lastProviderSequenceNumByProduct.set(productId,seq);
-
-      for(const event of events){
-        const type=String(event?.type||'').toLowerCase();
-        if(type==='snapshot'){book.bids.clear();book.offers.clear();book.hasSnapshot=true;book.trusted=false;}
-        else if(type==='update'&&!book.hasSnapshot){out.push(evidenceBase({status:'UPDATE_BEFORE_SNAPSHOT',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true}));book.trusted=false;continue;}
-        else if(type!=='update'){out.push(evidenceBase({status:'EVENT_TYPE_UNSUPPORTED',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{eventType:type}}));book.trusted=false;continue;}
-        let malformed=0;for(const update of Array.isArray(event?.updates)?event.updates:[]){const level=parseLevel(update);if(!level){malformed++;continue;}applyLevel(book,level);}
-        book.lastProviderSequenceNum=seq;
-        const snap=snapshotBook(book,this.depth);
-        if(malformed>0){book.trusted=false;out.push(evidenceBase({status:'LEVEL_MALFORMED',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{malformedLevels:malformed}}));continue;}
-        if(!(snap.bestBid>0)||!(snap.bestOffer>0)){book.trusted=false;out.push(evidenceBase({status:'BOOK_INCOMPLETE',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{bidLevels:snap.bidLevels,offerLevels:snap.offerLevels}}));continue;}
-        if(snap.bestBid>=snap.bestOffer){book.trusted=false;out.push(evidenceBase({status:'BOOK_CROSSED',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{bestBid:snap.bestBid,bestOffer:snap.bestOffer}}));continue;}
-        book.trusted=true;
-        const trusted=evidenceBase({status:type==='snapshot'?'TRUSTED_SNAPSHOT':'TRUSTED_UPDATE',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:false});
-        out.push({...trusted,governance:{...trusted.governance,derivedMicrostructureAuthorized:true},book:snapshotBook(book,this.depth),semantics:{snapshotObserved:book.hasSnapshot,sequenceContinuous:true,sequenceScope:'PER_PRODUCT',absoluteQuantityUpdates:true,zeroQuantityRemovesLevel:true,bookNotCrossed:true,providerLevel2DeliveryGuaranteeDocumented:true,localBookSynchronizationVerified:true,derivedMicrostructureAuthorized:true}});
-      }
+    for(const event of Array.isArray(p?.events)?p.events:[]){
+      const productId=String(event?.product_id||'');if(!allowedProducts.has(productId))continue;
+      const type=String(event?.type||'').toLowerCase(),book=this.state(productId);
+      if(type==='snapshot'){book.bids.clear();book.offers.clear();book.hasSnapshot=true;book.trusted=false;}
+      else if(type==='update'&&!book.hasSnapshot){out.push(evidenceBase({status:'UPDATE_BEFORE_SNAPSHOT',productId,providerSequenceNum:seq,previousSequenceNum:Number.isInteger(providerSequence?.previous)?providerSequence.previous:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true}));book.trusted=false;continue;}
+      else if(type!=='update'){out.push(evidenceBase({status:'EVENT_TYPE_UNSUPPORTED',productId,providerSequenceNum:seq,previousSequenceNum:Number.isInteger(providerSequence?.previous)?providerSequence.previous:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{eventType:type}}));book.trusted=false;continue;}
+      let malformed=0;for(const update of Array.isArray(event?.updates)?event.updates:[]){const level=parseLevel(update);if(!level){malformed++;continue;}applyLevel(book,level);}
+      book.lastProviderSequenceNum=seq;
+      const snap=snapshotBook(book,this.depth);
+      if(malformed>0){book.trusted=false;out.push(evidenceBase({status:'LEVEL_MALFORMED',productId,providerSequenceNum:seq,previousSequenceNum:Number.isInteger(providerSequence?.previous)?providerSequence.previous:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{malformedLevels:malformed}}));continue;}
+      if(!(snap.bestBid>0)||!(snap.bestOffer>0)){book.trusted=false;out.push(evidenceBase({status:'BOOK_INCOMPLETE',productId,providerSequenceNum:seq,previousSequenceNum:Number.isInteger(providerSequence?.previous)?providerSequence.previous:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{bidLevels:snap.bidLevels,offerLevels:snap.offerLevels}}));continue;}
+      if(snap.bestBid>=snap.bestOffer){book.trusted=false;out.push(evidenceBase({status:'BOOK_CROSSED',productId,providerSequenceNum:seq,previousSequenceNum:Number.isInteger(providerSequence?.previous)?providerSequence.previous:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{bestBid:snap.bestBid,bestOffer:snap.bestOffer}}));continue;}
+      book.trusted=true;
+      const trusted=evidenceBase({status:type==='snapshot'?'TRUSTED_SNAPSHOT':'TRUSTED_UPDATE',productId,providerSequenceNum:seq,previousSequenceNum:Number.isInteger(providerSequence?.previous)?providerSequence.previous:null,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:false});
+      out.push({...trusted,governance:{...trusted.governance,derivedMicrostructureAuthorized:true},book:snapshotBook(book,this.depth),semantics:{snapshotObserved:book.hasSnapshot,sequenceContinuityValidatedUpstream:true,sequenceScope:'FULL_CONNECTION_RAW_STREAM',absoluteQuantityUpdates:true,zeroQuantityRemovesLevel:true,bookNotCrossed:true,providerLevel2DeliveryGuaranteeDocumented:true,localBookSynchronizationVerified:true,derivedMicrostructureAuthorized:true}});
     }
     return out;
   }
