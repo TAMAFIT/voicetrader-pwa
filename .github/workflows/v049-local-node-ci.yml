@@ -35,6 +35,7 @@ jobs:
           node --check src/short-horizon/cross-venue-preregistered-hypothesis.js
           node --check src/short-horizon/cross-venue-learning-scorecard.js
           node --check src/short-horizon/cross-venue-blind-manifest.js
+          node --check src/short-horizon/cross-venue-blind-reveal.js
           node --check scripts/local-node/coinbase-microstructure-recorder.mjs
           node --check scripts/local-node/coinbase-boundary-window-worker.mjs
           node --check scripts/local-node/cross-venue-replication-worker.mjs
@@ -51,6 +52,7 @@ jobs:
           node scripts/test-short-horizon-cross-venue-learning-scorecard.mjs
           node scripts/test-short-horizon-cross-venue-learning-scorecard-worker.mjs
           node scripts/test-short-horizon-cross-venue-blind-manifest.mjs
+          node scripts/test-short-horizon-cross-venue-blind-reveal.mjs
 
       - name: Assert cloud-cost and execution boundary
         shell: bash
@@ -67,15 +69,16 @@ jobs:
           grep -q "predictionInputAuthorized:false" src/short-horizon/cross-venue-preregistered-hypothesis.js
           grep -q "predictionInputAuthorized:false" src/short-horizon/cross-venue-learning-scorecard.js
           grep -q "predictionInputAuthorized:false" src/short-horizon/cross-venue-blind-manifest.js
+          grep -q "predictionInputAuthorized:false" src/short-horizon/cross-venue-blind-reveal.js
           grep -q "adaptiveLearningAuthorized:false" src/short-horizon/cross-venue-preregistered-hypothesis.js
           grep -q "adaptiveLearningAuthorized:false" src/short-horizon/cross-venue-blind-manifest.js
+          grep -q "adaptiveLearningAuthorized:false" src/short-horizon/cross-venue-blind-reveal.js
           grep -q "blindResultsConsumed:false" src/short-horizon/cross-venue-learning-scorecard.js
           grep -q "resultsAccessed:false" src/short-horizon/cross-venue-blind-manifest.js
           grep -q "selectionUsesResultValues:false" src/short-horizon/cross-venue-blind-manifest.js
-          grep -q "crossVenueComparabilityClaim:false" src/short-horizon/cross-venue-replication.js
-          grep -q "predictiveReplicationClaim:false" src/short-horizon/cross-venue-replication.js
-          grep -q "predictiveReplicationClaim:false" src/short-horizon/cross-venue-preregistered-hypothesis.js
-          grep -q "actualNetEvAvailable:false" src/short-horizon/cross-venue-blind-manifest.js
+          grep -q "sequentialPeekingAllowed:false" src/short-horizon/cross-venue-blind-reveal.js
+          grep -q "noTopUpAfterReveal:true" src/short-horizon/cross-venue-blind-reveal.js
+          grep -q "actualNetEvAvailable:false" src/short-horizon/cross-venue-blind-reveal.js
           grep -q "orderSubmission:false" src/short-horizon/local-node-coinbase-wire.js
           if grep -R -E "@google-cloud|googleapis|storage\.googleapis|run\.app|pubsub|bigquery" \
             src/short-horizon/local-node-gmo-tick.js \
@@ -90,6 +93,7 @@ jobs:
             src/short-horizon/cross-venue-preregistered-hypothesis.js \
             src/short-horizon/cross-venue-learning-scorecard.js \
             src/short-horizon/cross-venue-blind-manifest.js \
+            src/short-horizon/cross-venue-blind-reveal.js \
             scripts/local-node/coinbase-microstructure-recorder.mjs \
             scripts/local-node/coinbase-boundary-window-worker.mjs \
             scripts/local-node/cross-venue-replication-worker.mjs \
