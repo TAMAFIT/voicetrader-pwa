@@ -4,12 +4,13 @@ export const CROSS_VENUE_REPLICATION_SCHEMA='voicetrader-cross-venue-replication
 export const CROSS_VENUE_REPLICATION_SUMMARY_SCHEMA='voicetrader-cross-venue-replication-summary-v1';
 const round=(v,d=8)=>{const n=Number(v);if(!Number.isFinite(n))return null;const s=10**d;return Math.round(n*s)/s;};
 const sign=(v)=>{const n=Number(v);return !Number.isFinite(n)||n===0?0:n>0?1:-1;};
+const presentNumber=(v)=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v));
 
 export function canonicalFromKrakenSymbol(symbol){const s=String(symbol||'');if(s==='BTC/USD')return 'BTCUSD';if(s==='ETH/USD')return 'ETHUSD';return null;}
 function canonicalFromWindow(window,venue){if(venue==='KRAKEN')return canonicalFromKrakenSymbol(window?.symbol);if(venue==='COINBASE')return window?.canonicalInstrument||null;return null;}
 function passTime(window){return window?.timing?.timeBasis==='PROVIDER_TIMESTAMP'&&window?.timing?.timeIntegrity?.status==='PASS'&&window?.timing?.timeIntegrity?.prospectiveEligible===true;}
-function metric(name,krakenValue,coinbaseValue){const k=Number(krakenValue),c=Number(coinbaseValue),available=Number.isFinite(k)&&Number.isFinite(c),ks=available?sign(k):null,cs=available?sign(c):null;return {name,available,krakenValue:available?round(k):null,coinbaseValue:available?round(c):null,krakenSign:ks,coinbaseSign:cs,signAgreement:available?ks===cs:null,bothDirectional:available?ks!==0&&cs!==0:false};}
-function boundarySignature(window){const b=window?.timing?.boundary||{};return ['5m','15m','60m'].map((k)=>({name:k,atBoundary:b?.[k]?.atBoundary===true,secondsSinceBoundary:Number(b?.[k]?.secondsSinceBoundary),secondsToBoundary:Number(b?.[k]?.secondsToBoundary)}));}
+function metric(name,krakenValue,coinbaseValue){const available=presentNumber(krakenValue)&&presentNumber(coinbaseValue),k=available?Number(krakenValue):null,c=available?Number(coinbaseValue):null,ks=available?sign(k):null,cs=available?sign(c):null;return {name,available,krakenValue:available?round(k):null,coinbaseValue:available?round(c):null,krakenSign:ks,coinbaseSign:cs,signAgreement:available?ks===cs:null,bothDirectional:available?ks!==0&&cs!==0:false};}
+function boundarySignature(window){const b=window?.timing?.boundary||{};return ['5m','15m','60m'].map((k)=>({name:k,atBoundary:b?.[k]?.atBoundary===true,secondsSinceBoundary:presentNumber(b?.[k]?.secondsSinceBoundary)?Number(b[k].secondsSinceBoundary):null,secondsToBoundary:presentNumber(b?.[k]?.secondsToBoundary)?Number(b[k].secondsToBoundary):null}));}
 
 export function pairCrossVenueWindows(krakenWindow,coinbaseWindow){
   const kInstrument=canonicalFromWindow(krakenWindow,'KRAKEN'),cInstrument=canonicalFromWindow(coinbaseWindow,'COINBASE');
