@@ -1,0 +1,19 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createSoakHourAccumulator,addSoakSample,finalizeSoakHour,buildSoakReport} from '../../src/short-horizon/local-edge-lab-soak-certifier.js';
+import {evaluateRoot} from './v084-health-gate.mjs';
+
+const HOUR=3600000;
+const read=(f)=>{try{return JSON.parse(fs.readFileSync(f,'utf8'));}catch{return null;}};
+const save=(f,v)=>{fs.mkdirSync(path.dirname(f),{recursive:true});const t=f+'.tmp';fs.writeFileSync(t,JSON.stringify(v,null,2));fs.renameSync(t,f);};
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+function args(a){const o={pollMs:60000,maxAgeMs:90000};for(let i=0;i<a.length;i++){if(a[i]==='--root')o.rootDir=a[++i];else if(a[i]==='--poll-ms')o.pollMs=Number(a[++i]);else if(a[i]==='--max-age-ms')o.maxAgeMs=Number(a[++i]);}return o;}
+function counts(root){const k=read(path.join(root,'state','kraken-microstructure-health.json')),kw=read(path.join(root,'state','kraken-boundary-health.json')),c=read(path.join(root,'state','coinbase-microstructure-health.json')),cw=read(path.join(root,'state','coinbase-boundary-health.json')),x=read(path.join(root,'state','cross-venue-replication-worker-state.json'));return {krakenMessages:Number(k?.counts?.messages||0),krakenWindows:Number(kw?.counts?.windowsWritten||0),coinbaseMessages:Number(c?.counts?.messages||0),coinbaseWindows:Number(cw?.counts?.windowsWritten||0),crossKrakenRead:Number(x?.counts?.krakenWindowsRead||0),crossCoinbaseRead:Number(x?.counts?.coinbaseWindowsRead||0),crossPairs:Number(x?.counts?.pairsWritten||0)};}
+function loadHours(file){const v=read(file);return Array.isArray(v)?v:[];}
+export function createState(){return {schemaVersion:'voicetrader-v086-soak-worker-state-v1',currentHour:null,samples:0};}
+export function processSample(root,state,{nowMs=Date.now(),health,counterSnapshot}={}){const start=Math.floor(nowMs/HOUR)*HOUR;if(state.currentHour&&state.currentHour.hourStartMs!==start){const r=finalizeSoakHour(state.currentHour);if(r){const file=path.join(root,'state','local-edge-lab-v086-soak-hours.json'),hours=loadHours(file);if(!hours.some(x=>x.hourStartMs===r.hourStartMs))hours.push(r);save(file,hours.slice(-72));}state.currentHour=null;}if(!state.currentHour)state.currentHour=createSoakHourAccumulator(nowMs);addSoakSample(state.currentHour,{sampledAtMs:nowMs,healthStatus:health?.status??'BLOCKED',failedChecks:health?.failedChecks??[],counters:counterSnapshot??counts(root)});state.samples++;state.updatedAtMs=nowMs;return state;}
+export function report(root,state,nowMs=Date.now()){const hours=loadHours(path.join(root,'state','local-edge-lab-v086-soak-hours.json'));return {...buildSoakReport(hours,{generatedAtMs:nowMs}),worker:{samples:state.samples,currentHourSamples:state.currentHour?.samples??0},source:{v084Health:true,blindDirectoryRead:false},runtimePolicy:{googleCloudEnabled:false,cloudUploadEnabled:false,githubActionsRequired:false}};}
+export async function run({rootDir,pollMs=60000,maxAgeMs=90000,stopSignal=()=>false}={}){if(!rootDir)throw new Error('v086-root-required');const sf=path.join(rootDir,'state','local-edge-lab-v086-soak-worker.json'),rf=path.join(rootDir,'state','local-edge-lab-v086-soak-report.json');let s=read(sf)||createState();while(!stopSignal()){const now=Date.now();try{processSample(rootDir,s,{nowMs:now,health:evaluateRoot(rootDir,{nowMs:now,maxAgeMs})});save(sf,s);save(rf,report(rootDir,s,now));}catch(e){save(rf,{status:'ERROR',updatedAtMs:now,error:String(e),governance:{operationsEvidenceOnly:true,predictionInputAuthorized:false,executionAuthorized:false}});}await sleep(pollMs);}return s;}
+async function main(){await run(args(process.argv.slice(2)));}
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))main().catch(e=>{console.error(e);process.exitCode=1;});
