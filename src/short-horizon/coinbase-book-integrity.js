@@ -40,7 +40,8 @@ export class CoinbaseBookIntegrityTracker{
       if(!(snap.bestBid>0)||!(snap.bestOffer>0)){book.trusted=false;out.push(evidenceBase({status:'BOOK_INCOMPLETE',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{bidLevels:snap.bidLevels,offerLevels:snap.offerLevels}}));continue;}
       if(snap.bestBid>=snap.bestOffer){book.trusted=false;out.push(evidenceBase({status:'BOOK_CROSSED',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:true,details:{bestBid:snap.bestBid,bestOffer:snap.bestOffer}}));continue;}
       book.trusted=true;
-      out.push({...evidenceBase({status:type==='snapshot'?'TRUSTED_SNAPSHOT':'TRUSTED_UPDATE',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:false}),book:snapshotBook(book,this.depth),semantics:{snapshotObserved:book.hasSnapshot,sequenceContinuous:true,absoluteQuantityUpdates:true,zeroQuantityRemovesLevel:true,bookNotCrossed:true,providerLevel2DeliveryGuaranteeDocumented:true,localBookSynchronizationVerified:true,derivedMicrostructureAuthorized:false}});
+      const trusted=evidenceBase({status:type==='snapshot'?'TRUSTED_SNAPSHOT':'TRUSTED_UPDATE',productId,providerSequenceNum:seq,previousSequenceNum:previous,receivedTimestampMs,sourceSha256,connectionId,reconnectRequired:false});
+      out.push({...trusted,governance:{...trusted.governance,derivedMicrostructureAuthorized:true},book:snapshotBook(book,this.depth),semantics:{snapshotObserved:book.hasSnapshot,sequenceContinuous:true,absoluteQuantityUpdates:true,zeroQuantityRemovesLevel:true,bookNotCrossed:true,providerLevel2DeliveryGuaranteeDocumented:true,localBookSynchronizationVerified:true,derivedMicrostructureAuthorized:true}});
     }
     return out;
   }
