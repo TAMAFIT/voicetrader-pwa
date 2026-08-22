@@ -1,7 +1,7 @@
 {
   "schemaVersion": "short-horizon-outcome-manifest-v1",
   "archiveVersion": "short-horizon-outcome-archive-v1",
-  "updatedAtMs": 1787366552874,
+  "updatedAtMs": 1787369348775,
   "storage": {
     "kind": "github-generated-data-branch",
     "branch": "short-horizon-outcome-data",
@@ -18,10 +18,10 @@
     "profitabilityClaim": false
   },
   "archive": {
-    "recordCount": 701,
+    "recordCount": 709,
     "fileCount": 16,
     "duplicateOutcomeIdCount": 0,
-    "contentSha256": "96d4df92905d7bbc554196cfb84115dafb468360c1c8b3fb34768bb5c5201416",
+    "contentSha256": "4fe4f374b36fdb7292f39d9e799ad92e28be1f06d3466b7020b9b81e0e25a9d8",
     "streams": [
       {
         "id": "BTCUSD-1m-primary",
@@ -31,27 +31,27 @@
         "timeframeMinutes": 1,
         "horizonKind": "primary",
         "horizonMinutes": 5,
-        "recordCount": 64,
+        "recordCount": 65,
         "signalCounts": {
-          "LONG": 17,
+          "LONG": 18,
           "SHORT": 10,
           "WAIT": 37
         },
         "directionalOutcomeCounts": {
           "WIN": 14,
-          "LOSS": 13,
+          "LOSS": 14,
           "FLAT": 0
         },
         "descriptiveMetrics": {
-          "meanRawDirectionalReturnPct": -0.027412058148148136,
-          "meanMfePct": 0.12798209481481482,
-          "meanMaePct": -0.15944989037037038,
+          "meanRawDirectionalReturnPct": -0.03482909464285713,
+          "meanMfePct": 0.12341584892857142,
+          "meanMaePct": -0.1627600935714286,
           "transactionCostsModeled": false,
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787232540000,
-        "lastTargetCloseTimestampMs": 1787365200000,
-        "contentSha256": "f5e03be5828b220ee622726807d679d8f148ec4973fc90fdc0c02d4667ab02da"
+        "lastTargetCloseTimestampMs": 1787368380000,
+        "contentSha256": "00d064f0520abb1717a9538a2d772d4f5efb70f7c60148b45e98839f5fc40a0d"
       },
       {
         "id": "BTCUSD-1m-secondary",
@@ -61,27 +61,27 @@
         "timeframeMinutes": 1,
         "horizonKind": "secondary",
         "horizonMinutes": 15,
-        "recordCount": 64,
+        "recordCount": 65,
         "signalCounts": {
-          "LONG": 17,
+          "LONG": 18,
           "SHORT": 10,
           "WAIT": 37
         },
         "directionalOutcomeCounts": {
           "WIN": 14,
-          "LOSS": 13,
+          "LOSS": 14,
           "FLAT": 0
         },
         "descriptiveMetrics": {
-          "meanRawDirectionalReturnPct": 0.04167662592592593,
-          "meanMfePct": 0.3079121122222222,
-          "meanMaePct": -0.30318494444444444,
+          "meanRawDirectionalReturnPct": 0.039129583571428574,
+          "meanMfePct": 0.2969197942857143,
+          "meanMaePct": -0.3035879753571429,
           "transactionCostsModeled": false,
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787233140000,
-        "lastTargetCloseTimestampMs": 1787365800000,
-        "contentSha256": "c14d74a481db52e4aa22c7c9daf90e81d57450db16e94d7665b48e598874b40d"
+        "lastTargetCloseTimestampMs": 1787368980000,
+        "contentSha256": "edcac34c8dd3187b9893c3134c7038a25a2a88392475c5524851423f652d9fd1"
       },
       {
         "id": "BTCUSD-5m-primary",
@@ -91,27 +91,27 @@
         "timeframeMinutes": 5,
         "horizonKind": "primary",
         "horizonMinutes": 15,
-        "recordCount": 64,
+        "recordCount": 65,
         "signalCounts": {
-          "LONG": 16,
+          "LONG": 17,
           "SHORT": 5,
           "WAIT": 43
         },
         "directionalOutcomeCounts": {
           "WIN": 13,
-          "LOSS": 8,
+          "LOSS": 9,
           "FLAT": 0
         },
         "descriptiveMetrics": {
-          "meanRawDirectionalReturnPct": 0.03800867,
-          "meanMfePct": 0.3516395438095238,
-          "meanMaePct": -0.3668996757142858,
+          "meanRawDirectionalReturnPct": 0.03520516409090909,
+          "meanMfePct": 0.3416887245454545,
+          "meanMaePct": -0.36319611090909093,
           "transactionCostsModeled": false,
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787232900000,
-        "lastTargetCloseTimestampMs": 1787365800000,
-        "contentSha256": "a682da532cf954a23fd581354038e94b2eeadc6493486e03240080c74d71afb2"
+        "lastTargetCloseTimestampMs": 1787368800000,
+        "contentSha256": "63ba742d5613bf1450bcda46882f0d9c52c0f165fcec57eb3223102eee6da769"
       },
       {
         "id": "BTCUSD-5m-secondary",
@@ -121,11 +121,11 @@
         "timeframeMinutes": 5,
         "horizonKind": "secondary",
         "horizonMinutes": 30,
-        "recordCount": 63,
+        "recordCount": 64,
         "signalCounts": {
           "LONG": 16,
           "SHORT": 5,
-          "WAIT": 42
+          "WAIT": 43
         },
         "directionalOutcomeCounts": {
           "WIN": 11,
@@ -140,8 +140,8 @@
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787233800000,
-        "lastTargetCloseTimestampMs": 1787362200000,
-        "contentSha256": "a1a0ecec8f684fafb85e7f2d458af385851044c00b452b76a46acb8f024b85b5"
+        "lastTargetCloseTimestampMs": 1787366700000,
+        "contentSha256": "e49b18bf07a0ee0cdb6d748ecb90bab4bfe61b60d9db9255c303b00cd32ea0fe"
       },
       {
         "id": "ETHUSD-1m-primary",
@@ -151,27 +151,27 @@
         "timeframeMinutes": 1,
         "horizonKind": "primary",
         "horizonMinutes": 5,
-        "recordCount": 64,
+        "recordCount": 65,
         "signalCounts": {
-          "LONG": 14,
+          "LONG": 15,
           "SHORT": 10,
           "WAIT": 40
         },
         "directionalOutcomeCounts": {
           "WIN": 15,
-          "LOSS": 9,
+          "LOSS": 10,
           "FLAT": 0
         },
         "descriptiveMetrics": {
-          "meanRawDirectionalReturnPct": 0.039391535833333345,
-          "meanMfePct": 0.18058066958333338,
-          "meanMaePct": -0.16527573291666664,
+          "meanRawDirectionalReturnPct": 0.03314377560000001,
+          "meanMfePct": 0.17361170680000004,
+          "meanMaePct": -0.1662449456,
           "transactionCostsModeled": false,
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787232540000,
-        "lastTargetCloseTimestampMs": 1787365200000,
-        "contentSha256": "8ce1978487ca39ddc1e8ed5ceac259fb5fed8b176f20208766ca1d4296e87eb4"
+        "lastTargetCloseTimestampMs": 1787368380000,
+        "contentSha256": "5b0bcb98c3130b6723d96d3ba7b8b8e3c550bbd15f7eeb40b1da271ef6b08b83"
       },
       {
         "id": "ETHUSD-1m-secondary",
@@ -181,27 +181,27 @@
         "timeframeMinutes": 1,
         "horizonKind": "secondary",
         "horizonMinutes": 15,
-        "recordCount": 64,
+        "recordCount": 65,
         "signalCounts": {
-          "LONG": 14,
+          "LONG": 15,
           "SHORT": 10,
           "WAIT": 40
         },
         "directionalOutcomeCounts": {
-          "WIN": 15,
+          "WIN": 16,
           "LOSS": 9,
           "FLAT": 0
         },
         "descriptiveMetrics": {
-          "meanRawDirectionalReturnPct": 0.12657205666666668,
-          "meanMfePct": 0.40602459625000004,
-          "meanMaePct": -0.31444355375000005,
+          "meanRawDirectionalReturnPct": 0.1330146152,
+          "meanMfePct": 0.4012890532000001,
+          "meanMaePct": -0.30944605360000005,
           "transactionCostsModeled": false,
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787233140000,
-        "lastTargetCloseTimestampMs": 1787365800000,
-        "contentSha256": "b6b381261d4137b4b93978f1366e785c17abeb8d9194f6bc584ed6cce8c405a8"
+        "lastTargetCloseTimestampMs": 1787368980000,
+        "contentSha256": "68356b14fee6f1e2bf6b48b6eacf6235d25992aa347f62d497ab49c41212abfb"
       },
       {
         "id": "ETHUSD-5m-primary",
@@ -211,27 +211,27 @@
         "timeframeMinutes": 5,
         "horizonKind": "primary",
         "horizonMinutes": 15,
-        "recordCount": 64,
+        "recordCount": 65,
         "signalCounts": {
-          "LONG": 14,
+          "LONG": 15,
           "SHORT": 8,
           "WAIT": 42
         },
         "directionalOutcomeCounts": {
-          "WIN": 12,
+          "WIN": 13,
           "LOSS": 10,
           "FLAT": 0
         },
         "descriptiveMetrics": {
-          "meanRawDirectionalReturnPct": 0.12889321045454546,
-          "meanMfePct": 0.45629277681818187,
-          "meanMaePct": -0.38031892863636363,
+          "meanRawDirectionalReturnPct": 0.1297493439130435,
+          "meanMfePct": 0.4432077913043479,
+          "meanMaePct": -0.372057197826087,
           "transactionCostsModeled": false,
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787232900000,
-        "lastTargetCloseTimestampMs": 1787365800000,
-        "contentSha256": "7d1d331adf1f1639afa3c9eb8902bff02bb4da31b655dab787a82985b59d45f3"
+        "lastTargetCloseTimestampMs": 1787368800000,
+        "contentSha256": "20c284a1581a81f935fd5959a9c9e18f16bd00c5b7bc68244333178f430eaafc"
       },
       {
         "id": "ETHUSD-5m-secondary",
@@ -241,11 +241,11 @@
         "timeframeMinutes": 5,
         "horizonKind": "secondary",
         "horizonMinutes": 30,
-        "recordCount": 63,
+        "recordCount": 64,
         "signalCounts": {
           "LONG": 14,
           "SHORT": 8,
-          "WAIT": 41
+          "WAIT": 42
         },
         "directionalOutcomeCounts": {
           "WIN": 12,
@@ -260,8 +260,8 @@
           "netReturnAvailable": false
         },
         "firstTargetCloseTimestampMs": 1787233800000,
-        "lastTargetCloseTimestampMs": 1787362200000,
-        "contentSha256": "6baec390bb20aae0ffe609d046f511cc3ffc01e361c5251fd6e2041493046ce1"
+        "lastTargetCloseTimestampMs": 1787366700000,
+        "contentSha256": "ea569a64db3e2a0ee976e5fc0b4bc74187d60a614536b6dbfb4a7b3a5767b9bb"
       },
       {
         "id": "USDJPY-1m-primary",
@@ -388,24 +388,24 @@
   "lastRun": {
     "status": "warning",
     "collectorVersion": "short-horizon-outcome-collector-v1",
-    "startedAtMs": 1787366552087,
-    "finishedAtMs": 1787366552856,
-    "durationMs": 769,
+    "startedAtMs": 1787369347644,
+    "finishedAtMs": 1787369348756,
+    "durationMs": 1112,
     "cadenceMinutes": 15,
     "fxLookbackHours": 72,
-    "githubRunId": "32546981122",
+    "githubRunId": "32549086092",
     "githubRunAttempt": "1",
     "aggregate": {
-      "signalsRead": 354,
-      "existingOutcomes": 695,
-      "incompleteHorizonsAtStart": 13,
-      "eligibleHorizons": 11,
-      "matured": 6,
+      "signalsRead": 358,
+      "existingOutcomes": 701,
+      "incompleteHorizonsAtStart": 15,
+      "eligibleHorizons": 13,
+      "matured": 8,
       "pendingTime": 2,
       "missingData": 5,
       "providerUnavailable": 0,
       "providerFailures": 0,
-      "archiveAdded": 6,
+      "archiveAdded": 8,
       "archiveDuplicates": 0,
       "archiveFilesTouched": 4
     },
@@ -415,70 +415,70 @@
         "provider": "short-horizon-kraken-ohlc-v1",
         "status": "SUCCESS",
         "eventCount": 720,
-        "firstSourceTimestampMs": 1787323320000,
-        "lastSourceTimestampMs": 1787366460000
+        "firstSourceTimestampMs": 1787326140000,
+        "lastSourceTimestampMs": 1787369280000
       },
       {
         "id": "BTCUSD-5m",
         "provider": "short-horizon-kraken-ohlc-v1",
         "status": "SUCCESS",
         "eventCount": 720,
-        "firstSourceTimestampMs": 1787150400000,
-        "lastSourceTimestampMs": 1787366100000
+        "firstSourceTimestampMs": 1787153100000,
+        "lastSourceTimestampMs": 1787368800000
       },
       {
         "id": "ETHUSD-1m",
         "provider": "short-horizon-kraken-ohlc-v1",
         "status": "SUCCESS",
         "eventCount": 720,
-        "firstSourceTimestampMs": 1787323320000,
-        "lastSourceTimestampMs": 1787366460000
+        "firstSourceTimestampMs": 1787326140000,
+        "lastSourceTimestampMs": 1787369280000
       },
       {
         "id": "ETHUSD-5m",
         "provider": "short-horizon-kraken-ohlc-v1",
         "status": "SUCCESS",
         "eventCount": 720,
-        "firstSourceTimestampMs": 1787150400000,
-        "lastSourceTimestampMs": 1787366100000
+        "firstSourceTimestampMs": 1787153100000,
+        "lastSourceTimestampMs": 1787368800000
       },
       {
         "id": "USDJPY-1m",
         "provider": "short-horizon-dukascopy-fx-v1",
         "status": "SUCCESS",
-        "eventCount": 3975,
-        "firstSourceTimestampMs": 1787107380000,
+        "eventCount": 3928,
+        "firstSourceTimestampMs": 1787110200000,
         "lastSourceTimestampMs": 1787345940000
       },
       {
         "id": "USDJPY-5m",
         "provider": "short-horizon-dukascopy-fx-v1",
         "status": "SUCCESS",
-        "eventCount": 793,
-        "firstSourceTimestampMs": 1787107500000,
+        "eventCount": 784,
+        "firstSourceTimestampMs": 1787110200000,
         "lastSourceTimestampMs": 1787345700000
       }
     ],
     "evaluations": [
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787364600000|secondary|30m",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787364600000",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787367600000|secondary|30m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787367600000",
         "streamId": "BTCUSD-5m",
         "horizonKind": "secondary",
         "horizonMinutes": 30,
         "status": "PENDING_TIME",
-        "targetCloseTimestampMs": 1787366700000,
-        "remainingMs": 147913
+        "targetCloseTimestampMs": 1787369700000,
+        "remainingMs": 352356
       },
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787364600000|secondary|30m",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787364600000",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787367600000|secondary|30m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787367600000",
         "streamId": "ETHUSD-5m",
         "horizonKind": "secondary",
         "horizonMinutes": 30,
         "status": "PENDING_TIME",
-        "targetCloseTimestampMs": 1787366700000,
-        "remainingMs": 147913
+        "targetCloseTimestampMs": 1787369700000,
+        "remainingMs": 352356
       },
       {
         "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|dukascopy|USDJPY|5m|1787269200000|primary|15m",
@@ -543,70 +543,92 @@
         ]
       },
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787364600000|primary|15m",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787364600000|secondary|30m",
         "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787364600000",
+        "streamId": "BTCUSD-5m",
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "status": "MATURED",
+        "targetCloseTimestampMs": 1787366700000,
+        "rawOutcomeClass": "WAIT_OBSERVATION",
+        "rawDirectionalReturnPct": null
+      },
+      {
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787364600000|secondary|30m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787364600000",
+        "streamId": "ETHUSD-5m",
+        "horizonKind": "secondary",
+        "horizonMinutes": 30,
+        "status": "MATURED",
+        "targetCloseTimestampMs": 1787366700000,
+        "rawOutcomeClass": "WAIT_OBSERVATION",
+        "rawDirectionalReturnPct": null
+      },
+      {
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787367600000|primary|15m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|5m|1787367600000",
         "streamId": "BTCUSD-5m",
         "horizonKind": "primary",
         "horizonMinutes": 15,
         "status": "MATURED",
-        "targetCloseTimestampMs": 1787365800000,
-        "rawOutcomeClass": "WAIT_OBSERVATION",
-        "rawDirectionalReturnPct": null
+        "targetCloseTimestampMs": 1787368800000,
+        "rawOutcomeClass": "LOSS",
+        "rawDirectionalReturnPct": -0.02366846
       },
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787364600000|primary|15m",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787364600000",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787367600000|primary|15m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|5m|1787367600000",
         "streamId": "ETHUSD-5m",
         "horizonKind": "primary",
         "horizonMinutes": 15,
         "status": "MATURED",
-        "targetCloseTimestampMs": 1787365800000,
-        "rawOutcomeClass": "WAIT_OBSERVATION",
-        "rawDirectionalReturnPct": null
+        "targetCloseTimestampMs": 1787368800000,
+        "rawOutcomeClass": "WIN",
+        "rawDirectionalReturnPct": 0.14858428
       },
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787364840000|primary|5m",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787364840000",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787368020000|primary|5m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787368020000",
         "streamId": "BTCUSD-1m",
         "horizonKind": "primary",
         "horizonMinutes": 5,
         "status": "MATURED",
-        "targetCloseTimestampMs": 1787365200000,
-        "rawOutcomeClass": "WAIT_OBSERVATION",
-        "rawDirectionalReturnPct": null
+        "targetCloseTimestampMs": 1787368380000,
+        "rawOutcomeClass": "LOSS",
+        "rawDirectionalReturnPct": -0.23508908
       },
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787364840000|secondary|15m",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787364840000",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787368020000|secondary|15m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|BTCUSD|1m|1787368020000",
         "streamId": "BTCUSD-1m",
         "horizonKind": "secondary",
         "horizonMinutes": 15,
         "status": "MATURED",
-        "targetCloseTimestampMs": 1787365800000,
-        "rawOutcomeClass": "WAIT_OBSERVATION",
-        "rawDirectionalReturnPct": null
+        "targetCloseTimestampMs": 1787368980000,
+        "rawOutcomeClass": "LOSS",
+        "rawDirectionalReturnPct": -0.02964056
       },
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787364840000|primary|5m",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787364840000",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787368020000|primary|5m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787368020000",
         "streamId": "ETHUSD-1m",
         "horizonKind": "primary",
         "horizonMinutes": 5,
         "status": "MATURED",
-        "targetCloseTimestampMs": 1787365200000,
-        "rawOutcomeClass": "WAIT_OBSERVATION",
-        "rawDirectionalReturnPct": null
+        "targetCloseTimestampMs": 1787368380000,
+        "rawOutcomeClass": "LOSS",
+        "rawDirectionalReturnPct": -0.11680247
       },
       {
-        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787364840000|secondary|15m",
-        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787364840000",
+        "outcomeId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787368020000|secondary|15m",
+        "signalId": "short-horizon-signal-v1|short-horizon-human-canon-engine-v1|kraken|ETHUSD|1m|1787368020000",
         "streamId": "ETHUSD-1m",
         "horizonKind": "secondary",
         "horizonMinutes": 15,
         "status": "MATURED",
-        "targetCloseTimestampMs": 1787365800000,
-        "rawOutcomeClass": "WAIT_OBSERVATION",
-        "rawDirectionalReturnPct": null
+        "targetCloseTimestampMs": 1787368980000,
+        "rawOutcomeClass": "WIN",
+        "rawDirectionalReturnPct": 0.28763602
       }
     ]
   },
