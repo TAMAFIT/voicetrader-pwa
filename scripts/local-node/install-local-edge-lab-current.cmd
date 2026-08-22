@@ -3,8 +3,8 @@ setlocal EnableExtensions
 
 set "V084_UPGRADER_SOURCE=d6f0762e245b50411f98a00358549361624b2c2f"
 set "V084_RUNTIME=dd76d0d72aa2b57aac933bc6f7016d9f7453d55d"
-set "V085_SOURCE=b65d7d3ed1b26b373009b26c00a900568e4bdc92"
-set "V086_SOURCE=15af73d33cdf5349ceecda1587fb0be5392ea62d"
+set "V085_SOURCE=3e5658e4462264614c7830d5b7c757303e4bccb8"
+set "V086_SOURCE=3e5658e4462264614c7830d5b7c757303e4bccb8"
 set "V084_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%V084_UPGRADER_SOURCE%/scripts/local-node/upgrade-v084-windows.ps1"
 set "V085_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%V085_SOURCE%/scripts/local-node/install-v085-reboot-recovery.cmd"
 set "V086_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%V086_SOURCE%/scripts/local-node/install-v086-soak-certification.cmd"
@@ -33,6 +33,8 @@ echo v0.85: genuine reboot recovery witness
 
 echo v0.86: 24h continuous soak certification
 
+echo PowerShell receipt path collision guard: ON
+
 echo Real money / orders / cloud upload: OFF
 
 echo ============================================================
@@ -53,7 +55,7 @@ if not "%RC%"=="0" (
 )
 
 echo.
-echo [2/3] Configuring exact v0.85 reboot recovery...
+echo [2/3] Configuring exact fixed v0.85 reboot recovery...
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri '%V085_URL%' -OutFile '%V085_FILE%'"
 if errorlevel 1 goto :fail85download
 if not exist "%V085_FILE%" goto :fail85download
@@ -62,12 +64,12 @@ call "%V085_FILE%"
 set "RC=%ERRORLEVEL%"
 del /q "%V085_FILE%" >nul 2>&1
 if not "%RC%"=="0" (
-  echo ERROR: v0.84 is healthy, but v0.85 did not complete. v0.86 was not attempted.
+  echo ERROR: v0.84 is healthy, but fixed v0.85 did not complete. v0.86 was not attempted.
   goto :fail
 )
 
 echo.
-echo [3/3] Configuring exact v0.86 24h soak certifier...
+echo [3/3] Configuring exact fixed v0.86 24h soak certifier...
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri '%V086_URL%' -OutFile '%V086_FILE%'"
 if errorlevel 1 goto :fail86download
 if not exist "%V086_FILE%" goto :fail86download
@@ -76,7 +78,7 @@ call "%V086_FILE%"
 set "RC=%ERRORLEVEL%"
 del /q "%V086_FILE%" >nul 2>&1
 if not "%RC%"=="0" (
-  echo ERROR: v0.84/v0.85 are configured, but v0.86 did not complete.
+  echo ERROR: v0.84/v0.85 are configured, but fixed v0.86 did not complete.
   goto :fail
 )
 
