@@ -2,7 +2,7 @@
 setlocal EnableExtensions
 
 set "V084_UPGRADER_SOURCE=d6f0762e245b50411f98a00358549361624b2c2f"
-set "V084_RUNTIME=fd1d81fe525db925cf73c8a43199d9b6112910d4"
+set "V084_RUNTIME=dd76d0d72aa2b57aac933bc6f7016d9f7453d55d"
 set "V085_SOURCE=b65d7d3ed1b26b373009b26c00a900568e4bdc92"
 set "V086_SOURCE=15af73d33cdf5349ceecda1587fb0be5392ea62d"
 set "V084_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%V084_UPGRADER_SOURCE%/scripts/local-node/upgrade-v084-windows.ps1"
@@ -27,7 +27,7 @@ echo VoiceTrader Local Edge Lab - current one-click install
 
 echo v0.84: dual-venue research runtime + live health gate
 
-echo Coinbase fix: sequence continuity tracked PER PRODUCT
+echo Coinbase fix: provider sequence validated across FULL CONNECTION RAW STREAM
 
 echo v0.85: genuine reboot recovery witness
 
