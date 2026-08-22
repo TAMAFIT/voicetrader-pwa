@@ -33,14 +33,19 @@ const l2Snapshot=JSON.stringify({channel:'l2_data',timestamp:'2026-08-22T03:10:0
   {type:'snapshot',product_id:'ETH-USD',updates:[{side:'bid',event_time:'2026-08-22T03:10:00Z',price_level:'4200',new_quantity:'2'},{side:'offer',event_time:'2026-08-22T03:10:00Z',price_level:'4201',new_quantity:'2'}]},
 ]});
 const l2Update=JSON.stringify({channel:'l2_data',timestamp:'2026-08-22T03:10:00.100Z',sequence_num:1,events:[{type:'update',product_id:'BTC-USD',updates:[{side:'bid',event_time:'2026-08-22T03:10:00.100Z',price_level:'117000',new_quantity:'1.5'}]}]});
-const integrationRoot=fs.mkdtempSync(path.join(os.tmpdir(),'voicetrader-v075-coinbase-integration-'));
+const integrationTrade=JSON.stringify({channel:'market_trades',timestamp:'2026-08-22T03:10:00.200Z',sequence_num:2,events:[{type:'update',trades:[{trade_id:'900',product_id:'ETH-USD',price:'4200.5',size:'0.25',side:'SELL',time:'2026-08-22T03:10:00.190Z'}]}]});
+const integrationRoot=fs.mkdtempSync(path.join(os.tmpdir(),'voicetrader-v076-coinbase-integration-'));
 const sent=[];let shouldStop=false,clock=Date.UTC(2026,7,22,3,10,0);
 class FakeWebSocket{
   constructor(url){this.url=url;this.handlers={};queueMicrotask(()=>this.handlers.open?.({}));}
   addEventListener(name,handler){this.handlers[name]=handler;}
-  send(raw){sent.push(JSON.parse(raw));if(sent.length===3)queueMicrotask(()=>{this.handlers.message?.({data:l2Snapshot});this.handlers.message?.({data:l2Update});shouldStop=true;this.handlers.message?.({data:heartbeat});});}
+  send(raw){sent.push(JSON.parse(raw));if(sent.length===3)queueMicrotask(()=>{this.handlers.message?.({data:l2Snapshot});this.handlers.message?.({data:l2Update});this.handlers.message?.({data:integrationTrade});shouldStop=true;this.handlers.message?.({data:heartbeat});});}
   close(){}
 }
 const integration=await runCoinbaseRecorder({rootDir:integrationRoot,WebSocketImpl:FakeWebSocket,now:()=>clock++,sleep:async()=>{},stopSignal:()=>shouldStop,warnFreeBytes:0,hardStopFreeBytes:0});
-assert.equal(integration.status,'STOPPED');assert.equal(integration.counts.messages,3);assert.equal(integration.counts.level2,2);assert.equal(integration.counts.heartbeats,1);assert.equal(integration.counts.trustedSnapshots,2);assert.equal(integration.counts.trustedUpdates,1);assert.equal(integration.integrity.providerSequenceContinuityVerified,true);assert.equal(integration.integrity.orderBookSynchronizationVerified,true);assert.deepEqual(sent,subscriptions);assert.equal(integration.runtimePolicy.authenticationRequired,false);
-console.log('PASS v0.75 Coinbase public raw + L2 integrity recorder');
+assert.equal(integration.status,'STOPPED');assert.equal(integration.counts.messages,4);assert.equal(integration.counts.level2,2);assert.equal(integration.counts.marketTrades,1);assert.equal(integration.counts.heartbeats,1);assert.equal(integration.counts.trustedSnapshots,2);assert.equal(integration.counts.trustedUpdates,1);assert.equal(integration.counts.bookFeatures,3);assert.equal(integration.counts.bookOfiFeatures,1);assert.equal(integration.counts.tradeFeatures,1);assert.equal(integration.integrity.providerSequenceContinuityVerified,true);assert.equal(integration.integrity.orderBookSynchronizationVerified,true);assert.equal(integration.semantics.derivedFeaturesAvailable,true);assert.equal(integration.semantics.ofiAvailable,true);assert.equal(integration.semantics.signedTakerFlowAvailable,true);assert.equal(integration.semantics.crossVenueComparabilityClaim,false);assert.equal(integration.semantics.predictionInputAuthorized,false);assert.deepEqual(sent,subscriptions);assert.equal(integration.runtimePolicy.authenticationRequired,false);
+const btcFeatureFile=path.join(integrationRoot,'derived','coinbase','microstructure','BTCUSD','2026','08','22','03.ndjson');
+const ethFeatureFile=path.join(integrationRoot,'derived','coinbase','microstructure','ETHUSD','2026','08','22','03.ndjson');
+const btcFeatures=fs.readFileSync(btcFeatureFile,'utf8').trim().split(/\r?\n/).map(JSON.parse);const ethFeatures=fs.readFileSync(ethFeatureFile,'utf8').trim().split(/\r?\n/).map(JSON.parse);
+assert.equal(btcFeatures.filter((x)=>x.eventType==='BOOK').length,2);assert.equal(btcFeatures.at(-1).book.ofi,0.5);assert.equal(ethFeatures.filter((x)=>x.eventType==='BOOK').length,1);const ethTrade=ethFeatures.find((x)=>x.eventType==='TRADE');assert.equal(ethTrade.trade.makerSide,'SELL');assert.equal(ethTrade.trade.takerSide,'BUY');assert.equal(ethTrade.trade.signedQty,0.25);
+console.log('PASS v0.76 Coinbase public raw + integrity + microstructure recorder');
