@@ -1,13 +1,14 @@
 @echo off
 setlocal EnableExtensions
-set "SOURCE_REF=6e673f33b8cc937e70effb9a2d92d0ff299e9a25"
-set "OVERLAY_REF=6e673f33b8cc937e70effb9a2d92d0ff299e9a25"
+set "SOURCE_REF=263ed6076c3198b66964c98e121806daf411a444"
+set "OVERLAY_REF=263ed6076c3198b66964c98e121806daf411a444"
 set "OVERLAY_URL=https://raw.githubusercontent.com/TAMAFIT/voicetrader-pwa/%SOURCE_REF%/scripts/local-node/configure-v085-reboot-recovery.ps1"
 set "OVERLAY_FILE=%TEMP%\voicetrader-v085-reboot-%RANDOM%%RANDOM%.ps1"
 
 echo VoiceTrader Local Edge Lab v0.85 Reboot Recovery
 echo Exact source : %SOURCE_REF%
 echo Exact overlay: %OVERLAY_REF%
+echo Receipt path collision fix: ON
 echo.
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri '%OVERLAY_URL%' -OutFile '%OVERLAY_FILE%'"
 if errorlevel 1 (
