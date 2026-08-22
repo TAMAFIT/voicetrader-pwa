@@ -24,10 +24,11 @@ const primary=buildPreregisteredCrossVenueObservation(pair(base),{generatedAtMs:
 assert.equal(primary.sampleRole,'BOUNDARY_PRIMARY');
 assert.equal(primary.matchedBoundary,'5m');
 assert.equal(primary.eligible,true);
-assert.equal(primary.venueDecisions.kraken.decision,'WAIT');
+assert.equal(primary.venueDecisions.kraken.decision,'LONG');
 assert.equal(primary.venueDecisions.coinbase.decision,'LONG');
-assert.equal(primary.replication.directionalPair,false);
-assert.equal(primary.replication.decisionAgreement,false);
+assert.equal(primary.replication.directionalPair,true);
+assert.equal(primary.replication.decisionAgreement,true);
+assert.equal(primary.replication.directionalAgreement,true);
 assert.equal(primary.governance.frozenSpec,true);
 assert.equal(primary.governance.preregisteredBeforeCrossVenuePredictiveOutcomeEvaluation,true);
 assert.equal(primary.governance.predictionInputAuthorized,false);
