@@ -1,0 +1,1 @@
+v0.61 checkpoint: trusted bid/ask preserved in boundary windows; Frozen/Adaptive/Null/Phase signals freeze entry quotes; prospective outcomes preserve midpoint and side-correct quoted returns separately; scorecards keep midpoint and quoted metrics separate; fees/slippage/fills remain unobserved; no actual Net EV claim; no cloud runtime dependency.
